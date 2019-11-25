@@ -62,6 +62,8 @@ private slots:
     void receive();
     void on_pushButton_clicked();
     void on_pushButton_send_clicked();
+    void on_verticalSlider_valueChanged(int value);
+    void on_pushButton_send_threshold_t_clicked();
 };
 
 #endif // MAINWINDOW_H

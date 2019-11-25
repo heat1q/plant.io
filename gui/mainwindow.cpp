@@ -141,7 +141,7 @@ void MainWindow::receive()
 
                     qDebug() << "Var value " << QString::number(value);
                     ui->lcdNumber_light->display(value);
-                    ui->progressBar_light->setValue((int)value);
+                    ui->progressBar_light->setValue(static_cast<int>(value));
                 }
 
                 // [Source 0x8edc, broadcast, RSSI -64]:	Voltage [VDD] = 3276 mV ﾂ
@@ -192,5 +192,20 @@ void MainWindow::on_pushButton_send_clicked()
     QByteArray byteArray = command.toLocal8Bit();
 
     byteArray.append('\n');
+    port.write(byteArray);
+}
+
+void MainWindow::on_verticalSlider_valueChanged(int value)
+{
+    ui->lcdNumber_slider->display(value);
+}
+
+void MainWindow::on_pushButton_send_threshold_t_clicked()
+{
+    double slider_value = (*ui).lcdNumber_slider->value();
+    QString str = QString::number(slider_value);
+    QByteArray byteArray = str.toLocal8Bit();
+    byteArray.append('\n');
+
     port.write(byteArray);
 }
