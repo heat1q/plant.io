@@ -30,7 +30,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <qdebug.h>
-#include "page2.h"
+#include "targetsettingswindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -178,9 +178,9 @@ void MainWindow::receive()
 void MainWindow::on_pushButton_clicked()
 // Open new window
 {
-    Page2 page2;
-    page2.setModal(true);
-    page2.exec();
+    TargetSettingsWindow page;
+    page.setModal(true);
+    page.exec();
 }
 
 void MainWindow::on_pushButton_send_clicked()
@@ -188,9 +188,9 @@ void MainWindow::on_pushButton_send_clicked()
 {
     QString command;
     command = ui->plainTextEdit->toPlainText();
+    command.prepend("cmd=");
 
     QByteArray byteArray = command.toLocal8Bit();
-
     byteArray.append('\n');
     port.write(byteArray);
 }
@@ -204,8 +204,20 @@ void MainWindow::on_pushButton_send_threshold_t_clicked()
 {
     double slider_value = (*ui).lcdNumber_slider->value();
     QString str = QString::number(slider_value);
+    str.prepend("temp=");
+
     QByteArray byteArray = str.toLocal8Bit();
     byteArray.append('\n');
+    port.write(byteArray);
+}
 
+void MainWindow::on_pushButton_send_threshold_ph_clicked()
+{
+    QString pH;
+    pH = ui->plainTextEdit_pH->toPlainText();
+    pH.prepend("ph=");
+
+    QByteArray byteArray = pH.toLocal8Bit();
+    byteArray.append('\n');
     port.write(byteArray);
 }
