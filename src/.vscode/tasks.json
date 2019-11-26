@@ -1,0 +1,28 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Comile and Upload",
+            "type": "shell",
+            "command": "export PATH=~/.arm/bin:$PATH; line=$(head -n 1 Makefile); name=(${line// = / }); make TARGET=zoul BOARD=remote-revb ${name[1]}; make TARGET=zoul BOARD=remote-revb ${name[1]}.upload",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Debug Output",
+            "type": "shell",
+            "command": "gtkterm --port=/dev/ttyUSB0 --speed=115200",
+            "group": "test"
+        },
+        {
+            "label": "Serial Input",
+            "type": "shell",
+            "command": "make TARGET=zoul BOARD=remote-revb login",
+            "group": "test"
+        }
+    ]
+}

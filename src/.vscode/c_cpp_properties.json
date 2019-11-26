@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "conf1",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${HOME}/.contiki",
+                "${HOME}/.contiki/core",
+                "${HOME}/.contiki/core/sys",
+                "${HOME}/.contiki/cpu",
+                "${HOME}/.contiki/platform",
+                "${HOME}/.contiki/platform/zoul",
+                "${HOME}/.contiki/platform/zoul/remote-revb",
+                "${HOME}/.contiki/cpu/cc2538",
+                "${HOME}/.contiki/cpu/arm/common/CMSIS"
+            ]
+        }
+    ],
+    "version": 4 
+}
