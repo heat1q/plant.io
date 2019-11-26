@@ -188,7 +188,7 @@ void MainWindow::on_pushButton_send_clicked()
 {
     QString command;
     command = ui->plainTextEdit->toPlainText();
-    command.prepend("cmd=");
+    command.prepend("0:");
 
     QByteArray byteArray = command.toLocal8Bit();
     byteArray.append('\n');
@@ -204,7 +204,7 @@ void MainWindow::on_pushButton_send_threshold_t_clicked()
 {
     double slider_value = (*ui).lcdNumber_slider->value();
     QString str = QString::number(slider_value);
-    str.prepend("temp=");
+    str.prepend("0:temp:");
 
     QByteArray byteArray = str.toLocal8Bit();
     byteArray.append('\n');
@@ -215,7 +215,7 @@ void MainWindow::on_pushButton_send_threshold_ph_clicked()
 {
     QString pH;
     pH = ui->plainTextEdit_pH->toPlainText();
-    pH.prepend("ph=");
+    pH.prepend("0:ph:");
 
     QByteArray byteArray = pH.toLocal8Bit();
     byteArray.append('\n');
