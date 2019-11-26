@@ -1,14 +1,14 @@
-#include "page2.h"
-#include "ui_page2.h"
+#include "targetsettingswindow.h"
+#include "ui_targetsettingswindow.h"
 
-Page2::Page2(QWidget *parent) :
+TargetSettingsWindow::TargetSettingsWindow(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::Page2)
+    ui(new Ui::TargetSettingsWindow)
 {
     ui->setupUi(this);
 }
 
-Page2::~Page2()
+TargetSettingsWindow::~TargetSettingsWindow()
 {
     delete ui;
 }

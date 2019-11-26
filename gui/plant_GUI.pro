@@ -14,13 +14,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-        page2.cpp
+        targetsettingswindow.cpp
 
 HEADERS  += mainwindow.h \
-    page2.h
+    targetsettingswindow.h
 
 FORMS    += mainwindow.ui \
-    page2.ui
+    targetsettingswindow.ui
 
 #-------------------------------------------------
 # This section will include QextSerialPort in

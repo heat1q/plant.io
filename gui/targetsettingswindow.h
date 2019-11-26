@@ -1,22 +1,22 @@
-#ifndef PAGE2_H
-#define PAGE2_H
+#ifndef TARGETSETTINGSWINDOW_H
+#define TARGETSETTINGSWINDOW_H
 
 #include <QDialog>
 
 namespace Ui {
-class Page2;
+class TargetSettingsWindow;
 }
 
-class Page2 : public QDialog
+class TargetSettingsWindow : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit Page2(QWidget *parent = nullptr);
-    ~Page2();
+    explicit TargetSettingsWindow(QWidget *parent = nullptr);
+    ~TargetSettingsWindow();
 
 private:
-    Ui::Page2 *ui;
+    Ui::TargetSettingsWindow *ui;
 };
 
-#endif // PAGE2_H
+#endif // TARGETSETTINGSWINDOW_H
