@@ -1,15 +1,9 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-09-18T17:36:31
-#
-#-------------------------------------------------
-
 QT       += core gui
-CONFIG += c++11
+CONFIG   += c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = AmbientTemperature
+TARGET   = AmbientTemperature
 TEMPLATE = app
 
 
@@ -23,16 +17,5 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
     targetsettingswindow.ui
 
-#-------------------------------------------------
-# This section will include QextSerialPort in
-# your project:
-
+# include QextSerialPort
 include(qextserialport/src/qextserialport.pri)
-
-# Before running the project, run qmake first:
-# In Qt Creator, right-click on the project
-# and choose "run qmake".
-# The qextserialport folder should appear in the
-# directory tree.
-# Now your project is ready to run.
-#-------------------------------------------------
