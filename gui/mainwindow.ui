@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab1">
      <attribute name="title">
@@ -35,16 +35,109 @@
        <rect>
         <x>20</x>
         <y>20</y>
-        <width>200</width>
+        <width>340</width>
         <height>20</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_open">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>50</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Open</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_close">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>50</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Close</string>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="lcdNumber_light">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>100</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="segmentStyle">
+       <enum>QLCDNumber::Flat</enum>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="lcdNumber_voltage">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>100</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="segmentStyle">
+       <enum>QLCDNumber::Flat</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_light">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>130</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Temperature</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_volt">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>130</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Voltage</string>
       </property>
      </widget>
      <widget class="QProgressBar" name="progressBar_light">
       <property name="geometry">
        <rect>
-        <x>550</x>
-        <y>80</y>
+        <x>20</x>
+        <y>160</y>
         <width>100</width>
         <height>200</height>
        </rect>
@@ -65,97 +158,30 @@
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QLCDNumber" name="lcdNumber_voltage">
+     <widget class="QWidget" name="widget_network_graph" native="true">
       <property name="geometry">
        <rect>
-        <x>700</x>
+        <x>540</x>
         <y>20</y>
-        <width>100</width>
-        <height>20</height>
+        <width>400</width>
+        <height>300</height>
        </rect>
       </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
-      </property>
-      <property name="segmentStyle">
-       <enum>QLCDNumber::Flat</enum>
-      </property>
      </widget>
-     <widget class="QLCDNumber" name="lcdNumber_light">
-      <property name="geometry">
-       <rect>
-        <x>550</x>
-        <y>20</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
-      </property>
-      <property name="segmentStyle">
-       <enum>QLCDNumber::Flat</enum>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_light">
-      <property name="geometry">
-       <rect>
-        <x>550</x>
-        <y>50</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Temperature</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_volt">
-      <property name="geometry">
-       <rect>
-        <x>700</x>
-        <y>50</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Voltage</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_open">
-      <property name="geometry">
-       <rect>
-        <x>240</x>
-        <y>20</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Open</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_close">
+     <widget class="QPushButton" name="pushButton_reload">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
-        <x>360</x>
-        <y>20</y>
+        <x>260</x>
+        <y>50</y>
         <width>100</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>Close</string>
+       <string>Reload</string>
       </property>
      </widget>
     </widget>

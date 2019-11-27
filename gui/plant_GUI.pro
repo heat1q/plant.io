@@ -8,10 +8,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+        edge.cpp \
         mainwindow.cpp \
+        node.cpp \
         targetsettingswindow.cpp
 
 HEADERS  += mainwindow.h \
+    edge.h \
+    node.h \
     targetsettingswindow.h
 
 FORMS    += mainwindow.ui \

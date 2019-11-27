@@ -36,6 +36,7 @@ private slots:
     void on_verticalSlider_valueChanged(int value);
     void on_pushButton_send_threshold_t_clicked();
     void on_pushButton_send_threshold_ph_clicked();
+    void on_pushButton_reload_clicked();
 };
 
 #endif // MAINWINDOW_H

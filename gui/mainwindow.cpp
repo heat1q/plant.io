@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <qdebug.h>
 #include "targetsettingswindow.h"
+#include "node.h"
+#include "edge.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -191,4 +193,23 @@ void MainWindow::on_pushButton_send_threshold_ph_clicked()
     QByteArray byteArray = pH.toLocal8Bit();
     byteArray.append('\n');
     port.write(byteArray);
+}
+
+void MainWindow::on_pushButton_reload_clicked()
+{
+    // Get all available COM Ports and store them in a QList.
+    ui->comboBox_Interface->clear();
+    QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
+
+    // Read each element on the list, but
+    // add only USB ports to the combo box.
+    for (int i = 0; i < ports.size(); i++) {
+        if (ports.at(i).portName.contains("USB")){
+            ui->comboBox_Interface->addItem(ports.at(i).portName.toLocal8Bit().constData());
+        }
+    }
+    // Show a hint if no USB ports were found.
+    if (ui->comboBox_Interface->count() == 0){
+        ui->textEdit_Status->insertPlainText("No USB ports available.\nConnect a USB device and try again.");
+    }
 }
