@@ -10,11 +10,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         edge.cpp \
         mainwindow.cpp \
+        networkgraph.cpp \
         node.cpp \
         targetsettingswindow.cpp
 
 HEADERS  += mainwindow.h \
     edge.h \
+    networkgraph.h \
     node.h \
     targetsettingswindow.h
 

@@ -139,7 +139,7 @@
         <x>20</x>
         <y>160</y>
         <width>100</width>
-        <height>200</height>
+        <height>190</height>
        </rect>
       </property>
       <property name="maximum">
@@ -158,16 +158,6 @@
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QWidget" name="widget_network_graph" native="true">
-      <property name="geometry">
-       <rect>
-        <x>540</x>
-        <y>20</y>
-        <width>400</width>
-        <height>300</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QPushButton" name="pushButton_reload">
       <property name="enabled">
        <bool>true</bool>
@@ -182,6 +172,58 @@
       </property>
       <property name="text">
        <string>Reload</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_create">
+      <property name="geometry">
+       <rect>
+        <x>800</x>
+        <y>20</y>
+        <width>180</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Create Node</string>
+      </property>
+     </widget>
+     <widget class="QGraphicsView" name="graphicsView_networkgraph">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>20</y>
+        <width>400</width>
+        <height>300</height>
+       </rect>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_networkgraph">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>20</y>
+        <width>400</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string> Network Tree Visualization. Press button below to init.</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_explore">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>330</y>
+        <width>400</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Trigger Network Search ?? FIX</string>
       </property>
      </widget>
     </widget>

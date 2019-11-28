@@ -2,12 +2,12 @@
 #include "ui_mainwindow.h"
 #include <qdebug.h>
 #include "targetsettingswindow.h"
+#include "networkgraph.h"
 #include "node.h"
 #include "edge.h"
+#include <math.h>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -212,4 +212,52 @@ void MainWindow::on_pushButton_reload_clicked()
     if (ui->comboBox_Interface->count() == 0){
         ui->textEdit_Status->insertPlainText("No USB ports available.\nConnect a USB device and try again.");
     }
+}
+
+static int count = 0;
+
+void MainWindow::on_pushButton_create_clicked()
+//test button for graph
+{
+    static double x = 0;
+    static double y = 0;
+
+    QBrush greenBrush(Qt::green);
+    QPen blackPen(Qt::black);
+    blackPen.setWidth(2);
+
+    //Random Generator
+    count++;
+    QRandomGenerator randomGen;
+    randomGen.seed(quint32(count));
+    double random_number = randomGen.generateDouble();
+    double random_x = 50*cos(random_number*360);
+    double random_y = 50*sin(random_number*360);
+    x+=random_x;
+    y+=random_y;
+    //qDebug() << "Random number:" << random_number;
+
+    mScene->addEllipse(x,y,20,20,blackPen,greenBrush);
+    QString node_number = QString::number(count);
+    QGraphicsTextItem *text = mScene->addText(node_number);
+
+    if (count < 10){ text->setPos(x+2, y-2); } // One-digit numbers format
+    else{ text->setPos(x-3, y-2); } // Two-digit numbers format
+
+    //ui->graphicsView_networkgraph->scale(0.95,0.95);
+    /*
+    NetworkGraph networkGraph;
+    QPointF pos(25,25);
+    networkGraph.CreateNodeAtPosition( pos );
+    */
+}
+
+void MainWindow::on_pushButton_explore_clicked()
+{
+    // create networkgraph
+    mScene = new QGraphicsScene();
+    ui->graphicsView_networkgraph->setScene( mScene );
+    // disable notification text
+    ui->label_networkgraph->setVisible(0);
+    count = 0;
 }
