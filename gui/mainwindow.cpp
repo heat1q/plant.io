@@ -208,14 +208,16 @@ void MainWindow::on_pushButton_reload_clicked()
 }
 
 const double pi = 3.14159;
-const int n_max = 20;
+const int n_max = 15;
+static double alpha [n_max];
 static int count = 0;
-static double node_pos [n_max][2]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos
+static double node_pos [n_max][3]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos // [3,:] # of outgoing edges
 static double curr_pos [2];
 
 void MainWindow::on_pushButton_create_clicked()
 //test button for graph
 {
+
     QString strseq = ui->plainTextEdit_create->toPlainText();
     int intseq = strseq.toInt();
 
@@ -226,34 +228,46 @@ void MainWindow::on_pushButton_create_clicked()
 
     curr_pos[0] = 0; // Initial x position
     curr_pos[1] = 0; // Initial y position
+    static int curr_id = 0;
 
     //Random Generator
     count++;
     QRandomGenerator randomGen;
 
-    if (intseq==0)
-    {
+    double x,y,x_offset,y_offset;
+    const double circle_radius=10*n_max;
+
+    if (intseq==0){
         qDebug() << "Invalid Input Sequence";
     }
-    else
-    {
+    else{
         for(int i = 0; i<strseq.length(); i++)
         {
             int target_id = intseq%10;
-            randomGen.seed(quint32(count*i));
-            double random_number = randomGen.generateDouble();
-            double random_x = 100*cos(random_number*2*pi);
-            double random_y = 100*sin(random_number*2*pi);
 
-            if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)) // Target node already exists
-            {
+            if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)){ // Target node already exists
                 qDebug() << "Target node" << target_id << "already exists";
             }
-            else // Target node doesn't exist
-            {
+            else{ // target node doesn't exist
                 // calculate new node position
-                node_pos[target_id][0] = curr_pos[0] + random_x;
-                node_pos[target_id][1] = curr_pos[1] + random_y;
+                if (i==0){ // first ring
+                    x = cos(alpha[target_id]);
+                    y = sin(alpha[target_id]);
+                    x_offset = x*circle_radius;
+                    y_offset = y*circle_radius;
+                }
+                else{ // ring 2 and above
+
+                    double len = sqrt(pow(curr_pos[0],2)+pow(curr_pos[1],2));
+                    double new_length = len+circle_radius;
+                    double new_alpha = atan2(curr_pos[1] , curr_pos[0]) + (node_pos[curr_id][2]-1) / double(n_max*3*i) * 2*pi;
+
+                    x_offset = new_length*cos(new_alpha)-curr_pos[0];
+                    y_offset = new_length*sin(new_alpha)-curr_pos[1];
+                }
+                //int cnt = int(node_pos[target_id][2]);
+                node_pos[target_id][0] = curr_pos[0] + x_offset;
+                node_pos[target_id][1] = curr_pos[1] + y_offset;
 
                 // add node circle
                 mScene->addEllipse(node_pos[target_id][0]-10,node_pos[target_id][1]-10,20,20,blackPen,greenBrush);
@@ -263,8 +277,10 @@ void MainWindow::on_pushButton_create_clicked()
                 QGraphicsTextItem *text = mScene->addText(node_id);
                 if (target_id < 10){ text->setPos(node_pos[target_id][0] +2-10, node_pos[target_id][1] -2-10); } // One-digit numbers format
                 else{ text->setPos(node_pos[target_id][0] -3-10, node_pos[target_id][0] -2-10); } // Two-digit numbers format
-                //if (count%2 == 1){text->~QGraphicsTextItem();}
             }
+
+            // increment outgoing edge counter
+            node_pos[curr_id][2] += 1;
 
             // add node edges without cutting into node circle
             double x_delta = node_pos[target_id][0]-curr_pos[0];
@@ -275,13 +291,16 @@ void MainWindow::on_pushButton_create_clicked()
             double y1 = node_pos[target_id][0]-normalizer*x_delta;
             double y2 = node_pos[target_id][1]-normalizer*y_delta;
 
-            mScene->addLine(x1,x2,y1,y2,blackPen); // Add edge
-            curr_pos[0] = node_pos[target_id][0]; // Move to new x position
-            curr_pos[1] = node_pos[target_id][1]; // Move to new y position
+            mScene->addLine(x1,x2,y1,y2,blackPen); // add edge
+
+            curr_pos[0] = node_pos[target_id][0]; // Update current x position
+            curr_pos[1] = node_pos[target_id][1]; // Update current y position
 
             // qDebug() << "nodeprint:" << intseq%10;
             intseq = intseq/10; // for modulo operator to get single values
 
+            // update current id
+            curr_id = target_id;
         }
     }
 }
@@ -306,23 +325,28 @@ void MainWindow::on_pushButton_explore_clicked()
 
     // reset graph
     MainWindow::reset_graph();
+
+    for (int i = 0; i < n_max; ++i) {
+        alpha[i] = i / double(n_max) * 2 * pi; // devide circle angles into n_max equally spaced values
+        //qDebug() << alpha[i];
+    }
 }
 
 void MainWindow::on_pushButton_zoomin_clicked()
 {
-    ui->graphicsView_networkgraph->scale(1.1,1.1);
+    ui->graphicsView_networkgraph->scale(1.2,1.2);
 }
 
 void MainWindow::on_pushButton_zoomout_clicked()
 {
-    ui->graphicsView_networkgraph->scale(0.9,0.9);
+    ui->graphicsView_networkgraph->scale(0.8,0.8);
 }
 
 void MainWindow::reset_graph()
 {
     // reset all values in node_pos
     for (int row = 0; row < n_max; ++row) // step through the rows in the array
-        for (int col = 0; col < 2; ++col) // step through each element in the row
+        for (int col = 0; col < 3; ++col) // step through each element in the row
             node_pos[row][col] = 0;
 
     // reset count
