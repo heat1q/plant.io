@@ -11,9 +11,6 @@
 #include <qdebug.h>
 #include <math.h>
 #include "targetsettingswindow.h"
-#include "networkgraph.h"
-#include "node.h"
-#include "edge.h"
 #include "qextserialport.h"
 #include "qextserialenumerator.h"
 #include "ui_mainwindow.h"
