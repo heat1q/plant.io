@@ -7,8 +7,16 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsItem>
+#include <QVarLengthArray>
+#include <qdebug.h>
+#include <math.h>
+#include "targetsettingswindow.h"
+#include "networkgraph.h"
+#include "node.h"
+#include "edge.h"
 #include "qextserialport.h"
 #include "qextserialenumerator.h"
+#include "ui_mainwindow.h"
 
 namespace Ui {
     class MainWindow;
@@ -28,6 +36,7 @@ private:
     QextSerialPort port;
     QMessageBox error;
     QGraphicsScene* mScene;
+    void reset_graph();
 
 private slots:
     void on_pushButton_close_clicked();
@@ -41,6 +50,8 @@ private slots:
     void on_pushButton_reload_clicked();
     void on_pushButton_create_clicked();
     void on_pushButton_explore_clicked();
+    void on_pushButton_zoomin_clicked();
+    void on_pushButton_zoomout_clicked();
 };
 
 #endif // MAINWINDOW_H

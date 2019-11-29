@@ -4,6 +4,9 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsItem>
+#include <QTimer>
+#include "node.h"
+#include "edge.h"
 
 class Node;
 class Edge;
@@ -15,7 +18,8 @@ public:
     NetworkGraph();
     void CreateNodeAtPosition( QPointF pos );
 
-protected:
+private:
+    static double node_pos [20][2]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos
 
 protected:
     QGraphicsScene* mScene;

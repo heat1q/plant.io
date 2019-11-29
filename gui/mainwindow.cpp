@@ -1,11 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include <qdebug.h>
-#include "targetsettingswindow.h"
-#include "networkgraph.h"
-#include "node.h"
-#include "edge.h"
-#include <math.h>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWindow)
 {
@@ -175,7 +168,7 @@ void MainWindow::on_verticalSlider_valueChanged(int value)
 
 void MainWindow::on_pushButton_send_threshold_t_clicked()
 {
-    double slider_value = (*ui).lcdNumber_slider->value();
+    double slider_value = ui->lcdNumber_slider->value();
     QString str = QString::number(slider_value);
     str.prepend("0:temp:");
 
@@ -214,42 +207,75 @@ void MainWindow::on_pushButton_reload_clicked()
     }
 }
 
+const double pi = 3.14159;
+const int n_max = 20;
 static int count = 0;
+static double node_pos [n_max][2]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos
+static double curr_pos [2];
 
 void MainWindow::on_pushButton_create_clicked()
 //test button for graph
 {
-    static double x = 0;
-    static double y = 0;
+    QString strseq = ui->plainTextEdit_create->toPlainText();
+    int intseq = strseq.toInt();
 
+    // Paint edges and nodes
     QBrush greenBrush(Qt::green);
     QPen blackPen(Qt::black);
     blackPen.setWidth(2);
 
+    curr_pos[0] = 0; // Initial x position
+    curr_pos[1] = 0; // Initial y position
+
     //Random Generator
     count++;
     QRandomGenerator randomGen;
-    randomGen.seed(quint32(count));
-    double random_number = randomGen.generateDouble();
-    double random_x = 50*cos(random_number*360);
-    double random_y = 50*sin(random_number*360);
-    x+=random_x;
-    y+=random_y;
-    //qDebug() << "Random number:" << random_number;
 
-    mScene->addEllipse(x,y,20,20,blackPen,greenBrush);
-    QString node_number = QString::number(count);
-    QGraphicsTextItem *text = mScene->addText(node_number);
+    if (intseq==0)
+    {
+        qDebug() << "Invalid Input Sequence";
+    }
+    else
+    {
+        for(int i = 0; i<strseq.length(); i++)
+        {
+            int target_id = intseq%10;
+            randomGen.seed(quint32(count*i));
+            double random_number = randomGen.generateDouble();
+            double random_x = 100*cos(random_number*2*pi);
+            double random_y = 100*sin(random_number*2*pi);
 
-    if (count < 10){ text->setPos(x+2, y-2); } // One-digit numbers format
-    else{ text->setPos(x-3, y-2); } // Two-digit numbers format
+            if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)) // Target node already exists
+            {
+                qDebug() << "Target node" << target_id << "already exists";
+            }
+            else // Target node doesn't exist
+            {
+                // calculate new node position
+                node_pos[target_id][0] = curr_pos[0] + random_x;
+                node_pos[target_id][1] = curr_pos[1] + random_y;
 
-    //ui->graphicsView_networkgraph->scale(0.95,0.95);
-    /*
-    NetworkGraph networkGraph;
-    QPointF pos(25,25);
-    networkGraph.CreateNodeAtPosition( pos );
-    */
+                // add node circle
+                mScene->addEllipse(node_pos[target_id][0]-10,node_pos[target_id][1]-10,20,20,blackPen,greenBrush);
+
+                // add node id
+                QString node_id = QString::number(target_id);
+                QGraphicsTextItem *text = mScene->addText(node_id);
+                if (target_id < 10){ text->setPos(node_pos[target_id][0] +2-10, node_pos[target_id][1] -2-10); } // One-digit numbers format
+                else{ text->setPos(node_pos[target_id][0] -3-10, node_pos[target_id][0] -2-10); } // Two-digit numbers format
+                //if (count%2 == 1){text->~QGraphicsTextItem();}
+            }
+
+            // add node edges
+            mScene->addLine(curr_pos[0],curr_pos[1],node_pos[target_id][0],node_pos[target_id][1],blackPen); // Add edge
+            curr_pos[0] = node_pos[target_id][0]; // Move to new x position
+            curr_pos[1] = node_pos[target_id][1]; // Move to new y position
+
+            // qDebug() << "nodeprint:" << intseq%10;
+            intseq = intseq/10; // for modulo operator to get single values
+
+        }
+    }
 }
 
 void MainWindow::on_pushButton_explore_clicked()
@@ -257,7 +283,38 @@ void MainWindow::on_pushButton_explore_clicked()
     // create networkgraph
     mScene = new QGraphicsScene();
     ui->graphicsView_networkgraph->setScene( mScene );
+
     // disable notification text
     ui->label_networkgraph->setVisible(0);
+
+    // create root node
+    QBrush redBrush(Qt::red);
+    QPen blackPen(Qt::black);
+    blackPen.setWidth(2);
+    mScene->addEllipse(-10,-10,20,20,blackPen,redBrush);
+
+    // enable node creation button
+    ui->pushButton_create->setEnabled(true);
+}
+
+void MainWindow::on_pushButton_zoomin_clicked()
+{
+    ui->graphicsView_networkgraph->scale(1.1,1.1);
+}
+
+void MainWindow::on_pushButton_zoomout_clicked()
+{
+    ui->graphicsView_networkgraph->scale(0.9,0.9);
+}
+
+void MainWindow::reset_graph()
+{
+    // reset all values in node_pos
+    for (int row = 0; row < n_max; ++row) // step through the rows in the array
+        for (int col = 0; col < 2; ++col) // step through each element in the row
+            node_pos[row][col] = 0;
+
+    // reset count
     count = 0;
 }
+
