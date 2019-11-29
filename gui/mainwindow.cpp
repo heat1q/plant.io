@@ -222,7 +222,7 @@ void MainWindow::on_pushButton_create_clicked()
     // Paint edges and nodes
     QBrush greenBrush(Qt::green);
     QPen blackPen(Qt::black);
-    blackPen.setWidth(2);
+    blackPen.setWidth(1);
 
     curr_pos[0] = 0; // Initial x position
     curr_pos[1] = 0; // Initial y position
@@ -266,8 +266,16 @@ void MainWindow::on_pushButton_create_clicked()
                 //if (count%2 == 1){text->~QGraphicsTextItem();}
             }
 
-            // add node edges
-            mScene->addLine(curr_pos[0],curr_pos[1],node_pos[target_id][0],node_pos[target_id][1],blackPen); // Add edge
+            // add node edges without cutting into node circle
+            double x_delta = node_pos[target_id][0]-curr_pos[0];
+            double y_delta = node_pos[target_id][1]-curr_pos[1];
+            double normalizer = 10/sqrt(pow(x_delta,2)+pow(y_delta,2));
+            double x1 = curr_pos[0]+normalizer*x_delta;
+            double x2 = curr_pos[1]+normalizer*y_delta;
+            double y1 = node_pos[target_id][0]-normalizer*x_delta;
+            double y2 = node_pos[target_id][1]-normalizer*y_delta;
+
+            mScene->addLine(x1,x2,y1,y2,blackPen); // Add edge
             curr_pos[0] = node_pos[target_id][0]; // Move to new x position
             curr_pos[1] = node_pos[target_id][1]; // Move to new y position
 
@@ -295,6 +303,9 @@ void MainWindow::on_pushButton_explore_clicked()
 
     // enable node creation button
     ui->pushButton_create->setEnabled(true);
+
+    // reset graph
+    MainWindow::reset_graph();
 }
 
 void MainWindow::on_pushButton_zoomin_clicked()
