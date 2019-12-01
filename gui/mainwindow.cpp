@@ -70,32 +70,46 @@ void MainWindow::on_pushButton_close_clicked()
     ui->comboBox_Interface->setEnabled(true);
 }
 
+void MainWindow::on_pushButton_reload_clicked()
+{
+    // Get all available COM Ports and store them in a QList.
+    ui->comboBox_Interface->clear();
+    QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
+
+    // Read each element on the list, but
+    // add only USB ports to the combo box.
+    for (int i = 0; i < ports.size(); i++) {
+        if (ports.at(i).portName.contains("USB")){
+            ui->comboBox_Interface->addItem(ports.at(i).portName.toLocal8Bit().constData());
+        }
+    }
+    // Show a hint if no USB ports were found.
+    if (ui->comboBox_Interface->count() == 0){
+        ui->textEdit_Status->insertPlainText("No USB ports available.\nConnect a USB device and try again.");
+    }
+}
+
 void MainWindow::receive()
 {
-
     static QString str;
         char ch;
-        while (port.getChar(&ch))
-        {
+        while (port.getChar(&ch)){
             str.append(ch);
-            if (ch == '\n')     // End of line, start decoding
-            {
+            if (ch == '\n'){     // End of line, start decoding
                 str.remove("\n", Qt::CaseSensitive);
                 ui->textEdit_Status->append(str);
-
                 // [Source 0x8edc, broadcast, RSSI -64]:	Temperature = 25000 mC
-                if (str.contains("Temperature"))
-                {
-
+                if (str.contains("Temperature")){
                     double value = 0.0;
-                    QStringList list = str.split(QRegExp("\\s"));
+                    QStringList list = str.split(":"); // https://doc.qt.io/qt-5/qstring.html#split
+
 
                     qDebug() << "Str value: " << str;
                     if(!list.isEmpty()){
                         qDebug() << "List size " << list.size();
                         for (int i=0; i < list.size(); i++){
                             qDebug() << "List value "<< i <<" "<< list.at(i);
-                            if (list.at(i) == "Temperature") {
+                            if (list.at(i) == "Temperature"){
                                 value = list.at(i+2).toDouble();
                                 //adjust to Degrees
                                 value = value / 1000;
@@ -109,36 +123,103 @@ void MainWindow::receive()
                     ui->lcdNumber_light->display(value);
                     ui->progressBar_light->setValue(static_cast<int>(value));
                 }
-
-                // [Source 0x8edc, broadcast, RSSI -64]:	Voltage [VDD] = 3276 mV ﾂ
-                if (str.contains("Voltage [VDD] ="))
-                {
-
-                    double value2 = 0.0;
-                    QStringList list = str.split(QRegExp("\\s"));
-
-                    qDebug() << "Str value: " << str;
-                    if(!list.isEmpty()){
-                        qDebug() << "List size " << list.size();
-                        for (int i=0; i < list.size(); i++){
-                            qDebug() << "List value "<< i <<" "<< list.at(i);
-                            if (list.at(i) == "[VDD]") {
-                                value2 = list.at(i+2).toDouble();
-                                //adjust to Degrees
-                                value2 = value2 / 1000;
-                                printf("%f\n",value2);
-                            }
-                        }
-                    }
-
-                    qDebug() << "Var value " << QString::number(value2);
-                    ui->lcdNumber_voltage->display(value2);
-                }
-
-                this->repaint();    // Update content of window immediately
+                //this->repaint();    // Update content of window immediately
                 str.clear();
             }
         }
+}
+
+const double pi = 3.14159;
+const int n_max = 15;
+static double alpha [n_max];
+static int count = 0;
+static double node_pos [n_max][3]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos // [3,:] # of outgoing edges
+static double curr_pos [2];
+
+void MainWindow::create_graph(QStringList InputList)
+{
+    // Paint edges and nodes
+    QBrush greenBrush(Qt::green);
+    QPen blackPen(Qt::black);
+    blackPen.setWidth(1);
+
+    curr_pos[0] = 0; // Initial x position
+    curr_pos[1] = 0; // Initial y position
+    static int curr_id = 0;
+
+    //Random Generator
+    count++;
+    //QRandomGenerator randomGen;
+
+    double x,y,x_offset,y_offset;
+    const double circle_radius=10*n_max;
+
+    for(int i = 0; i<InputList.size()-1; i++) // Iterate all items in header "11:14:7:215:PAYLOAD" -^°°^<<>
+    {
+        int target_id = InputList[i].toInt();
+
+        if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)){ // Target node already exists
+            qDebug() << "Target node" << target_id << "already exists";
+        }
+        else{ // target node doesn't exist
+            // calculate new node position
+            if (i==0){ // first ring
+                x = cos(alpha[target_id]);
+                y = sin(alpha[target_id]);
+                x_offset = x*circle_radius;
+                y_offset = y*circle_radius;
+            }
+            else{ // ring 2 and above
+
+                double len = sqrt(pow(curr_pos[0],2)+pow(curr_pos[1],2));
+                double new_length = len+circle_radius;
+                double new_alpha = atan2(curr_pos[1] , curr_pos[0]) + (node_pos[curr_id][2]-1) / double(n_max*3*i) * 2*pi;
+
+                x_offset = new_length*cos(new_alpha)-curr_pos[0];
+                y_offset = new_length*sin(new_alpha)-curr_pos[1];
+            }
+            //int cnt = int(node_pos[target_id][2]);
+            node_pos[target_id][0] = curr_pos[0] + x_offset;
+            node_pos[target_id][1] = curr_pos[1] + y_offset;
+
+            // add node circle
+            mScene->addEllipse(node_pos[target_id][0]-10,node_pos[target_id][1]-10,20,20,blackPen,greenBrush);
+
+            // add node id text
+            QString node_id = QString::number(target_id);
+            QGraphicsTextItem *text = mScene->addText(node_id);
+            if (target_id < 10){ text->setPos(node_pos[target_id][0] +2-10, node_pos[target_id][1] -2-10); } // One-digit numbers format
+            else{ text->setPos(node_pos[target_id][0] -3-10, node_pos[target_id][1] -2-10); } // Two-digit numbers format
+        }
+
+        // increment outgoing edge counter
+        node_pos[curr_id][2] += 1;
+
+        // add node edges without cutting into node circle
+        double x_delta = node_pos[target_id][0]-curr_pos[0];
+        double y_delta = node_pos[target_id][1]-curr_pos[1];
+        double normalizer = 10/sqrt(pow(x_delta,2)+pow(y_delta,2));
+        double x1 = curr_pos[0]+normalizer*x_delta;
+        double x2 = curr_pos[1]+normalizer*y_delta;
+        double y1 = node_pos[target_id][0]-normalizer*x_delta;
+        double y2 = node_pos[target_id][1]-normalizer*y_delta;
+
+        mScene->addLine(x1,x2,y1,y2,blackPen); // add edge
+
+        curr_pos[0] = node_pos[target_id][0]; // Update current x position
+        curr_pos[1] = node_pos[target_id][1]; // Update current y position
+
+        // update current id
+        curr_id = target_id;
+    }
+}
+
+void MainWindow::on_pushButton_create_clicked()
+// test button for graph
+{
+    QString Input = ui->plainTextEdit_create->toPlainText();
+    QStringList InputList = Input.split(":");
+    MainWindow::create_graph(InputList);
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -186,123 +267,6 @@ void MainWindow::on_pushButton_send_threshold_ph_clicked()
     QByteArray byteArray = pH.toLocal8Bit();
     byteArray.append('\n');
     port.write(byteArray);
-}
-
-void MainWindow::on_pushButton_reload_clicked()
-{
-    // Get all available COM Ports and store them in a QList.
-    ui->comboBox_Interface->clear();
-    QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
-
-    // Read each element on the list, but
-    // add only USB ports to the combo box.
-    for (int i = 0; i < ports.size(); i++) {
-        if (ports.at(i).portName.contains("USB")){
-            ui->comboBox_Interface->addItem(ports.at(i).portName.toLocal8Bit().constData());
-        }
-    }
-    // Show a hint if no USB ports were found.
-    if (ui->comboBox_Interface->count() == 0){
-        ui->textEdit_Status->insertPlainText("No USB ports available.\nConnect a USB device and try again.");
-    }
-}
-
-const double pi = 3.14159;
-const int n_max = 15;
-static double alpha [n_max];
-static int count = 0;
-static double node_pos [n_max][3]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos // [3,:] # of outgoing edges
-static double curr_pos [2];
-
-void MainWindow::on_pushButton_create_clicked()
-//test button for graph
-{
-
-    QString strseq = ui->plainTextEdit_create->toPlainText();
-    int intseq = strseq.toInt();
-
-    // Paint edges and nodes
-    QBrush greenBrush(Qt::green);
-    QPen blackPen(Qt::black);
-    blackPen.setWidth(1);
-
-    curr_pos[0] = 0; // Initial x position
-    curr_pos[1] = 0; // Initial y position
-    static int curr_id = 0;
-
-    //Random Generator
-    count++;
-    QRandomGenerator randomGen;
-
-    double x,y,x_offset,y_offset;
-    const double circle_radius=10*n_max;
-
-    if (intseq==0){
-        qDebug() << "Invalid Input Sequence";
-    }
-    else{
-        for(int i = 0; i<strseq.length(); i++)
-        {
-            int target_id = intseq%10;
-
-            if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)){ // Target node already exists
-                qDebug() << "Target node" << target_id << "already exists";
-            }
-            else{ // target node doesn't exist
-                // calculate new node position
-                if (i==0){ // first ring
-                    x = cos(alpha[target_id]);
-                    y = sin(alpha[target_id]);
-                    x_offset = x*circle_radius;
-                    y_offset = y*circle_radius;
-                }
-                else{ // ring 2 and above
-
-                    double len = sqrt(pow(curr_pos[0],2)+pow(curr_pos[1],2));
-                    double new_length = len+circle_radius;
-                    double new_alpha = atan2(curr_pos[1] , curr_pos[0]) + (node_pos[curr_id][2]-1) / double(n_max*3*i) * 2*pi;
-
-                    x_offset = new_length*cos(new_alpha)-curr_pos[0];
-                    y_offset = new_length*sin(new_alpha)-curr_pos[1];
-                }
-                //int cnt = int(node_pos[target_id][2]);
-                node_pos[target_id][0] = curr_pos[0] + x_offset;
-                node_pos[target_id][1] = curr_pos[1] + y_offset;
-
-                // add node circle
-                mScene->addEllipse(node_pos[target_id][0]-10,node_pos[target_id][1]-10,20,20,blackPen,greenBrush);
-
-                // add node id
-                QString node_id = QString::number(target_id);
-                QGraphicsTextItem *text = mScene->addText(node_id);
-                if (target_id < 10){ text->setPos(node_pos[target_id][0] +2-10, node_pos[target_id][1] -2-10); } // One-digit numbers format
-                else{ text->setPos(node_pos[target_id][0] -3-10, node_pos[target_id][0] -2-10); } // Two-digit numbers format
-            }
-
-            // increment outgoing edge counter
-            node_pos[curr_id][2] += 1;
-
-            // add node edges without cutting into node circle
-            double x_delta = node_pos[target_id][0]-curr_pos[0];
-            double y_delta = node_pos[target_id][1]-curr_pos[1];
-            double normalizer = 10/sqrt(pow(x_delta,2)+pow(y_delta,2));
-            double x1 = curr_pos[0]+normalizer*x_delta;
-            double x2 = curr_pos[1]+normalizer*y_delta;
-            double y1 = node_pos[target_id][0]-normalizer*x_delta;
-            double y2 = node_pos[target_id][1]-normalizer*y_delta;
-
-            mScene->addLine(x1,x2,y1,y2,blackPen); // add edge
-
-            curr_pos[0] = node_pos[target_id][0]; // Update current x position
-            curr_pos[1] = node_pos[target_id][1]; // Update current y position
-
-            // qDebug() << "nodeprint:" << intseq%10;
-            intseq = intseq/10; // for modulo operator to get single values
-
-            // update current id
-            curr_id = target_id;
-        }
-    }
 }
 
 void MainWindow::on_pushButton_explore_clicked()

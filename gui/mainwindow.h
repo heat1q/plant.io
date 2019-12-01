@@ -34,6 +34,7 @@ private:
     QMessageBox error;
     QGraphicsScene* mScene;
     void reset_graph();
+    void create_graph(QStringList List);
 
 private slots:
     void on_pushButton_close_clicked();
