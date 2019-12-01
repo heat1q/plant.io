@@ -3,7 +3,7 @@ CONFIG   += c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET   = AmbientTemperature
+TARGET   = T_pH_Measuring
 TEMPLATE = app
 
 
