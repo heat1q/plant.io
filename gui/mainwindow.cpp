@@ -74,6 +74,7 @@ void MainWindow::on_pushButton_reload_clicked()
 {
     // Get all available COM Ports and store them in a QList.
     ui->comboBox_Interface->clear();
+    ui->textEdit_Status->clear();
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
 
     // Read each element on the list, but
@@ -157,7 +158,7 @@ void MainWindow::create_graph(QStringList InputList)
         int target_id = InputList[i].toInt();
 
         if (target_id > n_max){
-            ui->textEdit_Status->setText("Invalid header id. Abort mission\n");
+            ui->textEdit_Status->insertPlainText("Invalid header id. Abort mission\n");
             break;
         }
 
