@@ -14,409 +14,362 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTabWidget" name="tabWidget">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>1000</width>
-      <height>400</height>
-     </rect>
-    </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
-    <widget class="QWidget" name="tab1">
-     <attribute name="title">
-      <string>Hauptquartier</string>
-     </attribute>
-     <widget class="QComboBox" name="comboBox_Interface">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>20</y>
-        <width>340</width>
-        <height>20</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_open">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>50</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Open</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_close">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>50</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Close</string>
-      </property>
-     </widget>
-     <widget class="QLCDNumber" name="lcdNumber_light">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>100</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
-      </property>
-      <property name="segmentStyle">
-       <enum>QLCDNumber::Flat</enum>
-      </property>
-     </widget>
-     <widget class="QLCDNumber" name="lcdNumber_voltage">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>100</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
-      </property>
-      <property name="segmentStyle">
-       <enum>QLCDNumber::Flat</enum>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_light">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>130</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Temperature</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_volt">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>130</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Voltage</string>
-      </property>
-     </widget>
-     <widget class="QProgressBar" name="progressBar_light">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>160</y>
-        <width>100</width>
-        <height>190</height>
-       </rect>
-      </property>
-      <property name="maximum">
-       <number>40</number>
-      </property>
-      <property name="value">
+   <layout class="QVBoxLayout" name="verticalLayout_3" stretch="5,1,2">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
        <number>0</number>
       </property>
-      <property name="textVisible">
-       <bool>false</bool>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="invertedAppearance">
-       <bool>false</bool>
-      </property>
+      <widget class="QWidget" name="tab1">
+       <attribute name="title">
+        <string>Hauptquartier</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0,0">
+        <property name="horizontalSpacing">
+         <number>6</number>
+        </property>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_light">
+          <property name="text">
+           <string>Temperature</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QPushButton" name="pushButton_create">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>180</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Create Node</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3" rowspan="8">
+         <widget class="QGraphicsView" name="graphicsView_networkgraph">
+          <property name="toolTip">
+           <string> Network Tree Visualization. Press button below to init.</string>
+          </property>
+          <property name="toolTipDuration">
+           <number>3</number>
+          </property>
+          <property name="lineWidth">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="3">
+         <widget class="QComboBox" name="comboBox_Interface"/>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLabel" name="label_volt">
+          <property name="text">
+           <string>Voltage</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="4">
+         <widget class="QPushButton" name="pushButton_zoomout">
+          <property name="maximumSize">
+           <size>
+            <width>180</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="4">
+         <widget class="QPushButton" name="pushButton_explore">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>180</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Trigger Network Search</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLCDNumber" name="lcdNumber_voltage">
+          <property name="font">
+           <font>
+            <family>DejaVu Sans Mono</family>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Box</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="segmentStyle">
+           <enum>QLCDNumber::Flat</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="4">
+         <widget class="QPushButton" name="pushButton_zoomin">
+          <property name="maximumSize">
+           <size>
+            <width>180</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLCDNumber" name="lcdNumber_light">
+          <property name="font">
+           <font>
+            <family>DejaVu Sans Mono</family>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Box</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="segmentStyle">
+           <enum>QLCDNumber::Flat</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="pushButton_open">
+          <property name="text">
+           <string>Open</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="pushButton_close">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Close</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QPushButton" name="pushButton_reload">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Reload</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4" rowspan="4">
+         <widget class="QPlainTextEdit" name="plainTextEdit_create">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>180</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="tabStopWidth">
+           <number>80</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab2">
+       <attribute name="title">
+        <string>Configure Motes</string>
+       </attribute>
+       <widget class="QPushButton" name="pushButton">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>200</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Open target selection</string>
+        </property>
+       </widget>
+       <widget class="QPlainTextEdit" name="plainTextEdit">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>60</y>
+          <width>200</width>
+          <height>100</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_send">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>160</y>
+          <width>200</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>send cmd</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_send_threshold_ph">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>250</y>
+          <width>200</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>send pH</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_send_threshold_t">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>250</y>
+          <width>100</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>send temp</string>
+        </property>
+       </widget>
+       <widget class="QSlider" name="verticalSlider">
+        <property name="geometry">
+         <rect>
+          <x>280</x>
+          <y>80</y>
+          <width>20</width>
+          <height>170</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>10</number>
+        </property>
+        <property name="maximum">
+         <number>30</number>
+        </property>
+        <property name="sliderPosition">
+         <number>20</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+       <widget class="QLCDNumber" name="lcdNumber_slider">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>60</y>
+          <width>100</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::Box</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="segmentStyle">
+         <enum>QLCDNumber::Flat</enum>
+        </property>
+        <property name="intValue" stdset="0">
+         <number>20</number>
+        </property>
+       </widget>
+       <widget class="QPlainTextEdit" name="plainTextEdit_pH">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>200</y>
+          <width>200</width>
+          <height>50</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
      </widget>
-     <widget class="QPushButton" name="pushButton_reload">
+    </item>
+    <item>
+     <widget class="QLabel" name="label_2">
       <property name="enabled">
        <bool>true</bool>
       </property>
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>50</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <property name="text">
-       <string>Reload</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_create">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>800</x>
-        <y>20</y>
-        <width>180</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Create Node</string>
-      </property>
-     </widget>
-     <widget class="QGraphicsView" name="graphicsView_networkgraph">
-      <property name="geometry">
-       <rect>
-        <x>380</x>
-        <y>20</y>
-        <width>400</width>
-        <height>300</height>
-       </rect>
-      </property>
-      <property name="lineWidth">
-       <number>1</number>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_networkgraph">
-      <property name="geometry">
-       <rect>
-        <x>380</x>
-        <y>20</y>
-        <width>400</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string> Network Tree Visualization. Press button below to init.</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_explore">
-      <property name="geometry">
-       <rect>
-        <x>380</x>
-        <y>330</y>
-        <width>400</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Trigger Network Search ?? FIX</string>
-      </property>
-     </widget>
-     <widget class="QPlainTextEdit" name="plainTextEdit_create">
-      <property name="geometry">
-       <rect>
-        <x>800</x>
-        <y>50</y>
-        <width>180</width>
-        <height>100</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_zoomin">
-      <property name="geometry">
-       <rect>
-        <x>800</x>
-        <y>160</y>
-        <width>89</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>+</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_zoomout">
-      <property name="geometry">
-       <rect>
-        <x>800</x>
-        <y>190</y>
-        <width>89</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>-</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tab2">
-     <attribute name="title">
-      <string>Configure Motes</string>
-     </attribute>
-     <widget class="QPushButton" name="pushButton">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>20</y>
-        <width>200</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Open target selection</string>
-      </property>
-     </widget>
-     <widget class="QPlainTextEdit" name="plainTextEdit">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>60</y>
-        <width>200</width>
-        <height>100</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_send">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>160</y>
-        <width>200</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>send cmd</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_send_threshold_ph">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>250</y>
-        <width>200</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>send pH</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_send_threshold_t">
-      <property name="geometry">
-       <rect>
-        <x>240</x>
-        <y>250</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>send temp</string>
-      </property>
-     </widget>
-     <widget class="QSlider" name="verticalSlider">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>80</y>
-        <width>20</width>
-        <height>170</height>
-       </rect>
-      </property>
-      <property name="minimum">
-       <number>10</number>
-      </property>
-      <property name="maximum">
-       <number>30</number>
-      </property>
-      <property name="sliderPosition">
-       <number>20</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-     </widget>
-     <widget class="QLCDNumber" name="lcdNumber_slider">
-      <property name="geometry">
-       <rect>
-        <x>240</x>
-        <y>60</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
+      <property name="font">
+       <font>
+        <family>DejaVu Sans Mono</family>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
+       <enum>QFrame::Sunken</enum>
       </property>
-      <property name="segmentStyle">
-       <enum>QLCDNumber::Flat</enum>
-      </property>
-      <property name="intValue" stdset="0">
-       <number>20</number>
+      <property name="text">
+       <string>Mote output $$$</string>
       </property>
      </widget>
-     <widget class="QPlainTextEdit" name="plainTextEdit_pH">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>200</y>
-        <width>200</width>
-        <height>50</height>
-       </rect>
+    </item>
+    <item>
+     <widget class="QTextEdit" name="textEdit_Status">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="inputMethodHints">
+       <set>Qt::ImhNone</set>
       </property>
      </widget>
-    </widget>
-   </widget>
-   <widget class="QTextEdit" name="textEdit_Status">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>410</y>
-      <width>980</width>
-      <height>180</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>410</y>
-      <width>100</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Sunken</enum>
-    </property>
-    <property name="text">
-     <string>Mote output</string>
-    </property>
-   </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

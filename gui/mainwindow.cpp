@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWin
     }
     // Show a hint if no USB ports were found.
     if (ui->comboBox_Interface->count() == 0){
-        ui->textEdit_Status->insertPlainText("No USB ports available.\nConnect a USB device and try again.");
+        ui->textEdit_Status->insertPlainText("No USB ports available.\nConnect a USB device and try again.\n");
     }
 }
 
@@ -85,7 +85,7 @@ void MainWindow::on_pushButton_reload_clicked()
     }
     // Show a hint if no USB ports were found.
     if (ui->comboBox_Interface->count() == 0){
-        ui->textEdit_Status->insertPlainText("No USB ports available.\nConnect a USB device and try again.");
+        ui->textEdit_Status->insertPlainText("No USB ports available.\nConnect a USB device and try again.\n");
     }
 }
 
@@ -114,14 +114,12 @@ void MainWindow::receive()
                                 //adjust to Degrees
                                 value = value / 1000;
                                 printf("%f\n",value);
-                                ui->progressBar_light->setMaximum(40);
                             }
                         }
                     }
 
                     qDebug() << "Var value " << QString::number(value);
                     ui->lcdNumber_light->display(value);
-                    ui->progressBar_light->setValue(static_cast<int>(value));
                 }
                 //this->repaint();    // Update content of window immediately
                 str.clear();
@@ -157,6 +155,11 @@ void MainWindow::create_graph(QStringList InputList)
     for(int i = 0; i<InputList.size()-1; i++) // Iterate all items in header "11:14:7:215:PAYLOAD" -^°°^<<>
     {
         int target_id = InputList[i].toInt();
+
+        if (target_id > n_max){
+            ui->textEdit_Status->setText("Invalid header id. Abort mission\n");
+            break;
+        }
 
         if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)){ // Target node already exists
             qDebug() << "Target node" << target_id << "already exists";
@@ -276,7 +279,7 @@ void MainWindow::on_pushButton_explore_clicked()
     ui->graphicsView_networkgraph->setScene( mScene );
 
     // disable notification text
-    ui->label_networkgraph->setVisible(0);
+    //ui->label_networkgraph->setVisible(0);
 
     // create root node
     QBrush redBrush(Qt::red);
