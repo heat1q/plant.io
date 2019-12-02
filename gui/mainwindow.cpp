@@ -99,27 +99,18 @@ void MainWindow::receive()
             if (ch == '\n'){     // End of line, start decoding
                 str.remove("\n", Qt::CaseSensitive);
                 ui->textEdit_Status->append(str);
-                // [Source 0x8edc, broadcast, RSSI -64]:	Temperature = 25000 mC
                 if (str.contains("Temperature")){
                     double value = 0.0;
                     QStringList list = str.split(":"); // https://doc.qt.io/qt-5/qstring.html#split
-
-
-                    qDebug() << "Str value: " << str;
                     if(!list.isEmpty()){
-                        qDebug() << "List size " << list.size();
                         for (int i=0; i < list.size(); i++){
-                            qDebug() << "List value "<< i <<" "<< list.at(i);
                             if (list.at(i) == "Temperature"){
                                 value = list.at(i+2).toDouble();
                                 //adjust to Degrees
-                                value = value / 1000;
-                                printf("%f\n",value);
+                                value = value / 1000; //printf("%f\n",value);
                             }
                         }
                     }
-
-                    qDebug() << "Var value " << QString::number(value);
                     ui->lcdNumber_light->display(value);
                 }
                 //this->repaint();    // Update content of window immediately
