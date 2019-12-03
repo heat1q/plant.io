@@ -50,6 +50,7 @@ private slots:
     void on_pushButton_explore_clicked();
     void on_pushButton_zoomin_clicked();
     void on_pushButton_zoomout_clicked();
+    void on_pushButton_setmax_clicked();
 };
 
 #endif // MAINWINDOW_H

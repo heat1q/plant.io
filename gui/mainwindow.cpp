@@ -120,10 +120,11 @@ void MainWindow::receive()
 }
 
 const double pi = 3.14159;
-const int n_max = 15;
-static double alpha [n_max];
+const int n_limit = 100; // System cap for # of motes ()
+static int n_max = 15;
 static int count = 0;
-static double node_pos [n_max][3]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos // [3,:] # of outgoing edges
+static double alpha [n_limit];
+static double node_pos [n_limit][3]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos // [3,:] # of outgoing edges
 static double curr_pos [2];
 
 void MainWindow::create_graph(QStringList InputList)
@@ -312,3 +313,11 @@ void MainWindow::reset_graph()
     count = 0;
 }
 
+void MainWindow::on_pushButton_setmax_clicked()
+{
+    QString Input = ui->plainTextEdit_setmax->toPlainText();
+    if(Input.toInt()<n_limit){
+        n_max = Input.toInt();
+    }
+    else{ui->textEdit_Status->insertPlainText("Please choose a value below " + Input + ".\n");}
+}
