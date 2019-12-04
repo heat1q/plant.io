@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Group6 WSN Lab Project</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1,2">
@@ -28,132 +28,7 @@
         <property name="horizontalSpacing">
          <number>6</number>
         </property>
-        <item row="6" column="1">
-         <widget class="QLabel" name="label_volt">
-          <property name="text">
-           <string>Voltage</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1">
-         <widget class="QLCDNumber" name="lcdNumber_voltage">
-          <property name="font">
-           <font>
-            <family>DejaVu Sans Mono</family>
-            <weight>75</weight>
-            <italic>true</italic>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::Box</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Plain</enum>
-          </property>
-          <property name="segmentStyle">
-           <enum>QLCDNumber::Flat</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="4">
-         <widget class="QPushButton" name="pushButton_zoomin">
-          <property name="maximumSize">
-           <size>
-            <width>180</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>+</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="pushButton_close">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>Close</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="4">
-         <widget class="QPushButton" name="pushButton_create">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>180</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Create Node</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="4">
-         <widget class="QPushButton" name="pushButton_explore">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>180</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Trigger Network Search</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QPushButton" name="pushButton_reload">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Reload</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="3" rowspan="8">
-         <widget class="QGraphicsView" name="graphicsView_networkgraph">
-          <property name="toolTip">
-           <string> Network Tree Visualization. Press button below to init.</string>
-          </property>
-          <property name="toolTipDuration">
-           <number>3</number>
-          </property>
-          <property name="lineWidth">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="4">
-         <widget class="QPushButton" name="pushButton_zoomout">
-          <property name="maximumSize">
-           <size>
-            <width>180</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>-</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" colspan="3">
-         <widget class="QComboBox" name="comboBox_Interface"/>
-        </item>
-        <item row="7" column="0">
+        <item row="8" column="0">
          <widget class="QLCDNumber" name="lcdNumber_light">
           <property name="font">
            <font>
@@ -174,49 +49,342 @@
           </property>
          </widget>
         </item>
+        <item row="1" column="2">
+         <widget class="QPushButton" name="pushButton_reload">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100000</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Reload</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="pushButton_close">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100000</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Close</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="4">
+         <widget class="QPushButton" name="pushButton_zoomout">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4" rowspan="2">
+         <widget class="QPlainTextEdit" name="plainTextEdit_create">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="plainText">
+           <string>1:2:3:4:5:PAYLOAD</string>
+          </property>
+          <property name="tabStopWidth">
+           <number>80</number>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="4" rowspan="2">
+         <widget class="QPlainTextEdit" name="plainTextEdit_setmax">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>100000</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="plainText">
+           <string>15</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="4">
+         <widget class="QPushButton" name="pushButton_explore">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Trigger Network Search</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3" rowspan="9">
+         <widget class="QGraphicsView" name="graphicsView_networkgraph">
+          <property name="maximumSize">
+           <size>
+            <width>4201337</width>
+            <height>4201337</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string> Network Tree Visualization. Press button below to init.</string>
+          </property>
+          <property name="toolTipDuration">
+           <number>3</number>
+          </property>
+          <property name="lineWidth">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
         <item row="1" column="0">
          <widget class="QPushButton" name="pushButton_open">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100000</width>
+            <height>25</height>
+           </size>
+          </property>
           <property name="text">
            <string>Open</string>
           </property>
          </widget>
         </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="label_light">
-          <property name="text">
-           <string>Temperature</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0" rowspan="3" colspan="3">
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="4" rowspan="4">
-         <widget class="QPlainTextEdit" name="plainTextEdit_create">
+        <item row="3" column="4">
+         <widget class="QPushButton" name="pushButton_setmax">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
-            <width>180</width>
+            <width>200</width>
             <height>16777215</height>
            </size>
           </property>
-          <property name="tabStopWidth">
-           <number>80</number>
+          <property name="baseSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Set maximum 
+amount of motes</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="1">
+         <widget class="QLCDNumber" name="lcdNumber_voltage">
+          <property name="font">
+           <font>
+            <family>DejaVu Sans Mono</family>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Box</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="segmentStyle">
+           <enum>QLCDNumber::Flat</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLabel" name="label_volt">
+          <property name="text">
+           <string>Voltage</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="4">
+         <widget class="QPushButton" name="pushButton_zoomin">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QPushButton" name="pushButton_create">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Create Node</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="3">
+         <widget class="QComboBox" name="comboBox_Interface">
+          <property name="maximumSize">
+           <size>
+            <width>100000</width>
+            <height>25</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="label_light">
+          <property name="text">
+           <string>Temperature</string>
           </property>
          </widget>
         </item>
@@ -304,6 +472,12 @@
         </item>
         <item row="0" column="2">
          <widget class="QLCDNumber" name="lcdNumber_slider">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="frameShape">
            <enum>QFrame::Box</enum>
           </property>
@@ -388,6 +562,24 @@
      <widget class="QTextEdit" name="textEdit_Status">
       <property name="enabled">
        <bool>true</bool>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>150</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>1000000</width>
+        <height>150</height>
+       </size>
       </property>
       <property name="inputMethodHints">
        <set>Qt::ImhNone</set>
