@@ -5,4 +5,4 @@
 
 struct process p_serial;
 
-static void parse_serial_input(const char* input);
+void parse_serial_input(char* input);

@@ -1,4 +1,5 @@
 #include "serial.h"
+#include "routing.h"
 
 PROCESS(p_serial, "Serial Event listener");
 PROCESS_THREAD(p_serial, ev, data)
@@ -12,7 +13,7 @@ PROCESS_THREAD(p_serial, ev, data)
 
         if (ev == serial_line_event_message)
         {
-            parse_serial_input((const char *)data);
+            parse_serial_input((char *)data);
         }
     }
     PROCESS_END();
@@ -23,7 +24,7 @@ PROCESS_THREAD(p_serial, ev, data)
  * 
  * @param input 
  */
-static void parse_serial_input(const char *input)
+void parse_serial_input(char *input)
 {
     printf("Serial Input Received :: %s \r\n", input);
     //format ID:TASK:ARGS
@@ -66,6 +67,6 @@ static void parse_serial_input(const char *input)
     {
         // start network discovery
         leds_off(LEDS_ALL);
-        //init_network();
+        init_network();
     }
 }
