@@ -321,3 +321,29 @@ void MainWindow::on_pushButton_setmax_clicked()
     }
     else{ui->textEdit_Status->insertPlainText("Please choose a value below " + Input + ".\n");}
 }
+
+void MainWindow::make_plot()
+{
+    //generate data:
+    QVector<double> x(101),y(101);
+    for (int i = 0; i < 101; ++i) {
+        x[i] = i/50.0 - 1;
+        y[i] = x[i]*x[i];
+    }
+
+    //create graph and assign data to it
+    ui->customPlot->addGraph();
+    ui->customPlot->graph(0)->setData(x,y);
+    ui->customPlot->xAxis->setLabel("x");
+    ui->customPlot->yAxis->setLabel("y");
+    ui->customPlot->xAxis->setRange(-1,1);
+    ui->customPlot->yAxis->setRange(0,1);
+    ui->customPlot->replot();
+}
+
+
+
+void MainWindow::on_pushButton_creategraph_clicked()
+{
+    MainWindow::make_plot();
+}

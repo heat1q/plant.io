@@ -35,6 +35,7 @@ private:
     QGraphicsScene* mScene;
     void reset_graph();
     void create_graph(QStringList List);
+    void make_plot();
 
 private slots:
     void on_pushButton_close_clicked();
@@ -51,6 +52,7 @@ private slots:
     void on_pushButton_zoomin_clicked();
     void on_pushButton_zoomout_clicked();
     void on_pushButton_setmax_clicked();
+    void on_pushButton_creategraph_clicked();
 };
 
 #endif // MAINWINDOW_H
