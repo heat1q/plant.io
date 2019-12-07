@@ -120,11 +120,11 @@ void MainWindow::receive()
 }
 
 const double pi = 3.14159;
-const int n_limit = 100; // System cap for # of motes ()
+const int n_limit = 100;
 static int n_max = 15;
 static int count = 0;
-static double alpha [n_limit];
 static double node_pos [n_limit][3]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos // [3,:] # of outgoing edges
+static QVector<double> alpha;
 static double curr_pos [2];
 
 void MainWindow::create_graph(QStringList InputList)
@@ -142,14 +142,14 @@ void MainWindow::create_graph(QStringList InputList)
     count++;
     //QRandomGenerator randomGen;
 
-    double x,y,x_offset,y_offset;
-    const double circle_radius=10*n_max;
+    double x,y,x_offset,y_offset,len,new_length,new_alpha;
+    double circle_radius=10*n_max;
 
-    for(int i = 0; i<InputList.size()-1; i++) // Iterate all items in header "11:14:7:215:PAYLOAD" -^°°^<<>
+    for(int i = 0; i<InputList.size()-1; i++) // Iterate all items in header "11:14:7:215:PAYLOAD"
     {
         int target_id = InputList[i].toInt();
 
-        if (target_id > n_max){
+        if (target_id >= n_max){ // doesn't check if header data is valid. invalid = 0. fix!?
             ui->textEdit_Status->insertPlainText("Invalid header id. Abort mission\n");
             break;
         }
@@ -157,20 +157,22 @@ void MainWindow::create_graph(QStringList InputList)
         if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)){ // Target node already exists
             qDebug() << "Target node" << target_id << "already exists";
         }
+
         else{ // target node doesn't exist
+            // increment outgoing edge counter
+            node_pos[curr_id][2] += 1;
+
             // calculate new node position
             if (i==0){ // first ring
-                x = cos(alpha[target_id]);
-                y = sin(alpha[target_id]);
+                x = cos(alpha.at(target_id));
+                y = sin(alpha.at(target_id));
                 x_offset = x*circle_radius;
                 y_offset = y*circle_radius;
             }
             else{ // ring 2 and above
-
-                double len = sqrt(pow(curr_pos[0],2)+pow(curr_pos[1],2));
-                double new_length = len+circle_radius;
-                double new_alpha = atan2(curr_pos[1] , curr_pos[0]) + (node_pos[curr_id][2]-1) / double(n_max*3*i) * 2*pi;
-
+                len = sqrt(pow(curr_pos[0],2)+pow(curr_pos[1],2));
+                new_length = len+circle_radius;
+                new_alpha = atan2(curr_pos[1],curr_pos[0]) + (node_pos[curr_id][2]-1) / double(n_max*3*i) * 2*pi;
                 x_offset = new_length*cos(new_alpha)-curr_pos[0];
                 y_offset = new_length*sin(new_alpha)-curr_pos[1];
             }
@@ -187,9 +189,6 @@ void MainWindow::create_graph(QStringList InputList)
             if (target_id < 10){ text->setPos(node_pos[target_id][0] +2-10, node_pos[target_id][1] -2-10); } // One-digit numbers format
             else{ text->setPos(node_pos[target_id][0] -3-10, node_pos[target_id][1] -2-10); } // Two-digit numbers format
         }
-
-        // increment outgoing edge counter
-        node_pos[curr_id][2] += 1;
 
         // add node edges without cutting into node circle
         double x_delta = node_pos[target_id][0]-curr_pos[0];
@@ -284,11 +283,11 @@ void MainWindow::on_pushButton_explore_clicked()
     ui->pushButton_create->setEnabled(true);
 
     // reset graph
-    MainWindow::reset_graph();
+    reset_graph();
 
     for (int i = 0; i < n_max; ++i) {
-        alpha[i] = i / double(n_max) * 2 * pi; // devide circle angles into n_max equally spaced values
-        //qDebug() << alpha[i];
+        alpha.insert(i, i / double(n_max) * 2 * pi); // devide circle angles into n_max equally spaced values
+        qDebug() << alpha.at(i) << alpha.size();
     }
 }
 
@@ -308,6 +307,9 @@ void MainWindow::reset_graph()
     for (int row = 0; row < n_max; ++row) // step through the rows in the array
         for (int col = 0; col < 3; ++col) // step through each element in the row
             node_pos[row][col] = 0;
+
+    // reset alpha
+    alpha.clear();
 
     // reset count
     count = 0;
@@ -341,9 +343,7 @@ void MainWindow::make_plot()
     ui->customPlot->replot();
 }
 
-
-
 void MainWindow::on_pushButton_creategraph_clicked()
 {
-    MainWindow::make_plot();
+    make_plot();
 }

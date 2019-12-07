@@ -519,7 +519,7 @@ amount of motes</string>
       </widget>
       <widget class="QWidget" name="tab3">
        <attribute name="title">
-        <string>Page</string>
+        <string>Plot Sensor Data</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="2">
