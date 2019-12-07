@@ -504,11 +504,44 @@ maker xd xd</string>
         <attribute name="title">
          <string>Configure Motes</string>
         </attribute>
-        <layout class="QGridLayout" name="gridLayout_tab3" columnstretch="0,0,0,0">
+        <layout class="QGridLayout" name="gridLayout_tab3" columnstretch="0,0,0,0,0,0">
          <property name="sizeConstraint">
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
+         <item row="12" column="5">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_6"/>
+         </item>
+         <item row="8" column="0" colspan="3">
+          <widget class="QPushButton" name="pushButton_4">
+           <property name="text">
+            <string>Set Min and Max Temperature</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3" colspan="3">
+          <widget class="QComboBox" name="comboBox_config">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
          <item row="6" column="0">
+          <widget class="QPushButton" name="pushButton_send_threshold_ph">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>100000</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>send pH</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
           <widget class="QPushButton" name="pushButton_send">
            <property name="maximumSize">
             <size>
@@ -521,23 +554,60 @@ maker xd xd</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="3" rowspan="9">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
+         <item row="2" column="3" colspan="3">
+          <widget class="QTextEdit" name="textEdit_test"/>
          </item>
-         <item row="8" column="2">
+         <item row="9" column="0" colspan="3">
+          <widget class="QPushButton" name="pushButton_3">
+           <property name="text">
+            <string>Set Min and Max Humidity</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="3" colspan="3">
           <widget class="QPushButton" name="pushButton_send_threshold_t">
            <property name="text">
             <string>send temp</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" rowspan="2">
+          <widget class="QPlainTextEdit" name="plainTextEdit">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>100000</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="3" colspan="2">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_5"/>
+         </item>
+         <item row="8" column="3" colspan="2">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+         </item>
+         <item row="12" column="0" colspan="3">
+          <widget class="QPushButton" name="pushButton_2">
+           <property name="text">
+            <string>Set Min and Max Light</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="3" colspan="3">
+          <widget class="QPushButton" name="pushButton_test">
+           <property name="text">
+            <string>test</string>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="5">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_4"/>
+         </item>
+         <item row="1" column="3" colspan="3">
+          <widget class="QPushButton" name="pushButton_refresh">
+           <property name="text">
+            <string>Refresh </string>
            </property>
           </widget>
          </item>
@@ -554,7 +624,10 @@ maker xd xd</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
+         <item row="8" column="5">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+         </item>
+         <item row="5" column="0">
           <widget class="QPlainTextEdit" name="plainTextEdit_pH">
            <property name="maximumSize">
             <size>
@@ -564,7 +637,10 @@ maker xd xd</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="2" rowspan="7">
+         <item row="9" column="3" colspan="2">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
+         </item>
+         <item row="1" column="1" rowspan="5">
           <widget class="QSlider" name="verticalSlider">
            <property name="minimum">
             <number>10</number>
@@ -580,7 +656,7 @@ maker xd xd</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="2">
+         <item row="0" column="1">
           <widget class="QLCDNumber" name="lcdNumber_slider">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -599,29 +675,6 @@ maker xd xd</string>
            </property>
            <property name="intValue" stdset="0">
             <number>20</number>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="0">
-          <widget class="QPushButton" name="pushButton_send_threshold_ph">
-           <property name="maximumSize">
-            <size>
-             <width>200</width>
-             <height>100000</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>send pH</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QPlainTextEdit" name="plainTextEdit">
-           <property name="maximumSize">
-            <size>
-             <width>200</width>
-             <height>100000</height>
-            </size>
            </property>
           </widget>
          </item>
@@ -695,13 +748,7 @@ maker xd xd</string>
   <tabstop>pushButton_open</tabstop>
   <tabstop>pushButton_close</tabstop>
   <tabstop>pushButton_reload</tabstop>
-  <tabstop>pushButton</tabstop>
-  <tabstop>plainTextEdit_pH</tabstop>
-  <tabstop>verticalSlider</tabstop>
-  <tabstop>pushButton_send_threshold_ph</tabstop>
   <tabstop>plainTextEdit</tabstop>
-  <tabstop>pushButton_send</tabstop>
-  <tabstop>pushButton_send_threshold_t</tabstop>
  </tabstops>
  <resources/>
  <connections/>

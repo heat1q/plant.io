@@ -318,3 +318,22 @@ void MainWindow::on_pushButton_creategraph_clicked()
 {
     make_plot();
 }
+
+void MainWindow::on_pushButton_refresh_clicked()
+{
+    ui->comboBox_config->clear();
+    for (int i = 0; i < n_max; ++i) {
+        if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
+            QString message = QString::number(i) + ": ID MENS";
+            ui->comboBox_config->insertItem(i, message);
+        }
+    }
+}
+
+void MainWindow::on_pushButton_test_clicked()
+{
+    QString X = ui->comboBox_config->currentText();
+    QStringList Y = X.split(":");
+    QString message = Y[0] + ": ID MENS\n";
+    ui->textEdit_test->insertPlainText(message);
+}
