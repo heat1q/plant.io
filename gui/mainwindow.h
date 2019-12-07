@@ -40,7 +40,6 @@ private:
 private slots:
     void on_pushButton_close_clicked();
     void on_pushButton_open_clicked();
-    void receive();
     void on_pushButton_clicked();
     void on_pushButton_send_clicked();
     void on_verticalSlider_valueChanged(int value);

@@ -90,35 +90,6 @@ void MainWindow::on_pushButton_reload_clicked()
     }
 }
 
-void MainWindow::receive()
-{
-    static QString str;
-        char ch;
-        while (port.getChar(&ch)){
-            str.append(ch);
-            if (ch == '\n'){     // End of line, start decoding
-                str.remove("\n", Qt::CaseSensitive);
-                ui->textEdit_Status->append(str);
-                if (str.contains("Temperature")){
-                    double value = 0.0;
-                    QStringList list = str.split(":"); // https://doc.qt.io/qt-5/qstring.html#split
-                    if(!list.isEmpty()){
-                        for (int i=0; i < list.size(); i++){
-                            if (list.at(i) == "Temperature"){
-                                value = list.at(i+2).toDouble();
-                                //adjust to Degrees
-                                value = value / 1000; //printf("%f\n",value);
-                            }
-                        }
-                    }
-                    ui->lcdNumber_light->display(value);
-                }
-                //this->repaint();    // Update content of window immediately
-                str.clear();
-            }
-        }
-}
-
 const double pi = 3.14159;
 const int n_limit = 100;
 static int n_max = 15;
