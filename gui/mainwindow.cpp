@@ -188,49 +188,10 @@ void MainWindow::on_pushButton_create_clicked()
     MainWindow::create_graph(InputList);
 }
 
-void MainWindow::on_pushButton_clicked()
-// Open new window
-{
-    TargetSettingsWindow page;
-    page.setModal(true);
-    page.exec();
-}
-
-void MainWindow::on_pushButton_send_clicked()
+void MainWindow::send2port(QString Input)
 // Send text field message to port
 {
-    QString command;
-    command = ui->plainTextEdit->toPlainText();
-    command.prepend("0:");
-
-    QByteArray byteArray = command.toLocal8Bit();
-    byteArray.append('\n');
-    port.write(byteArray);
-}
-
-void MainWindow::on_verticalSlider_valueChanged(int value)
-{
-    ui->lcdNumber_slider->display(value);
-}
-
-void MainWindow::on_pushButton_send_threshold_t_clicked()
-{
-    double slider_value = ui->lcdNumber_slider->value();
-    QString str = QString::number(slider_value);
-    str.prepend("0:temp:");
-
-    QByteArray byteArray = str.toLocal8Bit();
-    byteArray.append('\n');
-    port.write(byteArray);
-}
-
-void MainWindow::on_pushButton_send_threshold_ph_clicked()
-{
-    QString pH;
-    pH = ui->plainTextEdit_pH->toPlainText();
-    pH.prepend("0:ph:");
-
-    QByteArray byteArray = pH.toLocal8Bit();
+    QByteArray byteArray = Input.toLocal8Bit();
     byteArray.append('\n');
     port.write(byteArray);
 }
@@ -291,6 +252,7 @@ void MainWindow::on_pushButton_setmax_clicked()
     QString Input = ui->plainTextEdit_setmax->toPlainText();
     if(Input.toInt()<n_limit){
         n_max = Input.toInt();
+        on_pushButton_explore_clicked();
     }
     else{ui->textEdit_Status->insertPlainText("Please choose a value below " + Input + ".\n");}
 }
@@ -324,7 +286,7 @@ void MainWindow::on_pushButton_refresh_clicked()
     ui->comboBox_config->clear();
     for (int i = 0; i < n_max; ++i) {
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
-            QString message = QString::number(i) + ": ID MENS";
+            QString message = QString::number(i) + ": ID NUMBER";
             ui->comboBox_config->insertItem(i, message);
         }
     }
@@ -334,6 +296,6 @@ void MainWindow::on_pushButton_test_clicked()
 {
     QString X = ui->comboBox_config->currentText();
     QStringList Y = X.split(":");
-    QString message = Y[0] + ": ID MENS\n";
+    QString message = Y[0] + ": ID NUMERO\n";
     ui->textEdit_test->insertPlainText(message);
 }

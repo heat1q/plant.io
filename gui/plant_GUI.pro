@@ -12,15 +12,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-        qcustomplot.cpp \
-        targetsettingswindow.cpp
+        qcustomplot.cpp
 
 HEADERS  += mainwindow.h \
-    qcustomplot.h \
-    targetsettingswindow.h
+    qcustomplot.h
 
-FORMS    += mainwindow.ui \
-    targetsettingswindow.ui
+FORMS    += mainwindow.ui
 
 # include QextSerialPort
 include(qextserialport/src/qextserialport.pri)

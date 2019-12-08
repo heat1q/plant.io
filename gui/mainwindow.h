@@ -10,7 +10,6 @@
 #include <QVarLengthArray>
 #include <qdebug.h>
 #include <math.h>
-#include "targetsettingswindow.h"
 #include "qextserialport.h"
 #include "qextserialenumerator.h"
 #include "ui_mainwindow.h"
@@ -36,15 +35,11 @@ private:
     void reset_graph();
     void create_graph(QStringList List);
     void make_plot();
+    void send2port(QString Input);
 
 private slots:
     void on_pushButton_close_clicked();
     void on_pushButton_open_clicked();
-    void on_pushButton_clicked();
-    void on_pushButton_send_clicked();
-    void on_verticalSlider_valueChanged(int value);
-    void on_pushButton_send_threshold_t_clicked();
-    void on_pushButton_send_threshold_ph_clicked();
     void on_pushButton_reload_clicked();
     void on_pushButton_create_clicked();
     void on_pushButton_explore_clicked();
