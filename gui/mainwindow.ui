@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>610</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -508,14 +508,14 @@ maker xd xd</string>
          <property name="sizeConstraint">
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
-         <item row="4" column="0" colspan="6">
-          <widget class="QPushButton" name="pushButton_test">
-           <property name="text">
-            <string>test</string>
+         <item row="14" column="3">
+          <widget class="QLCDNumber" name="lcdNumber_MaxHum">
+           <property name="segmentStyle">
+            <enum>QLCDNumber::Flat</enum>
            </property>
           </widget>
          </item>
-         <item row="6" column="5">
+         <item row="8" column="3">
           <widget class="QDoubleSpinBox" name="doubleSpinBox_MaxHum">
            <property name="maximumSize">
             <size>
@@ -525,18 +525,8 @@ maker xd xd</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="0" colspan="6">
-          <widget class="QTextEdit" name="textEdit_test">
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>100</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="4">
-          <widget class="QDoubleSpinBox" name="doubleSpinBox_MinTemp">
+         <item row="8" column="4">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_MinLight">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -545,8 +535,30 @@ maker xd xd</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="0" colspan="4">
-          <widget class="QPushButton" name="pushButton_2">
+         <item row="0" column="0" colspan="6">
+          <widget class="QLabel" name="label_Step1">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+             <weight>75</weight>
+             <italic>false</italic>
+             <bold>true</bold>
+             <underline>false</underline>
+            </font>
+           </property>
+           <property name="text">
+            <string>Step 1: List of available devices: Please select a target device to configure.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="label_3">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -554,14 +566,33 @@ maker xd xd</string>
             </size>
            </property>
            <property name="text">
-            <string>Set Min and Max Light</string>
+            <string>Min</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="0" colspan="6">
-          <widget class="QPushButton" name="pushButton_refresh">
+         <item row="4" column="0" colspan="6">
+          <widget class="QLabel" name="label_Step2">
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+             <weight>75</weight>
+             <italic>false</italic>
+             <bold>true</bold>
+             <underline>false</underline>
+            </font>
+           </property>
            <property name="text">
-            <string>Refresh device list</string>
+            <string>Step 2: Set the desired thresholds.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="5">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_MaxLight">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -573,10 +604,16 @@ maker xd xd</string>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="accessibleName">
+            <string/>
+           </property>
           </widget>
          </item>
-         <item row="5" column="0" colspan="4">
-          <widget class="QPushButton" name="pushButton_4">
+         <item row="7" column="5">
+          <widget class="QLabel" name="label_8">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -584,11 +621,81 @@ maker xd xd</string>
             </size>
            </property>
            <property name="text">
-            <string>Set Min and Max Temperature</string>
+            <string>Max</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="5">
+         <item row="15" column="4" colspan="2">
+          <widget class="QPushButton" name="pushButton_SendLight">
+           <property name="text">
+            <string>Send Light Thresholds</string>
+           </property>
+          </widget>
+         </item>
+         <item row="14" column="2">
+          <widget class="QLCDNumber" name="lcdNumber_MinHum">
+           <property name="segmentStyle">
+            <enum>QLCDNumber::Flat</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="4" colspan="2">
+          <widget class="QPushButton" name="pushButton_SetLight">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Set Light Thresholds</string>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="0" colspan="6">
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>50</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="15" column="2" colspan="2">
+          <widget class="QPushButton" name="pushButton_SendHum">
+           <property name="text">
+            <string>Send Humidity Thresholds</string>
+           </property>
+          </widget>
+         </item>
+         <item row="14" column="4">
+          <widget class="QLCDNumber" name="lcdNumber_MinLight">
+           <property name="segmentStyle">
+            <enum>QLCDNumber::Flat</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0" colspan="2">
+          <widget class="QPushButton" name="pushButton_SetTemp">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Set Temperature Thresholds</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="1">
           <widget class="QDoubleSpinBox" name="doubleSpinBox_MaxTemp">
            <property name="maximumSize">
             <size>
@@ -598,8 +705,64 @@ maker xd xd</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="5">
-          <widget class="QDoubleSpinBox" name="doubleSpinBox_MaxLight">
+         <item row="7" column="1">
+          <widget class="QLabel" name="label_4">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Max</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" colspan="6">
+          <widget class="QPushButton" name="pushButton_refresh">
+           <property name="text">
+            <string>Refresh Device List</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="0" colspan="6">
+          <widget class="QLabel" name="label_Step3">
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+             <weight>75</weight>
+             <italic>false</italic>
+             <bold>true</bold>
+             <underline>false</underline>
+            </font>
+           </property>
+           <property name="text">
+            <string>Step 3: Check the values and send them to the specified target.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="2">
+          <widget class="QLabel" name="label_5">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Min</string>
+           </property>
+          </widget>
+         </item>
+         <item row="14" column="1">
+          <widget class="QLCDNumber" name="lcdNumber_MaxTemp">
+           <property name="segmentStyle">
+            <enum>QLCDNumber::Flat</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_MinTemp">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -608,7 +771,54 @@ maker xd xd</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="4">
+         <item row="14" column="5">
+          <widget class="QLCDNumber" name="lcdNumber_MaxLight">
+           <property name="segmentStyle">
+            <enum>QLCDNumber::Flat</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="15" column="0" colspan="2">
+          <widget class="QPushButton" name="pushButton_SendTemp">
+           <property name="text">
+            <string>Send Temperature Thresholds</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="2" colspan="2">
+          <widget class="QPushButton" name="pushButton_SetHum">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Set Humidity Thresholds</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="4">
+          <widget class="QLabel" name="label_7">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Min</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0" colspan="6">
+          <widget class="QPushButton" name="pushButton_SetAll">
+           <property name="text">
+            <string>Set All Thesholds</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="2">
           <widget class="QDoubleSpinBox" name="doubleSpinBox_MinHum">
            <property name="maximumSize">
             <size>
@@ -618,18 +828,8 @@ maker xd xd</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="4">
-          <widget class="QDoubleSpinBox" name="doubleSpinBox_MinLight">
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0" colspan="4">
-          <widget class="QPushButton" name="pushButton_3">
+         <item row="7" column="3">
+          <widget class="QLabel" name="label_6">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -637,20 +837,37 @@ maker xd xd</string>
             </size>
            </property>
            <property name="text">
-            <string>Set Min and Max Humidity</string>
+            <string>Max</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="0" colspan="6">
-          <widget class="QLabel" name="label_2">
-           <property name="maximumSize">
+         <item row="16" column="0" colspan="6">
+          <widget class="QPushButton" name="pushButton_SendAll">
+           <property name="text">
+            <string>Send All</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="6">
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
             <size>
-             <width>16777215</width>
-             <height>30</height>
+             <width>20</width>
+             <height>50</height>
             </size>
            </property>
-           <property name="text">
-            <string>List of available devices: Please select a device to configure.</string>
+          </spacer>
+         </item>
+         <item row="14" column="0">
+          <widget class="QLCDNumber" name="lcdNumber_MinTemp">
+           <property name="segmentStyle">
+            <enum>QLCDNumber::Flat</enum>
            </property>
           </widget>
          </item>

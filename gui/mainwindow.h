@@ -48,7 +48,11 @@ private slots:
     void on_pushButton_setmax_clicked();
     void on_pushButton_creategraph_clicked();
     void on_pushButton_refresh_clicked();
-    void on_pushButton_test_clicked();
+    void on_pushButton_SetTemp_clicked();
+    void on_pushButton_SetHum_clicked();
+    void on_pushButton_SetLight_clicked();
+    void on_pushButton_SetAll_clicked();
+    void on_comboBox_config_currentTextChanged(const QString &arg1);
 };
 
 #endif // MAINWINDOW_H

@@ -254,7 +254,7 @@ void MainWindow::on_pushButton_setmax_clicked()
         n_max = Input.toInt();
         on_pushButton_explore_clicked();
     }
-    else{ui->textEdit_Status->insertPlainText("Please choose a value below " + Input + ".\n");}
+    else{ui->textEdit_Status->insertPlainText("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
 
 void MainWindow::make_plot()
@@ -287,15 +287,47 @@ void MainWindow::on_pushButton_refresh_clicked()
     for (int i = 0; i < n_max; ++i) {
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
             QString message = QString::number(i) + ": ID NUMBER";
-            ui->comboBox_config->insertItem(i, message);
+            ui->comboBox_config->addItem(message);
         }
     }
+    if (ui->comboBox_config->count()>1){
+        ui->comboBox_config->addItem("ALL AVAILABLE NODES");
+    }
+
 }
 
-void MainWindow::on_pushButton_test_clicked()
+void MainWindow::on_pushButton_SetTemp_clicked()
 {
-    QString X = ui->comboBox_config->currentText();
-    QStringList Y = X.split(":");
-    QString message = Y[0] + ": ID NUMERO\n";
-    ui->textEdit_test->insertPlainText(message);
+    double minTemp = ui->doubleSpinBox_MinTemp->value();
+    ui->lcdNumber_MinTemp->display(minTemp);
+    double maxTemp = ui->doubleSpinBox_MaxTemp->value();
+    ui->lcdNumber_MaxTemp->display(maxTemp);
+}
+
+void MainWindow::on_pushButton_SetHum_clicked()
+{
+    double minHum = ui->doubleSpinBox_MinHum->value();
+    ui->lcdNumber_MinHum->display(minHum);
+    double maxHum = ui->doubleSpinBox_MaxHum->value();
+    ui->lcdNumber_MaxHum->display(maxHum);
+}
+
+void MainWindow::on_pushButton_SetLight_clicked()
+{
+    double minLight = ui->doubleSpinBox_MinLight->value();
+    ui->lcdNumber_MinLight->display(minLight);
+    double maxLight = ui->doubleSpinBox_MaxLight->value();
+    ui->lcdNumber_MaxLight->display(maxLight);
+}
+
+void MainWindow::on_pushButton_SetAll_clicked()
+{
+    on_pushButton_SetTemp_clicked();
+    on_pushButton_SetHum_clicked();
+    on_pushButton_SetLight_clicked();
+}
+
+void MainWindow::on_comboBox_config_currentTextChanged(const QString &arg1)
+{
+    ui->textEdit_Status->insertPlainText(arg1+"\n");
 }
