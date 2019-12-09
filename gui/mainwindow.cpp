@@ -37,7 +37,7 @@ void MainWindow::changeEvent(QEvent *e)
     }
 }
 
-void MainWindow::on_pushButton_open_clicked()
+void MainWindow::on_pushButton_Open_clicked()
 {
     port.setQueryMode(QextSerialPort::EventDriven);
     port.setPortName("/dev/" + ui->comboBox_Interface->currentText());
@@ -57,20 +57,20 @@ void MainWindow::on_pushButton_open_clicked()
 
     QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
 
-    ui->pushButton_close->setEnabled(true);
-    ui->pushButton_open->setEnabled(false);
+    ui->pushButton_Close->setEnabled(true);
+    ui->pushButton_Open->setEnabled(false);
     ui->comboBox_Interface->setEnabled(false);
 }
 
-void MainWindow::on_pushButton_close_clicked()
+void MainWindow::on_pushButton_Close_clicked()
 {
     if (port.isOpen())port.close();
-    ui->pushButton_close->setEnabled(false);
-    ui->pushButton_open->setEnabled(true);
+    ui->pushButton_Close->setEnabled(false);
+    ui->pushButton_Open->setEnabled(true);
     ui->comboBox_Interface->setEnabled(true);
 }
 
-void MainWindow::on_pushButton_reload_clicked()
+void MainWindow::on_pushButton_Reload_clicked()
 {
     // Get all available COM Ports and store them in a QList.
     ui->comboBox_Interface->clear();
@@ -180,10 +180,10 @@ void MainWindow::create_graph(QStringList InputList)
     }
 }
 
-void MainWindow::on_pushButton_create_clicked()
+void MainWindow::on_pushButton_CreateRoute_clicked()
 // test button for graph
 {
-    QString Input = ui->plainTextEdit_create->toPlainText();
+    QString Input = ui->plainTextEdit_Create->toPlainText();
     QStringList InputList = Input.split(":");
     MainWindow::create_graph(InputList);
 }
@@ -196,11 +196,11 @@ void MainWindow::send2port(QString Input)
     port.write(byteArray);
 }
 
-void MainWindow::on_pushButton_explore_clicked()
+void MainWindow::on_pushButton_Explore_clicked()
 {
     // create networkgraph
     mScene = new QGraphicsScene();
-    ui->graphicsView_networkgraph->setScene( mScene );
+    ui->graphicsView_Networkgraph->setScene( mScene );
 
     // disable notification text
     //ui->label_networkgraph->setVisible(0);
@@ -212,7 +212,7 @@ void MainWindow::on_pushButton_explore_clicked()
     mScene->addEllipse(-10,-10,20,20,blackPen,redBrush);
 
     // enable node creation button
-    ui->pushButton_create->setEnabled(true);
+    ui->pushButton_CreateRoute->setEnabled(true);
 
     // reset graph
     reset_graph();
@@ -223,14 +223,14 @@ void MainWindow::on_pushButton_explore_clicked()
     }
 }
 
-void MainWindow::on_pushButton_zoomin_clicked()
+void MainWindow::on_pushButton_ZoomIn_clicked()
 {
-    ui->graphicsView_networkgraph->scale(1.2,1.2);
+    ui->graphicsView_Networkgraph->scale(1.2,1.2);
 }
 
-void MainWindow::on_pushButton_zoomout_clicked()
+void MainWindow::on_pushButton_ZoomOut_clicked()
 {
-    ui->graphicsView_networkgraph->scale(0.8,0.8);
+    ui->graphicsView_Networkgraph->scale(0.8,0.8);
 }
 
 void MainWindow::reset_graph()
@@ -247,12 +247,12 @@ void MainWindow::reset_graph()
     count = 0;
 }
 
-void MainWindow::on_pushButton_setmax_clicked()
+void MainWindow::on_pushButton_SetMax_clicked()
 {
-    QString Input = ui->plainTextEdit_setmax->toPlainText();
+    QString Input = ui->plainTextEdit_SetMax->toPlainText();
     if(Input.toInt()<n_limit){
         n_max = Input.toInt();
-        on_pushButton_explore_clicked();
+        on_pushButton_Explore_clicked();
     }
     else{ui->textEdit_Status->insertPlainText("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
@@ -281,17 +281,17 @@ void MainWindow::on_pushButton_creategraph_clicked()
     make_plot();
 }
 
-void MainWindow::on_pushButton_refresh_clicked()
+void MainWindow::on_pushButton_Refresh_clicked()
 {
-    ui->comboBox_config->clear();
+    ui->comboBox_Config->clear();
     for (int i = 0; i < n_max; ++i) {
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
             QString message = QString::number(i) + ": ID NUMBER";
-            ui->comboBox_config->addItem(message);
+            ui->comboBox_Config->addItem(message);
         }
     }
-    if (ui->comboBox_config->count()>1){
-        ui->comboBox_config->addItem("ALL AVAILABLE NODES");
+    if (ui->comboBox_Config->count()>1){
+        ui->comboBox_Config->addItem("ALL AVAILABLE NODES");
     }
 
 }
@@ -327,7 +327,7 @@ void MainWindow::on_pushButton_SetAll_clicked()
     on_pushButton_SetLight_clicked();
 }
 
-void MainWindow::on_comboBox_config_currentTextChanged(const QString &arg1)
+void MainWindow::on_comboBox_Config_currentTextChanged(const QString &arg1)
 {
     ui->textEdit_Status->insertPlainText(arg1+"\n");
 }

@@ -38,21 +38,21 @@ private:
     void send2port(QString Input);
 
 private slots:
-    void on_pushButton_close_clicked();
-    void on_pushButton_open_clicked();
-    void on_pushButton_reload_clicked();
-    void on_pushButton_create_clicked();
-    void on_pushButton_explore_clicked();
-    void on_pushButton_zoomin_clicked();
-    void on_pushButton_zoomout_clicked();
-    void on_pushButton_setmax_clicked();
+    void on_pushButton_Close_clicked();
+    void on_pushButton_Open_clicked();
+    void on_pushButton_Reload_clicked();
+    void on_pushButton_CreateRoute_clicked();
+    void on_pushButton_Explore_clicked();
+    void on_pushButton_ZoomIn_clicked();
+    void on_pushButton_ZoomOut_clicked();
+    void on_pushButton_SetMax_clicked();
     void on_pushButton_creategraph_clicked();
-    void on_pushButton_refresh_clicked();
+    void on_pushButton_Refresh_clicked();
     void on_pushButton_SetTemp_clicked();
     void on_pushButton_SetHum_clicked();
     void on_pushButton_SetLight_clicked();
     void on_pushButton_SetAll_clicked();
-    void on_comboBox_config_currentTextChanged(const QString &arg1);
+    void on_comboBox_Config_currentTextChanged(const QString &arg1);
 };
 
 #endif // MAINWINDOW_H

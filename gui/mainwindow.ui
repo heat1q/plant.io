@@ -54,7 +54,7 @@
         </attribute>
         <layout class="QGridLayout" name="gridLayout_tab1">
          <item row="8" column="0" colspan="3">
-          <widget class="QPushButton" name="pushButton_explore">
+          <widget class="QPushButton" name="pushButton_Explore">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -85,7 +85,7 @@
           </widget>
          </item>
          <item row="3" column="0" colspan="3">
-          <widget class="QPushButton" name="pushButton_create">
+          <widget class="QPushButton" name="pushButton_CreateRoute">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -119,7 +119,7 @@
           </widget>
          </item>
          <item row="4" column="0" colspan="3">
-          <widget class="QPlainTextEdit" name="plainTextEdit_setmax">
+          <widget class="QPlainTextEdit" name="plainTextEdit_SetMax">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -150,7 +150,7 @@
           </widget>
          </item>
          <item row="7" column="0" colspan="3">
-          <widget class="QPushButton" name="pushButton_zoomout">
+          <widget class="QPushButton" name="pushButton_ZoomOut">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -203,7 +203,7 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QPushButton" name="pushButton_open">
+          <widget class="QPushButton" name="pushButton_Open">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -228,7 +228,7 @@
           </widget>
          </item>
          <item row="1" column="2">
-          <widget class="QPushButton" name="pushButton_reload">
+          <widget class="QPushButton" name="pushButton_Reload">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -250,7 +250,7 @@
           </widget>
          </item>
          <item row="6" column="0" colspan="3">
-          <widget class="QPushButton" name="pushButton_zoomin">
+          <widget class="QPushButton" name="pushButton_ZoomIn">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -281,7 +281,7 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QPushButton" name="pushButton_close">
+          <widget class="QPushButton" name="pushButton_Close">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -303,7 +303,7 @@
           </widget>
          </item>
          <item row="2" column="0" colspan="3">
-          <widget class="QPlainTextEdit" name="plainTextEdit_create">
+          <widget class="QPlainTextEdit" name="plainTextEdit_Create">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -337,7 +337,7 @@
           </widget>
          </item>
          <item row="5" column="0" colspan="3">
-          <widget class="QPushButton" name="pushButton_setmax">
+          <widget class="QPushButton" name="pushButton_SetMax">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -369,7 +369,7 @@ amount of motes</string>
           </widget>
          </item>
          <item row="0" column="3" rowspan="9">
-          <widget class="QGraphicsView" name="graphicsView_networkgraph">
+          <widget class="QGraphicsView" name="graphicsView_Networkgraph">
            <property name="minimumSize">
             <size>
              <width>200</width>
@@ -597,7 +597,7 @@ maker xd xd</string>
           </widget>
          </item>
          <item row="1" column="0" colspan="6">
-          <widget class="QComboBox" name="comboBox_config">
+          <widget class="QComboBox" name="comboBox_Config">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -719,7 +719,7 @@ maker xd xd</string>
           </widget>
          </item>
          <item row="2" column="0" colspan="6">
-          <widget class="QPushButton" name="pushButton_refresh">
+          <widget class="QPushButton" name="pushButton_Refresh">
            <property name="text">
             <string>Refresh Device List</string>
            </property>
@@ -927,20 +927,20 @@ maker xd xd</string>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>plainTextEdit_create</tabstop>
-  <tabstop>pushButton_create</tabstop>
-  <tabstop>plainTextEdit_setmax</tabstop>
-  <tabstop>pushButton_setmax</tabstop>
-  <tabstop>pushButton_zoomin</tabstop>
-  <tabstop>pushButton_zoomout</tabstop>
-  <tabstop>pushButton_explore</tabstop>
+  <tabstop>plainTextEdit_Create</tabstop>
+  <tabstop>pushButton_CreateRoute</tabstop>
+  <tabstop>plainTextEdit_SetMax</tabstop>
+  <tabstop>pushButton_SetMax</tabstop>
+  <tabstop>pushButton_ZoomIn</tabstop>
+  <tabstop>pushButton_ZoomOut</tabstop>
+  <tabstop>pushButton_Explore</tabstop>
   <tabstop>textEdit_Status</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>comboBox_Interface</tabstop>
-  <tabstop>graphicsView_networkgraph</tabstop>
-  <tabstop>pushButton_open</tabstop>
-  <tabstop>pushButton_close</tabstop>
-  <tabstop>pushButton_reload</tabstop>
+  <tabstop>graphicsView_Networkgraph</tabstop>
+  <tabstop>pushButton_Open</tabstop>
+  <tabstop>pushButton_Close</tabstop>
+  <tabstop>pushButton_Reload</tabstop>
  </tabstops>
  <resources/>
  <connections/>
