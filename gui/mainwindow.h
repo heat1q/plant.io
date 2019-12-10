@@ -53,6 +53,7 @@ private slots:
     void on_pushButton_SetLight_clicked();
     void on_pushButton_SetAll_clicked();
     void on_comboBox_Config_currentTextChanged(const QString &arg1);
+    void on_pushButton_Debug_clicked();
 };
 
 #endif // MAINWINDOW_H

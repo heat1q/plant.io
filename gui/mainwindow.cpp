@@ -331,3 +331,16 @@ void MainWindow::on_comboBox_Config_currentTextChanged(const QString &arg1)
 {
     ui->textEdit_Status->insertPlainText(arg1+"\n");
 }
+
+
+
+void MainWindow::on_pushButton_Debug_clicked()
+{
+    QString command;
+    command = ui->plainTextEdit_Debug->toPlainText();
+
+    QByteArray byteArray = command.toLocal8Bit();
+
+    byteArray.append('\n');
+    port.write(byteArray);
+}
