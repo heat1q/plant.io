@@ -62,6 +62,53 @@ void MainWindow::on_pushButton_Open_clicked()
     ui->comboBox_Interface->setEnabled(false);
 }
 
+void MainWindow::receive()
+// QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
+{
+    static QString str;
+    char ch;
+    while (port.getChar(&ch))
+    {
+        str.append(ch);
+        if (ch == '\n')     // End of line, start decoding
+        {
+            str.remove("\n", Qt::CaseSensitive);
+            ui->textEdit_Status->append(str);
+
+            /*
+            // [Source 0x8edc, broadcast, RSSI -64]:	Temperature = 25000 mC
+            if (str.contains("Temperature"))
+            {
+
+                double value = 0.0;
+                QStringList list = str.split(QRegExp("\\s"));
+
+                qDebug() << "Str value: " << str;
+                if(!list.isEmpty()){
+                    qDebug() << "List size " << list.size();
+                    for (int i=0; i < list.size(); i++){
+                        qDebug() << "List value "<< i <<" "<< list.at(i);
+                        if (list.at(i) == "Temperature") {
+                            value = list.at(i+2).toDouble();
+                            //adjust to Degrees
+                            value = value / 1000;
+                            printf("%f\n",value);
+                            ui->progressBar_light->setMaximum(40);
+                        }
+                    }
+                }
+
+                qDebug() << "Var value " << QString::number(value);
+                ui->lcdNumber_light->display(value);
+                ui->progressBar_light->setValue((int)value);
+            }
+            */
+            this->repaint();    // Update content of window immediately
+            str.clear();
+        }
+    }
+}
+
 void MainWindow::on_pushButton_Close_clicked()
 {
     if (port.isOpen())port.close();
@@ -74,7 +121,7 @@ void MainWindow::on_pushButton_Reload_clicked()
 {
     // Get all available COM Ports and store them in a QList.
     ui->comboBox_Interface->clear();
-    ui->textEdit_Status->clear();
+    //ui->textEdit_Status->clear();
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
 
     // Read each element on the list, but
@@ -327,13 +374,6 @@ void MainWindow::on_pushButton_SetAll_clicked()
     on_pushButton_SetLight_clicked();
 }
 
-void MainWindow::on_comboBox_Config_currentTextChanged(const QString &arg1)
-{
-    ui->textEdit_Status->insertPlainText(arg1+"\n");
-}
-
-
-
 void MainWindow::on_pushButton_Debug_clicked()
 {
     QString command;
@@ -343,4 +383,62 @@ void MainWindow::on_pushButton_Debug_clicked()
 
     byteArray.append('\n');
     port.write(byteArray);
+}
+
+void MainWindow::on_pushButton_SendTemp_clicked()
+{
+    if (ui->comboBox_Config->count() > 0){
+        double minTemp = ui->lcdNumber_MinTemp->value();
+        double maxTemp = ui->lcdNumber_MaxTemp->value();
+        QString id = ui->comboBox_Config->currentText().at(0);
+        QString cmd = id + ":temp:" + QString::number(minTemp) + ":" + QString::number(maxTemp);
+        QByteArray byteArray = cmd.toLocal8Bit();
+        byteArray.append('\n');
+        port.write(byteArray);
+    }
+}
+
+void MainWindow::on_pushButton_SendHum_clicked()
+{
+    if (ui->comboBox_Config->count() > 0){
+        double minHum = ui->lcdNumber_MinHum->value();
+        double maxHum = ui->lcdNumber_MaxHum->value();
+        QString id = ui->comboBox_Config->currentText().at(0);
+        QString cmd = id + ":hum:" + QString::number(minHum) + ":" + QString::number(maxHum);
+        QByteArray byteArray = cmd.toLocal8Bit();
+        byteArray.append('\n');
+        port.write(byteArray);
+    }
+}
+
+void MainWindow::on_pushButton_SendLight_clicked()
+{
+    if (ui->comboBox_Config->count() > 0){
+        double minLight = ui->lcdNumber_MinLight->value();
+        double maxLight = ui->lcdNumber_MaxLight->value();
+        QString id = ui->comboBox_Config->currentText().at(0);
+        QString cmd = id + ":light:" + QString::number(minLight) + ":" + QString::number(maxLight);
+        QByteArray byteArray = cmd.toLocal8Bit();
+        byteArray.append('\n');
+        port.write(byteArray);
+    }
+}
+
+void MainWindow::on_pushButton_SendAll_clicked()
+{
+    if (ui->comboBox_Config->count() > 0){
+        double minTemp = ui->lcdNumber_MinTemp->value();
+        double maxTemp = ui->lcdNumber_MaxTemp->value();
+        double minHum = ui->lcdNumber_MinHum->value();
+        double maxHum = ui->lcdNumber_MaxHum->value();
+        double minLight = ui->lcdNumber_MinLight->value();
+        double maxLight = ui->lcdNumber_MaxLight->value();
+        QString id = ui->comboBox_Config->currentText().at(0);
+        QString cmd = id + ":all:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
+                + ":" + QString::number(minHum) + ":" + QString::number(maxHum)
+                + ":" + QString::number(minLight) + ":" + QString::number(maxLight);
+        QByteArray byteArray = cmd.toLocal8Bit();
+        byteArray.append('\n');
+        port.write(byteArray);
+    }
 }
