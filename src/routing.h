@@ -12,5 +12,16 @@ struct process p_broadcast; // Broadcast process for Flooding & Network Discover
 
 struct broadcast_conn* plantio_broadcast; // Creates an instance of a broadcast connection.
 
+/**
+ * @brief Callback function for Broadcast.
+ * 
+ * @param broadcast 
+ * @param from 
+ */
 void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from);
+
+/**
+ * @brief Starts the network discovery algorithm.
+ * 
+ */
 void init_network(void);

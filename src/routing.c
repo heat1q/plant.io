@@ -1,5 +1,7 @@
 #include "routing.h"
 
+const struct broadcast_callbacks plantio_broadcast_call = {broadcast_receive};
+
 PROCESS(p_broadcast, "Broadcast Process");
 PROCESS_THREAD(p_broadcast, ev, data)
 {
@@ -9,7 +11,6 @@ PROCESS_THREAD(p_broadcast, ev, data)
     plantio_broadcast = malloc(sizeof(struct broadcast_conn));
 
     // Defines the functions used as callbacks for a broadcast connection.
-    const struct broadcast_callbacks plantio_broadcast_call = {broadcast_receive};
     broadcast_open(plantio_broadcast, 129, &plantio_broadcast_call);
 
     // Wait forever, since we need the broadcast always open
@@ -31,7 +32,9 @@ void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
 
 void init_network(void)
 {
+    leds_on(LEDS_PURPLE);
     packetbuf_copyfrom("Hello", 6);
     broadcast_send(plantio_broadcast);
     printf("Init network\r\n");
+    leds_off(LEDS_PURPLE);
 }
