@@ -1,6 +1,6 @@
 #include "serial.h"
 #include "routing.h"
-//#include "sensors.h"
+#include "mote_sensors.h"
 
 // declare and run the main process
 PROCESS(p_main, "Main process");
@@ -18,7 +18,7 @@ PROCESS_THREAD(p_main, ev, data)
     // start the processes
     process_start(&p_serial, NULL);
     process_start(&p_broadcast, NULL);
-    //process_start(&p_sensors, NULL);
+    process_start(&p_sensors, NULL);
 
     PROCESS_END();
 }
