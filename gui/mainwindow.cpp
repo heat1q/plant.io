@@ -37,7 +37,7 @@ void MainWindow::changeEvent(QEvent *e)
     }
 }
 
-void MainWindow::on_pushButton_open_clicked()
+void MainWindow::on_pushButton_Open_clicked()
 {
     port.setQueryMode(QextSerialPort::EventDriven);
     port.setPortName("/dev/" + ui->comboBox_Interface->currentText());
@@ -57,20 +57,20 @@ void MainWindow::on_pushButton_open_clicked()
 
     QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
 
-    ui->pushButton_close->setEnabled(true);
-    ui->pushButton_open->setEnabled(false);
+    ui->pushButton_Close->setEnabled(true);
+    ui->pushButton_Open->setEnabled(false);
     ui->comboBox_Interface->setEnabled(false);
 }
 
-void MainWindow::on_pushButton_close_clicked()
+void MainWindow::on_pushButton_Close_clicked()
 {
     if (port.isOpen())port.close();
-    ui->pushButton_close->setEnabled(false);
-    ui->pushButton_open->setEnabled(true);
+    ui->pushButton_Close->setEnabled(false);
+    ui->pushButton_Open->setEnabled(true);
     ui->comboBox_Interface->setEnabled(true);
 }
 
-void MainWindow::on_pushButton_reload_clicked()
+void MainWindow::on_pushButton_Reload_clicked()
 {
     // Get all available COM Ports and store them in a QList.
     ui->comboBox_Interface->clear();
@@ -90,41 +90,12 @@ void MainWindow::on_pushButton_reload_clicked()
     }
 }
 
-void MainWindow::receive()
-{
-    static QString str;
-        char ch;
-        while (port.getChar(&ch)){
-            str.append(ch);
-            if (ch == '\n'){     // End of line, start decoding
-                str.remove("\n", Qt::CaseSensitive);
-                ui->textEdit_Status->append(str);
-                if (str.contains("Temperature")){
-                    double value = 0.0;
-                    QStringList list = str.split(":"); // https://doc.qt.io/qt-5/qstring.html#split
-                    if(!list.isEmpty()){
-                        for (int i=0; i < list.size(); i++){
-                            if (list.at(i) == "Temperature"){
-                                value = list.at(i+2).toDouble();
-                                //adjust to Degrees
-                                value = value / 1000; //printf("%f\n",value);
-                            }
-                        }
-                    }
-                    ui->lcdNumber_light->display(value);
-                }
-                //this->repaint();    // Update content of window immediately
-                str.clear();
-            }
-        }
-}
-
 const double pi = 3.14159;
-const int n_limit = 100; // System cap for # of motes ()
+const int n_limit = 100;
 static int n_max = 15;
 static int count = 0;
-static double alpha [n_limit];
 static double node_pos [n_limit][3]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos // [3,:] # of outgoing edges
+static QVector<double> alpha;
 static double curr_pos [2];
 
 void MainWindow::create_graph(QStringList InputList)
@@ -142,14 +113,14 @@ void MainWindow::create_graph(QStringList InputList)
     count++;
     //QRandomGenerator randomGen;
 
-    double x,y,x_offset,y_offset;
-    const double circle_radius=10*n_max;
+    double x,y,x_offset,y_offset,len,new_length,new_alpha;
+    double circle_radius=10*n_max;
 
-    for(int i = 0; i<InputList.size()-1; i++) // Iterate all items in header "11:14:7:215:PAYLOAD" -^°°^<<>
+    for(int i = 0; i<InputList.size()-1; i++) // Iterate all items in header "11:14:7:215:PAYLOAD"
     {
         int target_id = InputList[i].toInt();
 
-        if (target_id > n_max){
+        if (target_id >= n_max){ // doesn't check if header data is valid. invalid = 0. fix!?
             ui->textEdit_Status->insertPlainText("Invalid header id. Abort mission\n");
             break;
         }
@@ -157,20 +128,22 @@ void MainWindow::create_graph(QStringList InputList)
         if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)){ // Target node already exists
             qDebug() << "Target node" << target_id << "already exists";
         }
+
         else{ // target node doesn't exist
+            // increment outgoing edge counter
+            node_pos[curr_id][2] += 1;
+
             // calculate new node position
             if (i==0){ // first ring
-                x = cos(alpha[target_id]);
-                y = sin(alpha[target_id]);
+                x = cos(alpha.at(target_id));
+                y = sin(alpha.at(target_id));
                 x_offset = x*circle_radius;
                 y_offset = y*circle_radius;
             }
             else{ // ring 2 and above
-
-                double len = sqrt(pow(curr_pos[0],2)+pow(curr_pos[1],2));
-                double new_length = len+circle_radius;
-                double new_alpha = atan2(curr_pos[1] , curr_pos[0]) + (node_pos[curr_id][2]-1) / double(n_max*3*i) * 2*pi;
-
+                len = sqrt(pow(curr_pos[0],2)+pow(curr_pos[1],2));
+                new_length = len+circle_radius;
+                new_alpha = atan2(curr_pos[1],curr_pos[0]) + (node_pos[curr_id][2]-1) / double(n_max*3*i) * 2*pi;
                 x_offset = new_length*cos(new_alpha)-curr_pos[0];
                 y_offset = new_length*sin(new_alpha)-curr_pos[1];
             }
@@ -187,9 +160,6 @@ void MainWindow::create_graph(QStringList InputList)
             if (target_id < 10){ text->setPos(node_pos[target_id][0] +2-10, node_pos[target_id][1] -2-10); } // One-digit numbers format
             else{ text->setPos(node_pos[target_id][0] -3-10, node_pos[target_id][1] -2-10); } // Two-digit numbers format
         }
-
-        // increment outgoing edge counter
-        node_pos[curr_id][2] += 1;
 
         // add node edges without cutting into node circle
         double x_delta = node_pos[target_id][0]-curr_pos[0];
@@ -210,66 +180,27 @@ void MainWindow::create_graph(QStringList InputList)
     }
 }
 
-void MainWindow::on_pushButton_create_clicked()
+void MainWindow::on_pushButton_CreateRoute_clicked()
 // test button for graph
 {
-    QString Input = ui->plainTextEdit_create->toPlainText();
+    QString Input = ui->plainTextEdit_Create->toPlainText();
     QStringList InputList = Input.split(":");
     MainWindow::create_graph(InputList);
 }
 
-void MainWindow::on_pushButton_clicked()
-// Open new window
-{
-    TargetSettingsWindow page;
-    page.setModal(true);
-    page.exec();
-}
-
-void MainWindow::on_pushButton_send_clicked()
+void MainWindow::send2port(QString Input)
 // Send text field message to port
 {
-    QString command;
-    command = ui->plainTextEdit->toPlainText();
-    command.prepend("0:");
-
-    QByteArray byteArray = command.toLocal8Bit();
+    QByteArray byteArray = Input.toLocal8Bit();
     byteArray.append('\n');
     port.write(byteArray);
 }
 
-void MainWindow::on_verticalSlider_valueChanged(int value)
-{
-    ui->lcdNumber_slider->display(value);
-}
-
-void MainWindow::on_pushButton_send_threshold_t_clicked()
-{
-    double slider_value = ui->lcdNumber_slider->value();
-    QString str = QString::number(slider_value);
-    str.prepend("0:temp:");
-
-    QByteArray byteArray = str.toLocal8Bit();
-    byteArray.append('\n');
-    port.write(byteArray);
-}
-
-void MainWindow::on_pushButton_send_threshold_ph_clicked()
-{
-    QString pH;
-    pH = ui->plainTextEdit_pH->toPlainText();
-    pH.prepend("0:ph:");
-
-    QByteArray byteArray = pH.toLocal8Bit();
-    byteArray.append('\n');
-    port.write(byteArray);
-}
-
-void MainWindow::on_pushButton_explore_clicked()
+void MainWindow::on_pushButton_Explore_clicked()
 {
     // create networkgraph
     mScene = new QGraphicsScene();
-    ui->graphicsView_networkgraph->setScene( mScene );
+    ui->graphicsView_Networkgraph->setScene( mScene );
 
     // disable notification text
     //ui->label_networkgraph->setVisible(0);
@@ -281,25 +212,25 @@ void MainWindow::on_pushButton_explore_clicked()
     mScene->addEllipse(-10,-10,20,20,blackPen,redBrush);
 
     // enable node creation button
-    ui->pushButton_create->setEnabled(true);
+    ui->pushButton_CreateRoute->setEnabled(true);
 
     // reset graph
-    MainWindow::reset_graph();
+    reset_graph();
 
     for (int i = 0; i < n_max; ++i) {
-        alpha[i] = i / double(n_max) * 2 * pi; // devide circle angles into n_max equally spaced values
-        //qDebug() << alpha[i];
+        alpha.insert(i, i / double(n_max) * 2 * pi); // devide circle angles into n_max equally spaced values
+        qDebug() << alpha.at(i) << alpha.size();
     }
 }
 
-void MainWindow::on_pushButton_zoomin_clicked()
+void MainWindow::on_pushButton_ZoomIn_clicked()
 {
-    ui->graphicsView_networkgraph->scale(1.2,1.2);
+    ui->graphicsView_Networkgraph->scale(1.2,1.2);
 }
 
-void MainWindow::on_pushButton_zoomout_clicked()
+void MainWindow::on_pushButton_ZoomOut_clicked()
 {
-    ui->graphicsView_networkgraph->scale(0.8,0.8);
+    ui->graphicsView_Networkgraph->scale(0.8,0.8);
 }
 
 void MainWindow::reset_graph()
@@ -309,15 +240,94 @@ void MainWindow::reset_graph()
         for (int col = 0; col < 3; ++col) // step through each element in the row
             node_pos[row][col] = 0;
 
+    // reset alpha
+    alpha.clear();
+
     // reset count
     count = 0;
 }
 
-void MainWindow::on_pushButton_setmax_clicked()
+void MainWindow::on_pushButton_SetMax_clicked()
 {
-    QString Input = ui->plainTextEdit_setmax->toPlainText();
+    QString Input = ui->plainTextEdit_SetMax->toPlainText();
     if(Input.toInt()<n_limit){
         n_max = Input.toInt();
+        on_pushButton_Explore_clicked();
     }
-    else{ui->textEdit_Status->insertPlainText("Please choose a value below " + Input + ".\n");}
+    else{ui->textEdit_Status->insertPlainText("Please choose a value below " + QString::number(n_limit) + ".\n");}
+}
+
+void MainWindow::make_plot()
+{
+    //generate data:
+    QVector<double> x(101),y(101);
+    for (int i = 0; i < 101; ++i) {
+        x[i] = i/50.0 - 1;
+        y[i] = x[i]*x[i];
+    }
+
+    //create graph and assign data to it
+    ui->customPlot->addGraph();
+    ui->customPlot->graph(0)->setData(x,y);
+    ui->customPlot->xAxis->setLabel("x");
+    ui->customPlot->yAxis->setLabel("y");
+    ui->customPlot->xAxis->setRange(-1,1);
+    ui->customPlot->yAxis->setRange(0,1);
+    ui->customPlot->replot();
+}
+
+void MainWindow::on_pushButton_creategraph_clicked()
+{
+    make_plot();
+}
+
+void MainWindow::on_pushButton_Refresh_clicked()
+{
+    ui->comboBox_Config->clear();
+    for (int i = 0; i < n_max; ++i) {
+        if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
+            QString message = QString::number(i) + ": ID NUMBER";
+            ui->comboBox_Config->addItem(message);
+        }
+    }
+    if (ui->comboBox_Config->count()>1){
+        ui->comboBox_Config->addItem("ALL AVAILABLE NODES");
+    }
+
+}
+
+void MainWindow::on_pushButton_SetTemp_clicked()
+{
+    double minTemp = ui->doubleSpinBox_MinTemp->value();
+    ui->lcdNumber_MinTemp->display(minTemp);
+    double maxTemp = ui->doubleSpinBox_MaxTemp->value();
+    ui->lcdNumber_MaxTemp->display(maxTemp);
+}
+
+void MainWindow::on_pushButton_SetHum_clicked()
+{
+    double minHum = ui->doubleSpinBox_MinHum->value();
+    ui->lcdNumber_MinHum->display(minHum);
+    double maxHum = ui->doubleSpinBox_MaxHum->value();
+    ui->lcdNumber_MaxHum->display(maxHum);
+}
+
+void MainWindow::on_pushButton_SetLight_clicked()
+{
+    double minLight = ui->doubleSpinBox_MinLight->value();
+    ui->lcdNumber_MinLight->display(minLight);
+    double maxLight = ui->doubleSpinBox_MaxLight->value();
+    ui->lcdNumber_MaxLight->display(maxLight);
+}
+
+void MainWindow::on_pushButton_SetAll_clicked()
+{
+    on_pushButton_SetTemp_clicked();
+    on_pushButton_SetHum_clicked();
+    on_pushButton_SetLight_clicked();
+}
+
+void MainWindow::on_comboBox_Config_currentTextChanged(const QString &arg1)
+{
+    ui->textEdit_Status->insertPlainText(arg1+"\n");
 }
