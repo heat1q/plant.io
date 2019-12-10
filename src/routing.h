@@ -10,7 +10,7 @@
 // Forward declaration of processes
 struct process p_broadcast; // Broadcast process for Flooding & Network Discovery
 
-struct broadcast_conn plantio_broadcast; // Creates an instance of a broadcast connection.
+struct broadcast_conn* plantio_broadcast; // Creates an instance of a broadcast connection.
 
 void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from);
 void init_network(void);
