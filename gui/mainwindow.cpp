@@ -73,36 +73,7 @@ void MainWindow::receive()
         if (ch == '\n')     // End of line, start decoding
         {
             str.remove("\n", Qt::CaseSensitive);
-            ui->textEdit_Status->append(str);
-
-            /*
-            // [Source 0x8edc, broadcast, RSSI -64]:	Temperature = 25000 mC
-            if (str.contains("Temperature"))
-            {
-
-                double value = 0.0;
-                QStringList list = str.split(QRegExp("\\s"));
-
-                qDebug() << "Str value: " << str;
-                if(!list.isEmpty()){
-                    qDebug() << "List size " << list.size();
-                    for (int i=0; i < list.size(); i++){
-                        qDebug() << "List value "<< i <<" "<< list.at(i);
-                        if (list.at(i) == "Temperature") {
-                            value = list.at(i+2).toDouble();
-                            //adjust to Degrees
-                            value = value / 1000;
-                            printf("%f\n",value);
-                            ui->progressBar_light->setMaximum(40);
-                        }
-                    }
-                }
-
-                qDebug() << "Var value " << QString::number(value);
-                ui->lcdNumber_light->display(value);
-                ui->progressBar_light->setValue((int)value);
-            }
-            */
+            ui->textEdit_Status->insertPlainText(str);
             this->repaint();    // Update content of window immediately
             str.clear();
         }
@@ -173,7 +144,7 @@ void MainWindow::create_graph(QStringList InputList)
         }
 
         if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)){ // Target node already exists
-            qDebug() << "Target node" << target_id << "already exists";
+            //qDebug() << "Target node" << target_id << "already exists";
         }
 
         else{ // target node doesn't exist
@@ -264,9 +235,9 @@ void MainWindow::on_pushButton_Explore_clicked()
     // reset graph
     reset_graph();
 
+    // devide circle angles into n_max equally spaced values
     for (int i = 0; i < n_max; ++i) {
-        alpha.insert(i, i / double(n_max) * 2 * pi); // devide circle angles into n_max equally spaced values
-        qDebug() << alpha.at(i) << alpha.size();
+        alpha.insert(i, i / double(n_max) * 2 * pi);
     }
 }
 
@@ -330,19 +301,129 @@ void MainWindow::on_pushButton_creategraph_clicked()
 
 void MainWindow::on_pushButton_Refresh_clicked()
 {
-    ui->comboBox_Config->clear();
+    ui->listWidget->clear();
     for (int i = 0; i < n_max; ++i) {
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
-            QString message = QString::number(i) + ": ID NUMBER";
-            ui->comboBox_Config->addItem(message);
+            QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
+            QListWidgetItem *listItem = new QListWidgetItem(message,ui->listWidget);
+            //listItem->setCheckState(Qt::Unchecked);
+            ui->listWidget->addItem(listItem);
         }
     }
-    if (ui->comboBox_Config->count()>1){
-        ui->comboBox_Config->addItem("ALL AVAILABLE NODES");
-    }
-
 }
 
+void MainWindow::on_pushButton_SelectAll_clicked()
+{
+    ui->listWidget->selectAll();
+}
+
+void MainWindow::on_pushButton_UnselectAll_clicked()
+{
+    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
+    for (int i = 0; i < selection.count(); i++) {
+        ui->listWidget->setItemSelected(selection[i], false);
+    }
+}
+
+void MainWindow::on_pushButton_SendTemp_clicked()
+{
+    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
+    if ((selection.count() > 0) && (port.isOpen())){
+        double minTemp = ui->lcdNumber_MinTemp->value();
+        double maxTemp = ui->lcdNumber_MaxTemp->value();
+
+        for (int i = 0; i < selection.count(); ++i) {
+            QListWidgetItem listItem = *selection.at(i);
+            QStringList stringList = listItem.text().split("ID");
+            QString id = stringList[1];
+            QString cmd = id + ":temp:" + QString::number(minTemp) + ":" + QString::number(maxTemp);
+            QByteArray byteArray = cmd.toLocal8Bit();
+            byteArray.append('\n');
+            port.write(byteArray);
+            qDebug() << "port.write" << byteArray;
+        }
+    }
+    else {
+        ui->textEdit_Status->insertPlainText("No target motes selected OR no port connection!\n");
+    }
+}
+
+void MainWindow::on_pushButton_SendHum_clicked()
+{
+    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
+    if ((selection.count() > 0) && (port.isOpen())){
+        double minHum = ui->lcdNumber_MinHum->value();
+        double maxHum = ui->lcdNumber_MaxHum->value();
+
+        for (int i = 0; i < selection.count(); ++i) {
+            QListWidgetItem listItem = *selection.at(i);
+            QStringList stringList = listItem.text().split("ID");
+            QString id = stringList[1];
+            QString cmd = id + ":hum:" + QString::number(minHum) + ":" + QString::number(maxHum);
+            QByteArray byteArray = cmd.toLocal8Bit();
+            byteArray.append('\n');
+            port.write(byteArray);
+            qDebug() << "port.write" << byteArray;
+        }
+    }
+    else {
+        ui->textEdit_Status->insertPlainText("No target motes selected OR no port connection!\n");
+    }
+}
+
+void MainWindow::on_pushButton_SendLight_clicked()
+{
+    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
+    if ((selection.count() > 0) && (port.isOpen())){
+        double minLight = ui->lcdNumber_MinLight->value();
+        double maxLight = ui->lcdNumber_MaxLight->value();
+
+        for (int i = 0; i < selection.count(); ++i) {
+            QListWidgetItem listItem = *selection.at(i);
+            QStringList stringList = listItem.text().split("ID");
+            QString id = stringList[1];
+            QString cmd = id + ":light:" + QString::number(minLight) + ":" + QString::number(maxLight);
+            QByteArray byteArray = cmd.toLocal8Bit();
+            byteArray.append('\n');
+            port.write(byteArray);
+            qDebug() << "port.write" << byteArray;
+        }
+    }
+    else {
+        ui->textEdit_Status->insertPlainText("No target motes selected OR no port connection!\n");
+    }
+}
+
+void MainWindow::on_pushButton_SendAll_clicked()
+{
+    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
+    if ((selection.count() > 0) && (port.isOpen())){
+        double minTemp = ui->lcdNumber_MinTemp->value();
+        double maxTemp = ui->lcdNumber_MaxTemp->value();
+        double minHum = ui->lcdNumber_MinHum->value();
+        double maxHum = ui->lcdNumber_MaxHum->value();
+        double minLight = ui->lcdNumber_MinLight->value();
+        double maxLight = ui->lcdNumber_MaxLight->value();
+
+        for (int i = 0; i < selection.count(); ++i) {
+            QListWidgetItem listItem = *selection.at(i);
+            QStringList stringList = listItem.text().split("ID");
+            QString id = stringList[1];
+            QString cmd = id + ":all:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
+                    + ":" + QString::number(minHum) + ":" + QString::number(maxHum)
+                    + ":" + QString::number(minLight) + ":" + QString::number(maxLight);
+            QByteArray byteArray = cmd.toLocal8Bit();
+            byteArray.append('\n');
+            port.write(byteArray);
+            qDebug() << "port.write" << byteArray;
+        }
+    }
+    else {
+        ui->textEdit_Status->insertPlainText("No target motes selected OR no port connection!\n");
+    }
+}
+
+// Set threshold values
 void MainWindow::on_pushButton_SetTemp_clicked()
 {
     double minTemp = ui->doubleSpinBox_MinTemp->value();
@@ -374,71 +455,12 @@ void MainWindow::on_pushButton_SetAll_clicked()
     on_pushButton_SetLight_clicked();
 }
 
+// Debug window
 void MainWindow::on_pushButton_Debug_clicked()
 {
     QString command;
     command = ui->plainTextEdit_Debug->toPlainText();
-
     QByteArray byteArray = command.toLocal8Bit();
-
     byteArray.append('\n');
     port.write(byteArray);
-}
-
-void MainWindow::on_pushButton_SendTemp_clicked()
-{
-    if (ui->comboBox_Config->count() > 0){
-        double minTemp = ui->lcdNumber_MinTemp->value();
-        double maxTemp = ui->lcdNumber_MaxTemp->value();
-        QString id = ui->comboBox_Config->currentText().at(0);
-        QString cmd = id + ":temp:" + QString::number(minTemp) + ":" + QString::number(maxTemp);
-        QByteArray byteArray = cmd.toLocal8Bit();
-        byteArray.append('\n');
-        port.write(byteArray);
-    }
-}
-
-void MainWindow::on_pushButton_SendHum_clicked()
-{
-    if (ui->comboBox_Config->count() > 0){
-        double minHum = ui->lcdNumber_MinHum->value();
-        double maxHum = ui->lcdNumber_MaxHum->value();
-        QString id = ui->comboBox_Config->currentText().at(0);
-        QString cmd = id + ":hum:" + QString::number(minHum) + ":" + QString::number(maxHum);
-        QByteArray byteArray = cmd.toLocal8Bit();
-        byteArray.append('\n');
-        port.write(byteArray);
-    }
-}
-
-void MainWindow::on_pushButton_SendLight_clicked()
-{
-    if (ui->comboBox_Config->count() > 0){
-        double minLight = ui->lcdNumber_MinLight->value();
-        double maxLight = ui->lcdNumber_MaxLight->value();
-        QString id = ui->comboBox_Config->currentText().at(0);
-        QString cmd = id + ":light:" + QString::number(minLight) + ":" + QString::number(maxLight);
-        QByteArray byteArray = cmd.toLocal8Bit();
-        byteArray.append('\n');
-        port.write(byteArray);
-    }
-}
-
-void MainWindow::on_pushButton_SendAll_clicked()
-{
-    if (ui->comboBox_Config->count() > 0){
-        double minTemp = ui->lcdNumber_MinTemp->value();
-        double maxTemp = ui->lcdNumber_MaxTemp->value();
-        double minHum = ui->lcdNumber_MinHum->value();
-        double maxHum = ui->lcdNumber_MaxHum->value();
-        double minLight = ui->lcdNumber_MinLight->value();
-        double maxLight = ui->lcdNumber_MaxLight->value();
-        QString id = ui->comboBox_Config->currentText().at(0);
-        QString cmd = id + ":all:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
-                + ":" + QString::number(minHum) + ":" + QString::number(maxHum)
-                + ":" + QString::number(minLight) + ":" + QString::number(maxLight);
-        QByteArray byteArray = cmd.toLocal8Bit();
-        byteArray.append('\n');
-        port.write(byteArray);
-    }
 }

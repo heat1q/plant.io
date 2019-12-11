@@ -58,6 +58,8 @@ private slots:
     void on_pushButton_SendHum_clicked();
     void on_pushButton_SendLight_clicked();
     void on_pushButton_SendAll_clicked();
+    void on_pushButton_SelectAll_clicked();
+    void on_pushButton_UnselectAll_clicked();
 };
 
 #endif // MAINWINDOW_H
