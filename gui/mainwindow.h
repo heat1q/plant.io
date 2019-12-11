@@ -60,6 +60,7 @@ private slots:
     void on_pushButton_SendAll_clicked();
     void on_pushButton_SelectAll_clicked();
     void on_pushButton_UnselectAll_clicked();
+    void on_pushButton_Center_clicked();
 };
 
 #endif // MAINWINDOW_H

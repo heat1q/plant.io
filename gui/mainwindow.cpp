@@ -132,7 +132,7 @@ void MainWindow::create_graph(QStringList InputList)
     //QRandomGenerator randomGen;
 
     double x,y,x_offset,y_offset,len,new_length,new_alpha;
-    double circle_radius=10*n_max;
+    double circle_radius=100+4.20*n_max;
 
     for(int i = 0; i<InputList.size()-1; i++) // Iterate all items in header "11:14:7:215:PAYLOAD"
     {
@@ -148,9 +148,6 @@ void MainWindow::create_graph(QStringList InputList)
         }
 
         else{ // target node doesn't exist
-            // increment outgoing edge counter
-            node_pos[curr_id][2] += 1;
-
             // calculate new node position
             if (i==0){ // first ring
                 x = cos(alpha.at(target_id));
@@ -161,13 +158,16 @@ void MainWindow::create_graph(QStringList InputList)
             else{ // ring 2 and above
                 len = sqrt(pow(curr_pos[0],2)+pow(curr_pos[1],2));
                 new_length = len+circle_radius;
-                new_alpha = atan2(curr_pos[1],curr_pos[0]) + (node_pos[curr_id][2]-1) / double(n_max*3*i) * 2*pi;
+                new_alpha = atan2(curr_pos[1],curr_pos[0]) + (node_pos[curr_id][2]) / double(2.5*i*n_max) * 2*pi;
                 x_offset = new_length*cos(new_alpha)-curr_pos[0];
                 y_offset = new_length*sin(new_alpha)-curr_pos[1];
             }
             //int cnt = int(node_pos[target_id][2]);
             node_pos[target_id][0] = curr_pos[0] + x_offset;
             node_pos[target_id][1] = curr_pos[1] + y_offset;
+
+            // increment outgoing edge counter
+            node_pos[curr_id][2] += 1;
 
             // add node circle
             mScene->addEllipse(node_pos[target_id][0]-10,node_pos[target_id][1]-10,20,20,blackPen,greenBrush);
@@ -196,6 +196,8 @@ void MainWindow::create_graph(QStringList InputList)
         // update current id
         curr_id = target_id;
     }
+
+    on_pushButton_Center_clicked();
 }
 
 void MainWindow::on_pushButton_CreateRoute_clicked()
@@ -463,4 +465,12 @@ void MainWindow::on_pushButton_Debug_clicked()
     QByteArray byteArray = command.toLocal8Bit();
     byteArray.append('\n');
     port.write(byteArray);
+}
+
+void MainWindow::on_pushButton_Center_clicked()
+{
+    QRectF bounds = mScene->itemsBoundingRect();
+    //bounds.setWidth(bounds.width()*0.9);         // to tighten-up margins
+    //bounds.setHeight(bounds.height()*0.9);       // same as above
+    ui->graphicsView_Networkgraph->fitInView(bounds,Qt::KeepAspectRatio);
 }
