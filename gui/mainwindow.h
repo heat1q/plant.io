@@ -48,6 +48,9 @@ private slots:
     void on_pushButton_ZoomOut_clicked();
     void on_pushButton_SetMax_clicked();
     void on_pushButton_creategraph_clicked();
+    void on_pushButton_Refresh_Tab2_clicked();
+    void on_pushButton_SelectAll_Tab2_clicked();
+    void on_pushButton_UnselectAll_Tab2_clicked();
     void on_pushButton_Refresh_clicked();
     void on_pushButton_SetTemp_clicked();
     void on_pushButton_SetHum_clicked();

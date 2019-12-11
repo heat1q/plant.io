@@ -288,7 +288,7 @@ void MainWindow::make_plot()
 
     //create graph and assign data to it
     ui->customPlot->addGraph();
-    ui->customPlot->graph(0)->setData(x,y);
+    ui->customPlot->graph(1)->setData(x,y);
     ui->customPlot->xAxis->setLabel("x");
     ui->customPlot->yAxis->setLabel("y");
     ui->customPlot->xAxis->setRange(-1,1);
@@ -298,8 +298,106 @@ void MainWindow::make_plot()
 
 void MainWindow::on_pushButton_creategraph_clicked()
 {
-    make_plot();
+    QCustomPlot* plot = ui->customPlot;
+    plot->plotLayout()->clear();
+    plot->clearItems();
+    plot->clearGraphs();
+
+    plot->plotLayout()->simplify();
+
+    QVector<double> x(61),y(61);
+    for (int i = 0; i < 61; ++i) {
+        x[i] = i/50.0 - 1;
+        y[i] = 4*x[i]*x[i];
+    }
+
+    QVector<double> x2(101),y2(101);
+    for (int i = 0; i < 101; ++i) {
+        x2[i] = i/50.0 - 1;
+        y2[i] = x2[i]*x2[i];
+    }
+
+    QVector<double> x3(200),y3(200);
+    for (int i = 0; i < 200; ++i) {
+        x3[i] = 0.1*i - 10;
+        y3[i] = x3[i]*x3[i]*3/i;
+    }
+
+    QCPAxisRect *TempAxisRect = new QCPAxisRect(plot);
+    plot->plotLayout()->addElement(0, 0, TempAxisRect);
+
+    QCPAxisRect *HumAxisRect = new QCPAxisRect(plot);
+    plot->plotLayout()->addElement(1, 0, HumAxisRect);
+
+    QCPAxisRect *LightAxisRect = new QCPAxisRect(plot);
+    plot->plotLayout()->addElement(2, 0, LightAxisRect);
+
+    QCPGraph *TempGraph = plot->addGraph(TempAxisRect->axis(QCPAxis::atBottom), TempAxisRect->axis(QCPAxis::atLeft));
+    TempGraph->setName("Temperature Graph");
+    TempGraph->setData(x,y);
+    TempGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::black), QBrush(Qt::white), 3));
+    TempGraph->setPen(QPen(QColor(120, 120, 120), 2));
+    TempGraph->keyAxis()->setLabel("Time");
+    TempGraph->valueAxis()->setLabel("Temp in °C");
+    TempGraph->rescaleAxes();
+
+    QCPGraph *HumGraph = plot->addGraph(HumAxisRect->axis(QCPAxis::atBottom), HumAxisRect->axis(QCPAxis::atLeft));
+    HumGraph->setName("Humidity Graph");
+    HumGraph->setData(x2,y2);
+    HumGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::black), QBrush(Qt::white), 3));
+    HumGraph->setPen(QPen(QColor(120, 120, 120), 2));
+    HumGraph->keyAxis()->setLabel("Time");
+    HumGraph->valueAxis()->setLabel("Humidity in %");
+    HumGraph->rescaleAxes();
+
+    QCPGraph *LightGraph = plot->addGraph(LightAxisRect->axis(QCPAxis::atBottom), LightAxisRect->axis(QCPAxis::atLeft));
+    LightGraph->setName("Light Graph");
+    LightGraph->setData(x3,y3);
+    LightGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::green), QBrush(Qt::red), 3));
+    LightGraph->setPen(QPen(QColor(120, 255, 120), 2));
+    LightGraph->keyAxis()->setLabel("Time");
+    LightGraph->valueAxis()->setLabel("Light in Lumen");
+    LightGraph->rescaleAxes();
+
+    QList<QCPAxis*> allAxes;
+    allAxes << TempAxisRect->axes() << HumAxisRect->axes() << LightAxisRect->axes();
+    foreach (QCPAxis *axis, allAxes)
+    {
+        axis->setLayer("axes");
+        axis->grid()->setLayer("grid");
+    }
+
+    plot->replot();
 }
+
+void MainWindow::on_pushButton_Refresh_Tab2_clicked()
+{
+    ui->listWidget_Tab2->clear();
+    for (int i = 0; i < n_max; ++i) {
+        if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
+            QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
+            QListWidgetItem *listItem = new QListWidgetItem(
+                        QIcon("/home/andreas/Documents/University/Wireless "
+                              "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab2);
+            ui->listWidget_Tab2->addItem(listItem);
+        }
+    }
+}
+
+void MainWindow::on_pushButton_SelectAll_Tab2_clicked()
+{
+    ui->listWidget_Tab2->selectAll();
+}
+
+void MainWindow::on_pushButton_UnselectAll_Tab2_clicked()
+{
+    QList<QListWidgetItem *> selection = ui->listWidget_Tab2->selectedItems();
+    for (int i = 0; i < selection.count(); i++) {
+        ui->listWidget_Tab2->setItemSelected(selection[i], false);
+    }
+}
+
+/* Tab 3 */
 
 void MainWindow::on_pushButton_Refresh_clicked()
 {
@@ -307,8 +405,9 @@ void MainWindow::on_pushButton_Refresh_clicked()
     for (int i = 0; i < n_max; ++i) {
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
             QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
-            QListWidgetItem *listItem = new QListWidgetItem(QIcon("/home/andreas/Documents/University/Wireless Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget);
-            //listItem->setCheckState(Qt::Unchecked);
+            QListWidgetItem *listItem = new QListWidgetItem(
+                        QIcon("/home/andreas/Documents/University/Wireless "
+                              "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget);
             ui->listWidget->addItem(listItem);
         }
     }

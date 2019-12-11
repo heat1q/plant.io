@@ -46,7 +46,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tab1">
         <attribute name="title">
@@ -440,20 +440,8 @@ amount of motes</string>
          <string>Plot Sensor Data</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="1" column="0">
-          <widget class="QPushButton" name="pushButton_xxyyzz">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>200</width>
-             <height>25</height>
-            </size>
-           </property>
+         <item row="3" column="0">
+          <widget class="QPushButton" name="pushButton_Refresh_Tab2">
            <property name="maximumSize">
             <size>
              <width>200</width>
@@ -461,11 +449,24 @@ amount of motes</string>
             </size>
            </property>
            <property name="text">
-            <string>PushButton</string>
+            <string>Refresh</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="5" column="0">
+          <widget class="QPushButton" name="pushButton_UnselectAll_Tab2">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Unselect All</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
           <widget class="QPushButton" name="pushButton_creategraph">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -490,7 +491,32 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
+         <item row="7" column="0">
+          <widget class="QPushButton" name="pushButton_xxyyzz">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>PushButton</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
           <widget class="QLabel" name="label">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -516,7 +542,47 @@ maker xd xd</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1" rowspan="3">
+         <item row="1" column="0">
+          <widget class="QListWidget" name="listWidget_Tab2">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>100000</height>
+            </size>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::MultiSelection</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QPushButton" name="pushButton_SelectAll_Tab2">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Select All</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Select Devices</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Plot</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" rowspan="8">
           <widget class="QCustomPlot" name="customPlot" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
