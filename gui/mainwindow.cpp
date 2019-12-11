@@ -305,7 +305,7 @@ void MainWindow::on_pushButton_Refresh_clicked()
     for (int i = 0; i < n_max; ++i) {
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
             QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
-            QListWidgetItem *listItem = new QListWidgetItem(message,ui->listWidget);
+            QListWidgetItem *listItem = new QListWidgetItem(QIcon("/home/andreas/Documents/University/Wireless Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget);
             //listItem->setCheckState(Qt::Unchecked);
             ui->listWidget->addItem(listItem);
         }
