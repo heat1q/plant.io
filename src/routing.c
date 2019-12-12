@@ -1,4 +1,5 @@
 #include "routing.h"
+#include "net_packet.h"
 
 const struct broadcast_callbacks plantio_broadcast_call = {broadcast_receive};
 
@@ -24,17 +25,30 @@ PROCESS_THREAD(p_broadcast, ev, data)
 
 void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
 {
-    printf("Broadcast message received from 0x%x%x: '%s' [RSSI %d]\r\n",
-           from->u8[0], from->u8[1],
-           (char *)packetbuf_dataptr(),
-           (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
+    leds_on(LEDS_GREEN);
+
+    printf("Broadcast message received from 0x%x%x: [RSSI %d]\r\n", from->u8[0], from->u8[1], (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
+
+    plantio_packet_t* packet = (plantio_packet_t*)packetbuf_dataptr();
+    print_packet(packet);    
+
+    leds_off(LEDS_GREEN);
 }
 
 void init_network(void)
 {
-    leds_on(LEDS_PURPLE);
-    packetbuf_copyfrom("Hello", 6);
+    leds_on(LEDS_RED);
+    
+    uint8_t test_src[10];
+    uint8_t test_dest[10];
+    for (size_t i = 0; i < 10; i++)
+    {
+        test_src[i] = i;
+        test_dest[i] = rand() % 10;
+    }
+    
+    plantio_packet_t* packet = create_packet(0, test_src, 10, test_dest, 10, "Default Load", 14);
     broadcast_send(plantio_broadcast);
-    printf("Init network\r\n");
-    leds_off(LEDS_PURPLE);
+    
+    leds_off(LEDS_RED);
 }

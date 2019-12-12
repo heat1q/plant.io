@@ -4,6 +4,7 @@ all: $(CONTIKI_PROJECT)
 PROJECT_SOURCEFILES += serial.c
 PROJECT_SOURCEFILES += routing.c
 PROJECT_SOURCEFILES += mote_sensors.c
+PROJECT_SOURCEFILES += net_packet.c
 
 CONTIKI_WITH_RIME = 1
 CONTIKI = $(HOME)/.contiki
