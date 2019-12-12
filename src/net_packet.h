@@ -1,3 +1,13 @@
+/**
+ * @file net_packet.h
+ * @author Patrick Willner (patrick.willner@tum.de), Andreas Koliopoulos (ga96leh@mytum.de), Alexander Schmaus (ga96fin@mytum.de)
+ * @brief 
+ * @version 0.1
+ * @date 2019-12-12
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
 #pragma once
 
 #include "plantio.h"
@@ -32,7 +42,7 @@ struct
  * @param data_size Length of dat
  * @return int Number of Bytes copied into the buffer
  */
-int create_packet(uint8_t type, uint8_t *src, uint8_t src_len, uint8_t *dest, uint8_t dest_len, uint8_t *data, uint16_t data_len);
+int create_packet(uint8_t type, uint8_t *src, uint16_t src_len, uint8_t *dest, uint16_t dest_len, uint8_t *data, uint16_t data_len);
 
 /**
  * @brief Prints packet information.
@@ -40,3 +50,7 @@ int create_packet(uint8_t type, uint8_t *src, uint8_t src_len, uint8_t *dest, ui
  * @param packet Instance of packet struct
  */
 void print_packet(plantio_packet_t *packet);
+
+const uint8_t* get_packet_src(const plantio_packet_t *packet);
+const uint8_t* get_packet_dest(const plantio_packet_t *packet);
+const uint8_t* get_packet_data(const plantio_packet_t *packet);

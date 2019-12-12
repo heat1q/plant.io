@@ -1,3 +1,13 @@
+/**
+ * @file routing.h
+ * @author Patrick Willner (patrick.willner@tum.de), Andreas Koliopoulos (ga96leh@mytum.de), Alexander Schmaus (ga96fin@mytum.de)
+ * @brief 
+ * @version 0.1
+ * @date 2019-12-12
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
 #pragma once
 
 #include <net/rime/rime.h> // Establish connections.
@@ -7,6 +17,7 @@
 #include <net/packetbuf.h>
 
 #include "plantio.h"
+#include "net_packet.h"
 
 // Forward declaration of processes
 struct process p_broadcast; // Broadcast process for Flooding & Network Discovery
@@ -26,3 +37,22 @@ void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
  * 
  */
 void init_network(void);
+
+/**
+ * @brief Forwards the network discovery packet & updates the routing tables.
+ * 
+ * @param packet Pointer to instance of plantio_packet_t
+ */
+void forward_discover(const plantio_packet_t* packet);
+
+/**
+ * @brief Prints the routing table.
+ * 
+ */
+void print_routing_table(void);
+
+/**
+ * @brief Clears the memory of the routing table.
+ * 
+ */
+void free_routing_table(void);

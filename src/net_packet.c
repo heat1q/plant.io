@@ -1,9 +1,19 @@
+/**
+ * @file net_packet.c
+ * @author Patrick Willner (patrick.willner@tum.de), Andreas Koliopoulos (ga96leh@mytum.de), Alexander Schmaus (ga96fin@mytum.de)
+ * @brief 
+ * @version 0.1
+ * @date 2019-12-12
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
 #include "net_packet.h"
 #include "routing.h"
 
-int create_packet(uint8_t type, uint8_t *src, uint8_t src_len, uint8_t *dest, uint8_t dest_len, uint8_t *data, uint16_t data_len)
+int create_packet(uint8_t type, uint8_t *src, uint16_t src_len, uint8_t *dest, uint16_t dest_len, uint8_t *data, uint16_t data_len)
 {
-    plantio_packet_t *packet = malloc(sizeof(plantio_packet_t) + src_len + dest_len + 0);
+    plantio_packet_t *packet = malloc(sizeof(plantio_packet_t) + src_len + dest_len + data_len);
 
     packet->type = type;
     packet->src_len = src_len;
@@ -50,3 +60,7 @@ void print_packet(plantio_packet_t *packet)
     printf("Data [%u]: ", packet->data_len);
     printf("%s\r\n", packet->data + packet->src_len + packet->dest_len);
 }
+
+const uint8_t* get_packet_src(const plantio_packet_t *packet) { return packet->data; }
+const uint8_t* get_packet_dest(const plantio_packet_t *packet) { return packet->data + packet->src_len; }
+const uint8_t* get_packet_data(const plantio_packet_t *packet) { return packet->data + packet->src_len + packet->dest_len; }
