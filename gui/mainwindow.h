@@ -34,7 +34,6 @@ private:
     QGraphicsScene* mScene;
     void reset_graph();
     void create_graph(QStringList List);
-    void make_plot();
     void send2port(QString Input);
 
 private slots:

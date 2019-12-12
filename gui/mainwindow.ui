@@ -46,7 +46,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab1">
         <attribute name="title">
@@ -440,16 +440,32 @@ amount of motes</string>
          <string>Plot Sensor Data</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="3" column="0">
-          <widget class="QPushButton" name="pushButton_Refresh_Tab2">
-           <property name="maximumSize">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Select Devices</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" rowspan="6">
+          <widget class="QCustomPlot" name="customPlot" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
             <size>
              <width>200</width>
-             <height>25</height>
+             <height>200</height>
             </size>
            </property>
-           <property name="text">
-            <string>Refresh</string>
+           <property name="maximumSize">
+            <size>
+             <width>100000</width>
+             <height>100000</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -466,7 +482,27 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="8" column="0">
+         <item row="0" column="1">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Plot</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QListWidget" name="listWidget_Tab2">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>100000</height>
+            </size>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::MultiSelection</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
           <widget class="QPushButton" name="pushButton_creategraph">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -491,20 +527,8 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
-          <widget class="QPushButton" name="pushButton_xxyyzz">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>200</width>
-             <height>25</height>
-            </size>
-           </property>
+         <item row="3" column="0">
+          <widget class="QPushButton" name="pushButton_Refresh_Tab2">
            <property name="maximumSize">
             <size>
              <width>200</width>
@@ -512,46 +536,7 @@ amount of motes</string>
             </size>
            </property>
            <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="label">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>200</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>200</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Data graph 
-maker xd xd</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QListWidget" name="listWidget_Tab2">
-           <property name="maximumSize">
-            <size>
-             <width>200</width>
-             <height>100000</height>
-            </size>
-           </property>
-           <property name="selectionMode">
-            <enum>QAbstractItemView::MultiSelection</enum>
+            <string>Refresh</string>
            </property>
           </widget>
          </item>
@@ -565,42 +550,6 @@ maker xd xd</string>
            </property>
            <property name="text">
             <string>Select All</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Select Devices</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Plot</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" rowspan="8">
-          <widget class="QCustomPlot" name="customPlot" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>200</width>
-             <height>200</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>100000</width>
-             <height>100000</height>
-            </size>
            </property>
           </widget>
          </item>

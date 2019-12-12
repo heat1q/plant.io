@@ -277,32 +277,12 @@ void MainWindow::on_pushButton_SetMax_clicked()
     else{ui->textEdit_Status->insertPlainText("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
 
-void MainWindow::make_plot()
-{
-    //generate data:
-    QVector<double> x(101),y(101);
-    for (int i = 0; i < 101; ++i) {
-        x[i] = i/50.0 - 1;
-        y[i] = x[i]*x[i];
-    }
-
-    //create graph and assign data to it
-    ui->customPlot->addGraph();
-    ui->customPlot->graph(1)->setData(x,y);
-    ui->customPlot->xAxis->setLabel("x");
-    ui->customPlot->yAxis->setLabel("y");
-    ui->customPlot->xAxis->setRange(-1,1);
-    ui->customPlot->yAxis->setRange(0,1);
-    ui->customPlot->replot();
-}
-
 void MainWindow::on_pushButton_creategraph_clicked()
 {
     QCustomPlot* plot = ui->customPlot;
     plot->plotLayout()->clear();
     plot->clearItems();
     plot->clearGraphs();
-
     plot->plotLayout()->simplify();
 
     QVector<double> x(61),y(61);
@@ -332,32 +312,70 @@ void MainWindow::on_pushButton_creategraph_clicked()
     QCPAxisRect *LightAxisRect = new QCPAxisRect(plot);
     plot->plotLayout()->addElement(2, 0, LightAxisRect);
 
-    QCPGraph *TempGraph = plot->addGraph(TempAxisRect->axis(QCPAxis::atBottom), TempAxisRect->axis(QCPAxis::atLeft));
-    TempGraph->setName("Temperature Graph");
-    TempGraph->setData(x,y);
-    TempGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::black), QBrush(Qt::white), 3));
-    TempGraph->setPen(QPen(QColor(120, 120, 120), 2));
-    TempGraph->keyAxis()->setLabel("Time");
-    TempGraph->valueAxis()->setLabel("Temp in °C");
-    TempGraph->rescaleAxes();
+    QCPLegend *Legend = new QCPLegend;
+    plot->axisRect()->insetLayout()->addElement(Legend, Qt::AlignTop|Qt::AlignRight);
 
-    QCPGraph *HumGraph = plot->addGraph(HumAxisRect->axis(QCPAxis::atBottom), HumAxisRect->axis(QCPAxis::atLeft));
-    HumGraph->setName("Humidity Graph");
-    HumGraph->setData(x2,y2);
-    HumGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::black), QBrush(Qt::white), 3));
-    HumGraph->setPen(QPen(QColor(120, 120, 120), 2));
-    HumGraph->keyAxis()->setLabel("Time");
-    HumGraph->valueAxis()->setLabel("Humidity in %");
-    HumGraph->rescaleAxes();
+    for (int i = 0; i < 3; ++i) {
+        plot->axisRect(i)->setAutoMargins(QCP::msLeft | QCP::msTop | QCP::msBottom);
+        plot->axisRect(i)->setMargins(QMargins(0,0,100,0));
+    }
+    plot->axisRect(0)->insetLayout()->setInsetPlacement(0, QCPLayoutInset::ipFree);
+    plot->axisRect(0)->insetLayout()->setInsetRect(0, QRectF(1,0,0,0));
 
-    QCPGraph *LightGraph = plot->addGraph(LightAxisRect->axis(QCPAxis::atBottom), LightAxisRect->axis(QCPAxis::atLeft));
-    LightGraph->setName("Light Graph");
-    LightGraph->setData(x3,y3);
-    LightGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::green), QBrush(Qt::red), 3));
-    LightGraph->setPen(QPen(QColor(120, 255, 120), 2));
-    LightGraph->keyAxis()->setLabel("Time");
-    LightGraph->valueAxis()->setLabel("Light in Lumen");
-    LightGraph->rescaleAxes();
+    plot->setAutoAddPlottableToLegend(false);
+
+    int listCount = ui->listWidget_Tab2->selectedItems().count();
+    QVector<QCPGraph *> TempGraphVector;
+    QVector<QCPGraph *> HumGraphVector;
+    QVector<QCPGraph *> LightGraphVector;
+    QList<QListWidgetItem *> ids = ui->listWidget_Tab2->selectedItems();
+
+
+
+    for (int i = 0; i < listCount; i++) {
+        // get sensor data from mote id: i
+        QString id = (*ids[i]).text().split("ID")[1];
+        ui->textEdit_Status->insertPlainText("ID#"+id+"\n");
+
+        QCPGraph *TempGraph = plot->addGraph(TempAxisRect->axis(QCPAxis::atBottom), TempAxisRect->axis(QCPAxis::atLeft));
+        QCPGraph *HumGraph = plot->addGraph(HumAxisRect->axis(QCPAxis::atBottom), HumAxisRect->axis(QCPAxis::atLeft));
+        QCPGraph *LightGraph = plot->addGraph(LightAxisRect->axis(QCPAxis::atBottom), LightAxisRect->axis(QCPAxis::atLeft));
+
+        // TempGraph->setData(node_data[i][0],node_data[i][1]);
+
+        QVector<double> x(61),y(61);
+        for (int j = 0; j < 61; ++j) {
+            x[j] = j/50.0 - 1;
+            y[j] = i*4*x[j]*x[j];
+        }
+        TempGraph->setName("ID#"+id);
+        TempGraph->setData(x,y);
+        TempGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::black), QBrush(Qt::white), 3));
+        TempGraph->setPen(QPen(QColor((255+i*100)%255, (255+i*200)%255, (255+i*300)%255), 2));
+        TempGraph->keyAxis()->setLabel("Time");
+        TempGraph->valueAxis()->setLabel("Temp in °C");
+        TempGraph->rescaleAxes();
+        TempGraphVector.append(TempGraph);
+        Legend->addItem(new QCPPlottableLegendItem(Legend, TempGraphVector[i])); //is enough if done for first graph only (shared legend)
+
+        HumGraph->setName("H - ID#"+id);
+        HumGraph->setData(x2,y2);
+        HumGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::black), QBrush(Qt::white), 3));
+        HumGraph->setPen(QPen(QColor(120, 120, 120), 2));
+        HumGraph->keyAxis()->setLabel("Time");
+        HumGraph->valueAxis()->setLabel("Humidity in %");
+        HumGraph->rescaleAxes();
+        HumGraphVector.append(HumGraph);
+
+        LightGraph->setName("L - ID#"+id);
+        LightGraph->setData(x3,y3);
+        LightGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::green), QBrush(Qt::red), 3));
+        LightGraph->setPen(QPen(QColor(120, 255, 120), 2));
+        LightGraph->keyAxis()->setLabel("Time");
+        LightGraph->valueAxis()->setLabel("Light in Lumen");
+        LightGraph->rescaleAxes();
+        LightGraphVector.append(LightGraph);
+    }
 
     QList<QCPAxis*> allAxes;
     allAxes << TempAxisRect->axes() << HumAxisRect->axes() << LightAxisRect->axes();
