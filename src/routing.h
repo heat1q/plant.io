@@ -4,6 +4,7 @@
 #include <net/netstack.h>  // Wireless-stack definitions
 #include <core/net/linkaddr.h>
 #include <core/net/rime/broadcast.h>
+#include <net/packetbuf.h>
 
 #include "plantio.h"
 
