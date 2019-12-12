@@ -6,7 +6,7 @@
         {
             "label": "Comile and Upload",
             "type": "shell",
-            "command": "export PATH=~/.arm/bin:$PATH; line=$(head -n 1 Makefile); name=(${line// = / }); make TARGET=zoul BOARD=remote-revb ${name[1]}; make TARGET=zoul BOARD=remote-revb ${name[1]}.upload",
+            "command": "./build",
             "group": {
                 "kind": "build",
                 "isDefault": true
