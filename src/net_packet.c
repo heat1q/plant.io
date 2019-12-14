@@ -13,7 +13,7 @@
 
 int create_packet(uint8_t type, uint8_t *src, uint16_t src_len, uint8_t *dest, uint16_t dest_len, uint8_t *data, uint16_t data_len)
 {
-    plantio_packet_t *packet = malloc(sizeof(plantio_packet_t) + src_len + dest_len + data_len);
+    plantio_malloc(mmem, plantio_packet_t, packet, sizeof(plantio_packet_t) + src_len + dest_len + data_len);
 
     packet->type = type;
     packet->src_len = src_len;
@@ -37,7 +37,7 @@ int create_packet(uint8_t type, uint8_t *src, uint16_t src_len, uint8_t *dest, u
     }
 
     int bytes = packetbuf_copyfrom(packet, sizeof(plantio_packet_t) + packet->src_len + packet->dest_len + packet->data_len);
-    free(packet);
+    plantio_free(mmem);
     //print_packet(packetbuf_hdrptr());
     return bytes;
 }

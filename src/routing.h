@@ -19,10 +19,23 @@
 #include "plantio.h"
 #include "net_packet.h"
 
+struct
+{
+    uint16_t num_routes;
+    uint16_t num_hops[];
+} typedef routing_hops_t;
+
+struct
+{
+    uint16_t num_routes;
+    uint16_t route[];
+} typedef routing_t;
+
+
 // Forward declaration of processes
 struct process p_broadcast; // Broadcast process for Flooding & Network Discovery
 
-struct broadcast_conn* plantio_broadcast; // Creates an instance of a broadcast connection.
+struct broadcast_conn plantio_broadcast; // Creates an instance of a broadcast connection.
 
 /**
  * @brief Callback function for Broadcast.
@@ -60,7 +73,32 @@ const uint16_t find_best_route(void);
 void print_routing_table(void);
 
 /**
- * @brief Clears the memory of the routing table.
+ * @brief Clears the routing table.
  * 
  */
 void clear_routing_table(void);
+
+/**
+ * @brief Write a route to the routing table on Flash memory.
+ * 
+ * @param route Array of Node IDs
+ * @param length Length of the array, i.e. the number of hops of the route
+ */
+void write_routing_table(const uint8_t *route, const uint16_t length);
+
+/**
+ * @brief Get the number of hops for a route with given index in the routing table.
+ * 
+ * @param index Index of route in table
+ * @return const uint16_t Number of hops
+ */
+const uint16_t get_num_hops(const uint16_t index);
+
+/**
+ * @brief Get the route for given index in the routing table.
+ * 
+ * @param route Pointer to the allocated memory for the route 
+ * @param num_hops Number of hops
+ * @param index  Index of route in table
+ */
+void get_route(uint8_t *route, const uint16_t num_hops, const uint16_t index);

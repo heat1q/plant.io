@@ -1,5 +1,17 @@
+/**
+ * @file serial.c
+ * @author Patrick Willner (patrick.willner@tum.de), Andreas Koliopoulos (ga96leh@mytum.de), Alexander Schmaus (ga96fin@mytum.de)
+ * @brief 
+ * @version 0.1
+ * @date 2019-12-14
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
+
 #include "serial.h"
 #include "routing.h"
+#include "net_packet.h"
 
 PROCESS(p_serial, "Serial Event listener");
 PROCESS_THREAD(p_serial, ev, data)

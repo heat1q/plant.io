@@ -8,7 +8,7 @@ echo "██║     ███████╗██║  ██║██║ ╚█
 echo "╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝╚═╝╚═╝ ╚═════╝ "
                                                        
 
-node_id=0
+node_id=1
 read -p "Enter Node ID: " node_id; 
 node_id=$(($node_id))
 
