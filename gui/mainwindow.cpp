@@ -40,7 +40,6 @@ void MainWindow::changeEvent(QEvent *e)
 const double pi = 3.14159;
 const int n_limit = 100;
 static int n_max = 15;
-static int count = 0;
 static double node_pos [n_limit][3]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos // [3,:] # of outgoing edges
 static double curr_pos [2];
 static QVector<double> alpha;
@@ -55,10 +54,6 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
     curr_pos[0] = 0; // Initial x position
     curr_pos[1] = 0; // Initial y position
     static int curr_id = 0;
-
-    //Random Generator
-    count++;
-    //QRandomGenerator randomGen;
 
     double x,y,x_offset,y_offset,len,new_length,new_alpha;
     double circle_radius=100+4.20*n_max;
@@ -138,9 +133,6 @@ void MainWindow::reset_graph() // Reset the graph
 
     // reset alpha
     alpha.clear();
-
-    // reset count
-    count = 0;
 }
 
 void MainWindow::send2port(QString input) // Send message to port
