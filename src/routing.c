@@ -73,6 +73,16 @@ void init_network(void)
 
 void forward_discover(const plantio_packet_t *packet)
 {
+    // check first if the routing tables need to be cleared in case of new network discovery packet
+    if (num_routes) // only if table is non-empty
+    {
+        if (**route != *get_packet_src(packet)) // if src of current packet doesnt match src of table
+        {
+            // clear if network discovery is started from different mote
+            clear_routing_table();
+        }
+    }
+
     // Find node id in src array
     uint16_t tmp = packet->src_len;
     const uint8_t *src = get_packet_src(packet);
@@ -108,18 +118,42 @@ void forward_discover(const plantio_packet_t *packet)
         create_packet(0, src_new, src_len_new, NULL, 0, NULL, 0);
         broadcast_send(plantio_broadcast);
         free(src_new);
-        
-        print_routing_table();
     }
+}
+
+const uint16_t find_best_route(void)
+{
+    // for now, just return the shortest (hops) route
+    uint16_t min = 1 << 15;
+    uint16_t index = 0;
+    for (uint16_t i = 0; i < num_routes; ++i)
+    {
+        if (num_hops[i] < min)
+        {
+            min = num_hops[i];
+            index = i;
+        }
+    }
+    
+    return index;
 }
 
 void print_routing_table(void)
 {
-    printf("Printing routing table for mote %u\r\n",linkaddr_node_addr.u8[1]);
-    for (uint16_t i = 0; i < num_routes; i++)
+    uint16_t index = find_best_route();
+    printf("opt |  i  | Routes for Device %u\r\n", linkaddr_node_addr.u8[1]);
+    printf("----+-----+--------------------------\r\n");
+    for (uint16_t i = 0; i < num_routes; ++i)
     {
-        printf("%u | ", i);
-        for (uint8_t j = 0; j < num_hops[i]; j++)
+        if (i == index)
+        {
+            printf(" x  | %3u | ", i);
+        }
+        else
+        {
+            printf("    | %3u | ", i);
+        }
+        for (uint8_t j = 0; j < num_hops[i]; ++j)
         {
             printf("%i ", route[i][j]);
         }
@@ -127,7 +161,7 @@ void print_routing_table(void)
     }
 }
 
-void free_routing_table(void)
+void clear_routing_table(void)
 {
     for (uint32_t i = 0; i < num_routes; ++i)
     {
@@ -137,4 +171,8 @@ void free_routing_table(void)
     free(route);
     // set to zero
     num_routes = 0;
+
+    // set to NULL to be consistent with the static definition
+    num_hops = NULL;
+    route = NULL;
 }

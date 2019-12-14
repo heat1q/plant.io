@@ -46,6 +46,14 @@ void init_network(void);
 void forward_discover(const plantio_packet_t* packet);
 
 /**
+ * @brief Finds the optimal route given the current routing metric by applying
+ * the Shortest Path Tree (SPT) algorithm.
+ * 
+ * @return const uint16_t Index of the optimal route in the routing table
+ */
+const uint16_t find_best_route(void);
+
+/**
  * @brief Prints the routing table.
  * 
  */
@@ -55,4 +63,4 @@ void print_routing_table(void);
  * @brief Clears the memory of the routing table.
  * 
  */
-void free_routing_table(void);
+void clear_routing_table(void);
