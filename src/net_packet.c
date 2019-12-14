@@ -11,7 +11,7 @@
 #include "net_packet.h"
 #include "routing.h"
 
-int create_packet(uint8_t type, uint8_t *src, uint16_t src_len, uint8_t *dest, uint16_t dest_len, uint8_t *data, uint16_t data_len)
+int create_packet(uint8_t type, uint8_t *src, uint8_t src_len, uint8_t *dest, uint8_t dest_len, uint8_t *data, uint8_t data_len)
 {
     plantio_malloc(mmem, plantio_packet_t, packet, sizeof(plantio_packet_t) + src_len + dest_len + data_len);
 
@@ -20,7 +20,7 @@ int create_packet(uint8_t type, uint8_t *src, uint16_t src_len, uint8_t *dest, u
     packet->dest_len = dest_len;
     packet->data_len = data_len;
 
-    uint16_t i = 0;
+    uint8_t i = 0;
     while (src_len--) // copy the source addresses to the data
     {
         packet->data[i++] = *src++;

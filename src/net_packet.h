@@ -23,9 +23,9 @@
 struct __attribute__((__packed__)) //disable padding
 {
     uint8_t type;
-    uint16_t src_len;
-    uint16_t dest_len;
-    uint16_t data_len;
+    uint8_t src_len;
+    uint8_t dest_len;
+    uint8_t data_len;
     uint8_t data[];
 } typedef plantio_packet_t;
 
@@ -42,7 +42,7 @@ struct __attribute__((__packed__)) //disable padding
  * @param data_size Length of dat
  * @return int Number of Bytes copied into the buffer
  */
-int create_packet(uint8_t type, uint8_t *src, uint16_t src_len, uint8_t *dest, uint16_t dest_len, uint8_t *data, uint16_t data_len);
+int create_packet(uint8_t type, uint8_t *src, uint8_t src_len, uint8_t *dest, uint8_t dest_len, uint8_t *data, uint8_t data_len);
 
 /**
  * @brief Prints packet information.

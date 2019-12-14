@@ -8,8 +8,13 @@ echo "██║     ███████╗██║  ██║██║ ╚█
 echo "╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝╚═╝╚═╝ ╚═════╝ "
                                                        
 
-node_id=1
-read -p "Enter Node ID: " node_id; 
+read -p "Enter Node ID: " node_id;
+if [ "$node_id" = "" ]; then
+    node_id=1
+else
+    node_id=$(($node_id))
+fi
+
 node_id=$(($node_id))
 
 export PATH=~/.arm/bin:$PATH;
@@ -26,4 +31,3 @@ for i in $ports; do
     make TARGET=zoul BOARD=remote-revb PORT="/dev/$i" NODEID=$node_id ${name[1]}.upload
     ((node_id++))
 done
-
