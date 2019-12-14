@@ -13,6 +13,7 @@
 
 const struct broadcast_callbacks plantio_broadcast_call = {broadcast_receive};
 
+static uint8_t network_discover_ctr; // synchronized network discovery id for all motes to check for repeated network discovery
 static uint16_t num_routes;
 static const char *filename_hops = "routing_hops";
 static const char *filename_routing = "routing";
@@ -63,8 +64,11 @@ void init_network(void)
 {
     leds_on(LEDS_RED);
 
+    // increase the counter to check if network discovery has been restarted
+    network_discover_ctr++; // if this overflows, we start at 0
+
     // broadcast packet with type 0, node id as src
-    create_packet(0, &linkaddr_node_addr.u8[1], 1, NULL, 0, NULL, 0);
+    create_packet(0, &linkaddr_node_addr.u8[1], 1, NULL, 0, &network_discover_ctr, 1);
     broadcast_send(&plantio_broadcast);
 
     leds_off(LEDS_RED);
@@ -76,13 +80,16 @@ void forward_discover(const plantio_packet_t *packet)
     if (num_routes) // only if table is non-empty
     {
         uint8_t ref;
-        get_route(&ref, 1, 0);              // just get the first id in the first route for reference
-        if (ref != *get_packet_src(packet)) // if src of current packet doesnt match src of table
+        get_route(&ref, 1, 0); // just get the first id in the first route for reference
+        // if src of current packet doesnt match src of table OR ctr doesnt match the current packet
+        if (ref != *get_packet_src(packet) || network_discover_ctr != *get_packet_data(packet))
         {
             // clear if network discovery is started from different mote
             clear_routing_table();
         }
     }
+
+    network_discover_ctr = *get_packet_data(packet); // set the id
 
     // Find node id in src array
     uint16_t tmp = packet->src_len;
@@ -110,12 +117,12 @@ void forward_discover(const plantio_packet_t *packet)
         // append own id to src
         // new memory needs to be allocated since the packerbuf is
         // cleared before adding a new packet
-        uint16_t src_len_new = packet->src_len + 1;
+        uint8_t src_len_new = packet->src_len + 1;
         plantio_malloc(mmem, uint8_t, src_new, sizeof(uint8_t) * (packet->src_len + 1));
         memcpy(src_new, get_packet_src(packet), sizeof(uint8_t) * packet->src_len); // copy old arr to new
         src_new[packet->src_len] = linkaddr_node_addr.u8[1];                        // append node id
 
-        create_packet(0, src_new, src_len_new, NULL, 0, NULL, 0);
+        create_packet(0, src_new, src_len_new, NULL, 0, &network_discover_ctr, 1);
         broadcast_send(&plantio_broadcast);
         plantio_free(mmem);
     }
