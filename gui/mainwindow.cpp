@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWin
     }
     // Show a hint if no USB ports were found.
     if (ui->comboBox_Interface->count() == 0){
-        ui->textEdit_Status->insertPlainText("No USB ports available.\nConnect a USB device and try again.\n");
+        print("No USB ports available.\nConnect a USB device and try again.\n");
     }
 }
 
@@ -62,6 +62,13 @@ void MainWindow::on_pushButton_Open_clicked()
     ui->comboBox_Interface->setEnabled(false);
 }
 
+void MainWindow::print(QString msg)
+{
+    ui->textEdit_Status->moveCursor (QTextCursor::End);
+    ui->textEdit_Status->insertPlainText (msg);
+    ui->textEdit_Status->moveCursor (QTextCursor::End);
+}
+
 void MainWindow::receive()
 // QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
 {
@@ -73,7 +80,7 @@ void MainWindow::receive()
         if (ch == '\n')     // End of line, start decoding
         {
             str.remove("\n", Qt::CaseSensitive);
-            ui->textEdit_Status->insertPlainText(str);
+            print(str);
             this->repaint();    // Update content of window immediately
             str.clear();
         }
@@ -104,7 +111,7 @@ void MainWindow::on_pushButton_Reload_clicked()
     }
     // Show a hint if no USB ports were found.
     if (ui->comboBox_Interface->count() == 0){
-        ui->textEdit_Status->insertPlainText("No USB ports available.\nConnect a USB device and try again.\n");
+        print("No USB ports available.\nConnect a USB device and try again.\n");
     }
 }
 
@@ -139,7 +146,7 @@ void MainWindow::create_graph(QStringList InputList)
         int target_id = InputList[i].toInt();
 
         if (target_id >= n_max){ // doesn't check if header data is valid. invalid = 0. fix!?
-            ui->textEdit_Status->insertPlainText("Invalid header id. Abort mission\n");
+            print("Invalid header id. Abort mission\n");
             break;
         }
 
@@ -274,7 +281,7 @@ void MainWindow::on_pushButton_SetMax_clicked()
         n_max = Input.toInt();
         on_pushButton_Explore_clicked();
     }
-    else{ui->textEdit_Status->insertPlainText("Please choose a value below " + QString::number(n_limit) + ".\n");}
+    else{print("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
 
 void MainWindow::on_pushButton_creategraph_clicked()
@@ -335,7 +342,7 @@ void MainWindow::on_pushButton_creategraph_clicked()
     for (int i = 0; i < listCount; i++) {
         // get sensor data from mote id: i
         QString id = (*ids[i]).text().split("ID")[1];
-        ui->textEdit_Status->insertPlainText("ID#"+id+"\n");
+        print("ID#"+id+"\n");
 
         QCPGraph *TempGraph = plot->addGraph(TempAxisRect->axis(QCPAxis::atBottom), TempAxisRect->axis(QCPAxis::atLeft));
         QCPGraph *HumGraph = plot->addGraph(HumAxisRect->axis(QCPAxis::atBottom), HumAxisRect->axis(QCPAxis::atLeft));
@@ -463,7 +470,7 @@ void MainWindow::on_pushButton_SendTemp_clicked()
         }
     }
     else {
-        ui->textEdit_Status->insertPlainText("No target motes selected OR no port connection!\n");
+        print("No target motes selected OR no port connection!\n");
     }
 }
 
@@ -486,7 +493,7 @@ void MainWindow::on_pushButton_SendHum_clicked()
         }
     }
     else {
-        ui->textEdit_Status->insertPlainText("No target motes selected OR no port connection!\n");
+        print("No target motes selected OR no port connection!\n");
     }
 }
 
@@ -509,7 +516,7 @@ void MainWindow::on_pushButton_SendLight_clicked()
         }
     }
     else {
-        ui->textEdit_Status->insertPlainText("No target motes selected OR no port connection!\n");
+        print("No target motes selected OR no port connection!\n");
     }
 }
 
@@ -538,7 +545,7 @@ void MainWindow::on_pushButton_SendAll_clicked()
         }
     }
     else {
-        ui->textEdit_Status->insertPlainText("No target motes selected OR no port connection!\n");
+        print("No target motes selected OR no port connection!\n");
     }
 }
 

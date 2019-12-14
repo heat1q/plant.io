@@ -200,7 +200,11 @@
           </widget>
          </item>
          <item row="2" column="0" colspan="3">
-          <widget class="QPlainTextEdit" name="plainTextEdit_Debug"/>
+          <widget class="QPlainTextEdit" name="plainTextEdit_Debug">
+           <property name="plainText">
+            <string>5:write:text</string>
+           </property>
+          </widget>
          </item>
          <item row="11" column="0" colspan="3">
           <widget class="QPushButton" name="pushButton_Explore">

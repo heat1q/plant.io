@@ -33,8 +33,9 @@ private:
     QMessageBox error;
     QGraphicsScene* mScene;
     void reset_graph();
-    void create_graph(QStringList List);
-    void send2port(QString Input);
+    void create_graph(QStringList list);
+    void send2port(QString msg);
+    void print(QString msg);
 
 private slots:
     void receive();
