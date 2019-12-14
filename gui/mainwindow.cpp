@@ -37,93 +37,15 @@ void MainWindow::changeEvent(QEvent *e)
     }
 }
 
-void MainWindow::on_pushButton_Open_clicked()
-{
-    port.setQueryMode(QextSerialPort::EventDriven);
-    port.setPortName("/dev/" + ui->comboBox_Interface->currentText());
-    port.setBaudRate(BAUD115200);
-    port.setFlowControl(FLOW_OFF);
-    port.setParity(PAR_NONE);
-    port.setDataBits(DATA_8);
-    port.setStopBits(STOP_1);
-    port.open(QIODevice::ReadWrite);
-
-    if (!port.isOpen())
-    {
-        error.setText("Unable to open port!");
-        error.show();
-        return;
-    }
-
-    QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
-
-    ui->pushButton_Close->setEnabled(true);
-    ui->pushButton_Open->setEnabled(false);
-    ui->comboBox_Interface->setEnabled(false);
-}
-
-void MainWindow::print(QString msg)
-{
-    ui->textEdit_Status->moveCursor (QTextCursor::End);
-    ui->textEdit_Status->insertPlainText (msg);
-    ui->textEdit_Status->moveCursor (QTextCursor::End);
-}
-
-void MainWindow::receive()
-// QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
-{
-    static QString str;
-    char ch;
-    while (port.getChar(&ch))
-    {
-        str.append(ch);
-        if (ch == '\n')     // End of line, start decoding
-        {
-            str.remove("\n", Qt::CaseSensitive);
-            print(str);
-            this->repaint();    // Update content of window immediately
-            str.clear();
-        }
-    }
-}
-
-void MainWindow::on_pushButton_Close_clicked()
-{
-    if (port.isOpen())port.close();
-    ui->pushButton_Close->setEnabled(false);
-    ui->pushButton_Open->setEnabled(true);
-    ui->comboBox_Interface->setEnabled(true);
-}
-
-void MainWindow::on_pushButton_Reload_clicked()
-{
-    // Get all available COM Ports and store them in a QList.
-    ui->comboBox_Interface->clear();
-    //ui->textEdit_Status->clear();
-    QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
-
-    // Read each element on the list, but
-    // add only USB ports to the combo box.
-    for (int i = 0; i < ports.size(); i++) {
-        if (ports.at(i).portName.contains("USB")){
-            ui->comboBox_Interface->addItem(ports.at(i).portName.toLocal8Bit().constData());
-        }
-    }
-    // Show a hint if no USB ports were found.
-    if (ui->comboBox_Interface->count() == 0){
-        print("No USB ports available.\nConnect a USB device and try again.\n");
-    }
-}
-
 const double pi = 3.14159;
 const int n_limit = 100;
 static int n_max = 15;
 static int count = 0;
 static double node_pos [n_limit][3]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos // [3,:] # of outgoing edges
-static QVector<double> alpha;
 static double curr_pos [2];
+static QVector<double> alpha;
 
-void MainWindow::create_graph(QStringList InputList)
+void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
 {
     // Paint edges and nodes
     QBrush greenBrush(Qt::green);
@@ -207,20 +129,112 @@ void MainWindow::create_graph(QStringList InputList)
     on_pushButton_Center_clicked();
 }
 
-void MainWindow::on_pushButton_CreateRoute_clicked()
-// test button for graph
+void MainWindow::reset_graph() // Reset the graph
+{
+    // reset all values in node_pos
+    for (int row = 0; row < n_max; ++row) // step through the rows in the array
+        for (int col = 0; col < 3; ++col) // step through each element in the row
+            node_pos[row][col] = 0;
+
+    // reset alpha
+    alpha.clear();
+
+    // reset count
+    count = 0;
+}
+
+void MainWindow::send2port(QString input) // Send message to port
+{
+    QByteArray byteArray = input.toLocal8Bit();
+    byteArray.append('\n');
+    if (port.write(byteArray)==-1)
+    {
+        print("QextSerialPort: device not open");
+    }
+}
+
+void MainWindow::print(QString msg) // Print a message in GUI console
+{
+    ui->textEdit_Status->moveCursor (QTextCursor::End);
+    ui->textEdit_Status->insertPlainText (msg);
+    ui->textEdit_Status->moveCursor (QTextCursor::End);
+}
+
+void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
+{
+    static QString str;
+    char ch;
+    while (port.getChar(&ch))
+    {
+        str.append(ch);
+        if (ch == '\n')     // End of line, start decoding
+        {
+            str.remove("\n", Qt::CaseSensitive);
+            print(str);
+            this->repaint();    // Update content of window immediately
+            str.clear();
+        }
+    }
+}
+
+void MainWindow::on_pushButton_Open_clicked()
+{
+    port.setQueryMode(QextSerialPort::EventDriven);
+    port.setPortName("/dev/" + ui->comboBox_Interface->currentText());
+    port.setBaudRate(BAUD115200);
+    port.setFlowControl(FLOW_OFF);
+    port.setParity(PAR_NONE);
+    port.setDataBits(DATA_8);
+    port.setStopBits(STOP_1);
+    port.open(QIODevice::ReadWrite);
+
+    if (!port.isOpen())
+    {
+        error.setText("Unable to open port!");
+        error.show();
+        return;
+    }
+
+    QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
+
+    ui->pushButton_Close->setEnabled(true);
+    ui->pushButton_Open->setEnabled(false);
+    ui->comboBox_Interface->setEnabled(false);
+}
+
+void MainWindow::on_pushButton_Close_clicked()
+{
+    if (port.isOpen())port.close();
+    ui->pushButton_Close->setEnabled(false);
+    ui->pushButton_Open->setEnabled(true);
+    ui->comboBox_Interface->setEnabled(true);
+}
+
+void MainWindow::on_pushButton_Reload_clicked()
+{
+    // Get all available COM Ports and store them in a QList.
+    ui->comboBox_Interface->clear();
+    //ui->textEdit_Status->clear();
+    QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
+
+    // Read each element on the list, but
+    // add only USB ports to the combo box.
+    for (int i = 0; i < ports.size(); i++) {
+        if (ports.at(i).portName.contains("USB")){
+            ui->comboBox_Interface->addItem(ports.at(i).portName.toLocal8Bit().constData());
+        }
+    }
+    // Show a hint if no USB ports were found.
+    if (ui->comboBox_Interface->count() == 0){
+        print("No USB ports available.\nConnect a USB device and try again.\n");
+    }
+}
+
+void MainWindow::on_pushButton_CreateRoute_clicked() // test button for graph
 {
     QString Input = ui->plainTextEdit_Create->toPlainText();
     QStringList InputList = Input.split(":");
     MainWindow::create_graph(InputList);
-}
-
-void MainWindow::send2port(QString Input)
-// Send text field message to port
-{
-    QByteArray byteArray = Input.toLocal8Bit();
-    byteArray.append('\n');
-    port.write(byteArray);
 }
 
 void MainWindow::on_pushButton_Explore_clicked()
@@ -258,20 +272,6 @@ void MainWindow::on_pushButton_ZoomIn_clicked()
 void MainWindow::on_pushButton_ZoomOut_clicked()
 {
     ui->graphicsView_Networkgraph->scale(0.8,0.8);
-}
-
-void MainWindow::reset_graph()
-{
-    // reset all values in node_pos
-    for (int row = 0; row < n_max; ++row) // step through the rows in the array
-        for (int col = 0; col < 3; ++col) // step through each element in the row
-            node_pos[row][col] = 0;
-
-    // reset alpha
-    alpha.clear();
-
-    // reset count
-    count = 0;
 }
 
 void MainWindow::on_pushButton_SetMax_clicked()
@@ -422,8 +422,6 @@ void MainWindow::on_pushButton_UnselectAll_Tab2_clicked()
     }
 }
 
-/* Tab 3 */
-
 void MainWindow::on_pushButton_Refresh_clicked()
 {
     ui->listWidget->clear();
@@ -451,6 +449,39 @@ void MainWindow::on_pushButton_UnselectAll_clicked()
     }
 }
 
+// Set threshold values
+void MainWindow::on_pushButton_SetTemp_clicked()
+{
+    double minTemp = ui->doubleSpinBox_MinTemp->value();
+    ui->lcdNumber_MinTemp->display(minTemp);
+    double maxTemp = ui->doubleSpinBox_MaxTemp->value();
+    ui->lcdNumber_MaxTemp->display(maxTemp);
+}
+
+void MainWindow::on_pushButton_SetHum_clicked()
+{
+    double minHum = ui->doubleSpinBox_MinHum->value();
+    ui->lcdNumber_MinHum->display(minHum);
+    double maxHum = ui->doubleSpinBox_MaxHum->value();
+    ui->lcdNumber_MaxHum->display(maxHum);
+}
+
+void MainWindow::on_pushButton_SetLight_clicked()
+{
+    double minLight = ui->doubleSpinBox_MinLight->value();
+    ui->lcdNumber_MinLight->display(minLight);
+    double maxLight = ui->doubleSpinBox_MaxLight->value();
+    ui->lcdNumber_MaxLight->display(maxLight);
+}
+
+void MainWindow::on_pushButton_SetAll_clicked()
+{
+    on_pushButton_SetTemp_clicked();
+    on_pushButton_SetHum_clicked();
+    on_pushButton_SetLight_clicked();
+}
+
+// Send threshold values
 void MainWindow::on_pushButton_SendTemp_clicked()
 {
     QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
@@ -509,10 +540,7 @@ void MainWindow::on_pushButton_SendLight_clicked()
             QStringList stringList = listItem.text().split("ID");
             QString id = stringList[1];
             QString cmd = id + ":light:" + QString::number(minLight) + ":" + QString::number(maxLight);
-            QByteArray byteArray = cmd.toLocal8Bit();
-            byteArray.append('\n');
-            port.write(byteArray);
-            qDebug() << "port.write" << byteArray;
+            send2port(cmd);
         }
     }
     else {
@@ -549,46 +577,10 @@ void MainWindow::on_pushButton_SendAll_clicked()
     }
 }
 
-// Set threshold values
-void MainWindow::on_pushButton_SetTemp_clicked()
-{
-    double minTemp = ui->doubleSpinBox_MinTemp->value();
-    ui->lcdNumber_MinTemp->display(minTemp);
-    double maxTemp = ui->doubleSpinBox_MaxTemp->value();
-    ui->lcdNumber_MaxTemp->display(maxTemp);
-}
-
-void MainWindow::on_pushButton_SetHum_clicked()
-{
-    double minHum = ui->doubleSpinBox_MinHum->value();
-    ui->lcdNumber_MinHum->display(minHum);
-    double maxHum = ui->doubleSpinBox_MaxHum->value();
-    ui->lcdNumber_MaxHum->display(maxHum);
-}
-
-void MainWindow::on_pushButton_SetLight_clicked()
-{
-    double minLight = ui->doubleSpinBox_MinLight->value();
-    ui->lcdNumber_MinLight->display(minLight);
-    double maxLight = ui->doubleSpinBox_MaxLight->value();
-    ui->lcdNumber_MaxLight->display(maxLight);
-}
-
-void MainWindow::on_pushButton_SetAll_clicked()
-{
-    on_pushButton_SetTemp_clicked();
-    on_pushButton_SetHum_clicked();
-    on_pushButton_SetLight_clicked();
-}
-
-// Debug window
 void MainWindow::on_pushButton_Debug_clicked()
 {
-    QString command;
-    command = ui->plainTextEdit_Debug->toPlainText();
-    QByteArray byteArray = command.toLocal8Bit();
-    byteArray.append('\n');
-    port.write(byteArray);
+    QString cmd = ui->plainTextEdit_Debug->toPlainText();
+    send2port(cmd);
 }
 
 void MainWindow::on_pushButton_Center_clicked()
@@ -597,4 +589,9 @@ void MainWindow::on_pushButton_Center_clicked()
     //bounds.setWidth(bounds.width()*0.9);         // to tighten-up margins
     //bounds.setHeight(bounds.height()*0.9);       // same as above
     ui->graphicsView_Networkgraph->fitInView(bounds,Qt::KeepAspectRatio);
+}
+
+void MainWindow::on_pushButton_Clear_clicked()
+{
+    ui->textEdit_Status->clear();
 }
