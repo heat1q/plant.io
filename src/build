@@ -1,0 +1,29 @@
+#!/bin/bash
+
+echo "██████╗ ██╗      █████╗ ███╗   ██╗████████╗██╗ ██████╗ "
+echo "██╔══██╗██║     ██╔══██╗████╗  ██║╚══██╔══╝██║██╔═══██╗"
+echo "██████╔╝██║     ███████║██╔██╗ ██║   ██║   ██║██║   ██║"
+echo "██╔═══╝ ██║     ██╔══██║██║╚██╗██║   ██║   ██║██║   ██║"
+echo "██║     ███████╗██║  ██║██║ ╚████║   ██║██╗██║╚██████╔╝"
+echo "╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝╚═╝╚═╝ ╚═════╝ "
+                                                       
+
+node_id=0
+read -p "Enter Node ID: " node_id; 
+node_id=$(($node_id))
+
+export PATH=~/.arm/bin:$PATH;
+
+ports=$(ls /dev | grep USB)
+
+line=$(head -n 1 Makefile); 
+name=(${line// = / }); 
+
+make TARGET=zoul BOARD=remote-revb ${name[1]}; 
+
+for i in $ports; do
+    echo "============ Programming Mote on /dev/$i with ID $node_id"
+    make TARGET=zoul BOARD=remote-revb PORT="/dev/$i" NODEID=$node_id ${name[1]}.upload
+    ((node_id++))
+done
+

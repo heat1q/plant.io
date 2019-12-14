@@ -69,4 +69,9 @@ void parse_serial_input(char *input)
         leds_off(LEDS_ALL);
         init_network();
     }
+    else if (strcmp(task ,"rt") == 0)
+    {
+        print_routing_table();
+    }
+    
 }
