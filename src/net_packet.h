@@ -20,7 +20,7 @@
  * reference the payload.
  * 
  */
-struct
+struct __attribute__((__packed__)) //disable padding
 {
     uint8_t type;
     uint16_t src_len;

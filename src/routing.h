@@ -22,7 +22,7 @@
 // Forward declaration of processes
 struct process p_broadcast; // Broadcast process for Flooding & Network Discovery
 
-struct broadcast_conn* plantio_broadcast; // Creates an instance of a broadcast connection.
+struct broadcast_conn plantio_broadcast; // Creates an instance of a broadcast connection.
 
 /**
  * @brief Callback function for Broadcast.

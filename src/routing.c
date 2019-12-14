@@ -19,13 +19,11 @@ static uint8_t **route;
 PROCESS(p_broadcast, "Broadcast Process");
 PROCESS_THREAD(p_broadcast, ev, data)
 {
-    PROCESS_EXITHANDLER({broadcast_close(plantio_broadcast); free(plantio_broadcast); })
+    PROCESS_EXITHANDLER({broadcast_close(&plantio_broadcast);})
     PROCESS_BEGIN();
 
-    plantio_broadcast = malloc(sizeof(struct broadcast_conn));
-
     // Defines the functions used as callbacks for a broadcast connection.
-    broadcast_open(plantio_broadcast, 129, &plantio_broadcast_call);
+    broadcast_open(&plantio_broadcast, 129, &plantio_broadcast_call);
 
     // Wait forever, since we need the broadcast always open
     while (1)
@@ -44,7 +42,7 @@ void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
 
     // copy from buffer
     plantio_packet_t *packet_ptr = (plantio_packet_t *)packetbuf_dataptr();
-    plantio_packet_t *packet = malloc(sizeof(plantio_packet_t) + packet_ptr->src_len + packet_ptr->dest_len + packet_ptr->data_len);
+    plantio_malloc(mmem, plantio_packet_t, packet, sizeof(plantio_packet_t) + packet_ptr->src_len + packet_ptr->dest_len + packet_ptr->data_len);
     packetbuf_copyto(packet);
 
     print_packet(packet);
@@ -55,7 +53,7 @@ void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
         forward_discover(packet);
     }
 
-    free(packet);
+    plantio_free(mmem);
 
     leds_off(LEDS_GREEN);
 }
@@ -66,7 +64,7 @@ void init_network(void)
 
     // broadcast packet with type 0, node id as src
     create_packet(0, &linkaddr_node_addr.u8[1], 1, NULL, 0, NULL, 0);
-    broadcast_send(plantio_broadcast);
+    broadcast_send(&plantio_broadcast);
 
     leds_off(LEDS_RED);
 }
@@ -111,13 +109,13 @@ void forward_discover(const plantio_packet_t *packet)
         // new memory needs to be allocated since the packerbuf is
         // cleared before adding a new packet
         uint16_t src_len_new = packet->src_len + 1;
-        uint8_t *src_new = malloc((packet->src_len + 1) * sizeof(uint8_t));
+        plantio_malloc(mmem, uint8_t, src_new, sizeof(uint8_t) * (packet->src_len + 1));
         memcpy(src_new, get_packet_src(packet), sizeof(uint8_t) * packet->src_len); // copy old arr to new
         src_new[packet->src_len] = linkaddr_node_addr.u8[1];                        // append node id
 
         create_packet(0, src_new, src_len_new, NULL, 0, NULL, 0);
-        broadcast_send(plantio_broadcast);
-        free(src_new);
+        broadcast_send(&plantio_broadcast);
+        plantio_free(mmem);
     }
 }
 
