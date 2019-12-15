@@ -238,7 +238,7 @@
             <bool>false</bool>
            </property>
            <property name="text">
-            <string>Trigger Network Search</string>
+            <string>Explore Network</string>
            </property>
           </widget>
          </item>
@@ -1226,7 +1226,7 @@ amount of motes</string>
         </layout>
        </widget>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <property name="spacing">
          <number>0</number>

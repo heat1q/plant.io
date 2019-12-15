@@ -39,6 +39,7 @@ private:
 
 private slots:
     void receive();
+    void enableButton();
     void on_pushButton_Close_clicked();
     void on_pushButton_Open_clicked();
     void on_pushButton_Reload_clicked();

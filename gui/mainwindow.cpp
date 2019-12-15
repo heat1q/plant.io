@@ -254,6 +254,14 @@ void MainWindow::on_pushButton_Explore_clicked()
     for (int i = 0; i < n_max; ++i) {
         alpha.insert(i, i / double(n_max) * 2 * pi);
     }
+
+    ui->pushButton_Explore->setEnabled(false);
+    QTimer::singleShot(3000, this, SLOT(enableButton())); // first entry is time in ms
+}
+
+void MainWindow::enableButton() // enable the explore network button
+{
+    ui->pushButton_Explore->setEnabled(true);
 }
 
 void MainWindow::on_pushButton_ZoomIn_clicked()
