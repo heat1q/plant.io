@@ -13,7 +13,7 @@
 
 const struct broadcast_callbacks plantio_broadcast_call = {broadcast_receive};
 
-static uint8_t network_discover_ctr; // synchronized network discovery id for all motes to check for repeated network discovery
+static uint8_t network_discover_ctr = 1; // synchronized network discovery id for all motes to check for repeated network discovery
 static uint16_t num_routes;
 static const char *filename_hops = "routing_hops";
 static const char *filename_routing = "routing";
