@@ -29,7 +29,7 @@ PROCESS_THREAD(p_main, ev, data)
 
     // start the processes
     process_start(&p_serial, NULL);
-    process_start(&p_broadcast, NULL);
+    process_start(&p_conn, NULL);
     process_start(&p_sensors, NULL);
 
     PROCESS_END();

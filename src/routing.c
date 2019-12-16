@@ -11,21 +11,23 @@
 #include "routing.h"
 #include "cfs/cfs.h"
 
-const struct broadcast_callbacks plantio_broadcast_call = {broadcast_receive};
+static const struct broadcast_callbacks plantio_broadcast_call = {broadcast_receive};
+static const struct unicast_callbacks plantio_unicast_call = {unicast_receive};
 
 static uint8_t network_discover_ctr; // synchronized network discovery id for all motes to check for repeated network discovery
 static uint16_t num_routes;
 static const char *filename_hops = "routing_hops";
 static const char *filename_routing = "routing";
 
-PROCESS(p_broadcast, "Broadcast Process");
-PROCESS_THREAD(p_broadcast, ev, data)
+PROCESS(p_conn, "");
+PROCESS_THREAD(p_conn, ev, data)
 {
-    PROCESS_EXITHANDLER({ broadcast_close(&plantio_broadcast); })
+    PROCESS_EXITHANDLER({ broadcast_close(&plantio_broadcast); unicast_close(&plantio_unicast); })
     PROCESS_BEGIN();
 
     // Defines the functions used as callbacks for a broadcast connection.
     broadcast_open(&plantio_broadcast, 129, &plantio_broadcast_call);
+    unicast_open(&plantio_unicast, 128, &plantio_unicast_call);
 
     // Wait forever, since we need the broadcast always open
     while (1)
@@ -36,18 +38,27 @@ PROCESS_THREAD(p_broadcast, ev, data)
     PROCESS_END();
 }
 
+PROCESS(p_unicast, "");
+PROCESS_THREAD(p_unicast, ev, data)
+{
+    PROCESS_BEGIN();
+
+    PROCESS_END();
+}
+
 void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
 {
     leds_on(LEDS_GREEN);
-
-    printf("Broadcast message received from 0x%x%x: [RSSI %d]\r\n", from->u8[0], from->u8[1], (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
 
     // copy from buffer
     plantio_packet_t *packet_ptr = (plantio_packet_t *)packetbuf_dataptr();
     plantio_malloc(mmem, plantio_packet_t, packet, sizeof(plantio_packet_t) + packet_ptr->src_len + packet_ptr->dest_len + packet_ptr->data_len);
     packetbuf_copyto(packet);
 
+#ifdef PLANTIO_DEBUG
+    printf("Broadcast message received from 0x%x%x: [RSSI %d]\r\n", from->u8[0], from->u8[1], (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
     print_packet(packet);
+#endif
 
     // network discovery packet which has to be forwarded
     if (packet->type == 0)
@@ -58,6 +69,35 @@ void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
     plantio_free(mmem);
 
     leds_off(LEDS_GREEN);
+}
+
+void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
+{
+    leds_on(LEDS_BLUE);
+
+    // copy from buffer
+    plantio_packet_t *packet_ptr = (plantio_packet_t *)packetbuf_dataptr();
+    plantio_malloc(mmem, plantio_packet_t, packet, sizeof(plantio_packet_t) + packet_ptr->src_len + packet_ptr->dest_len + packet_ptr->data_len);
+    packetbuf_copyto(packet);
+
+#ifdef PLANTIO_DEBUG
+    printf("Unicast message received from 0x%x%x: [RSSI %d]\n", from->u8[0], from->u8[1], (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
+    print_packet(packet);
+#endif
+
+    // check if packet is for current node
+    if (get_packet_dest(packet)[packet->dest_len - 1] == linkaddr_node_addr.u8[1])
+    {
+        forward_routing(packet);
+    }
+    else
+    {
+        printf("Received packet with incorrect destination. Destination was %u, but Node ID is%u\r\n", get_packet_dest(packet)[packet->dest_len - 1], linkaddr_node_addr.u8[1]);
+    }
+
+    plantio_free(mmem);
+
+    leds_off(LEDS_BLUE);
 }
 
 void init_network(void)
@@ -107,12 +147,8 @@ void forward_discover(const plantio_packet_t *packet)
     {
         // append to the routing table
         ++num_routes;
-        plantio_malloc(mmem_route, uint8_t, route, sizeof(uint8_t) * packet->src_len);
-        // copy the data from src to respective routing entry
-        memcpy(route, get_packet_src(packet), sizeof(uint8_t) * packet->src_len);
         // write table
-        write_routing_table(route, packet->src_len);
-        plantio_free(mmem_route);
+        write_routing_table(get_packet_src(packet), packet->src_len);
 
         // append own id to src
         // new memory needs to be allocated since the packerbuf is
@@ -191,11 +227,15 @@ void write_routing_table(const uint8_t *route, const uint16_t length)
     {
         int n = cfs_write(f_hops, &length, sizeof(uint16_t));
         cfs_close(f_hops);
-        printf("f_hops: successfully written to cfs. wrote %i bytes\r\n", n);
+#ifdef PLANTIO_DEBUG
+        printf("f_hops: successfully written to routing table. wrote %i bytes\r\n", n);
+#endif
     }
     else
     {
-        printf("f_hops: ERROR: could not write to memory in step 2.\r\n");
+#ifdef PLANTIO_DEBUG
+        printf("f_hops: ERROR: could not write routing table.\r\n");
+#endif
     }
 
     int f_routes = cfs_open(filename_routing, CFS_WRITE + CFS_APPEND);
@@ -203,11 +243,15 @@ void write_routing_table(const uint8_t *route, const uint16_t length)
     {
         int n = cfs_write(f_routes, route, sizeof(uint8_t) * length);
         cfs_close(f_routes);
-        printf("f_routes: successfully written to cfs. wrote %i bytes\r\n", n);
+#ifdef PLANTIO_DEBUG
+        printf("f_routes: successfully written to routing table. wrote %i bytes\r\n", n);
+#endif
     }
     else
     {
-        printf("f_routes: ERROR: could not write to memory in step 2.\r\n");
+#ifdef PLANTIO_DEBUG
+        printf("f_routes: ERROR: could not write routing table.\r\n");
+#endif
     }
 }
 
@@ -243,5 +287,47 @@ void get_route(uint8_t *route, const uint16_t num_hops, const uint16_t index)
         // the next 2 bytes are the right value
         cfs_read(f_route, route, sizeof(uint8_t) * num_hops);
         cfs_close(f_route);
+    }
+}
+
+void init_rreq_reply()
+{
+    if (num_routes) // only if table is non-empty
+    {
+        const uint16_t index = find_best_route();
+        const uint16_t num_hops = get_num_hops(index);
+
+        // get the route
+        plantio_malloc(mmem_route, uint8_t, route, num_hops);
+        get_route(route, num_hops, index);
+
+        create_packet(1, &linkaddr_node_addr.u8[1], 1, route, num_hops, NULL, 0);
+        linkaddr_t next_hop;
+        next_hop.u8[0] = 0;
+        next_hop.u8[1] = route[num_hops - 1];
+        unicast_send(&plantio_unicast, &next_hop);
+
+        plantio_free(mmem_route);
+    }
+}
+
+void forward_routing(const plantio_packet_t *packet)
+{
+    if (packet->dest_len > 1) // check if destination is already reached
+    {
+        // append own id to src
+        plantio_malloc(mmem_src, uint8_t, src_new, packet->src_len + 1);
+        memcpy(src_new, get_packet_src(packet), packet->src_len);
+        src_new[packet->src_len] = linkaddr_node_addr.u8[1];
+
+        // remove last id of dest, i.e. copy dest_len-1 bytes
+        create_packet(packet->type, src_new, packet->src_len + 1, get_packet_dest(packet), packet->dest_len - 1, get_packet_data(packet), packet->data_len);
+
+        linkaddr_t next_hop;
+        next_hop.u8[0] = 0;
+        next_hop.u8[1] = get_packet_dest(packet)[packet->dest_len - 2]; // get the next hop in the route
+        unicast_send(&plantio_unicast, &next_hop);
+
+        plantio_free(mmem_src);
     }
 }

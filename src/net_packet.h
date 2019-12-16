@@ -33,6 +33,10 @@ struct __attribute__((__packed__)) //disable padding
  * @brief Create a packet object and dynamically allocates memory
  * given by the size of the data.
  * 
+ * @details The following packet types are defined:
+ * 0 --> Network discovery packet, scr_len=1, dest_len=0, data_len=1
+ * 1 --> Route Request (RREQ) Reply packet
+ * 
  * @param type Type of packet
  * @param src Array of source addresses, i.e. node ids
  * @param src_len Length of array
@@ -42,14 +46,14 @@ struct __attribute__((__packed__)) //disable padding
  * @param data_size Length of dat
  * @return int Number of Bytes copied into the buffer
  */
-int create_packet(uint8_t type, uint8_t *src, uint8_t src_len, uint8_t *dest, uint8_t dest_len, uint8_t *data, uint8_t data_len);
+int create_packet(const uint8_t type, const uint8_t *src, uint8_t src_len, const uint8_t *dest, uint8_t dest_len, const uint8_t *data, uint8_t data_len);
 
 /**
  * @brief Prints packet information.
  * 
  * @param packet Instance of packet struct
  */
-void print_packet(plantio_packet_t *packet);
+void print_packet(const plantio_packet_t *packet);
 
 const uint8_t* get_packet_src(const plantio_packet_t *packet);
 const uint8_t* get_packet_dest(const plantio_packet_t *packet);

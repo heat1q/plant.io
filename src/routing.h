@@ -33,9 +33,10 @@ struct
 
 
 // Forward declaration of processes
-struct process p_broadcast; // Broadcast process for Flooding & Network Discovery
+struct process p_conn; // Process that manages the Broadcast and Unicast Connections
 
 struct broadcast_conn plantio_broadcast; // Creates an instance of a broadcast connection.
+struct unicast_conn plantio_unicast; // Creates an instance of a unicast connection.
 
 /**
  * @brief Callback function for Broadcast.
@@ -44,6 +45,14 @@ struct broadcast_conn plantio_broadcast; // Creates an instance of a broadcast c
  * @param from 
  */
 void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from);
+
+/**
+ * @brief Callback function for Unicast.
+ * 
+ * @param unicast 
+ * @param from 
+ */
+void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from);
 
 /**
  * @brief Starts the network discovery algorithm.
@@ -102,3 +111,18 @@ const uint16_t get_num_hops(const uint16_t index);
  * @param index  Index of route in table
  */
 void get_route(uint8_t *route, const uint16_t num_hops, const uint16_t index);
+
+/**
+ * @brief Selects the optimal route to GUI node given the routing metric
+ * and transmits it to the GUI node.
+ * 
+ */
+void init_rreq_reply();
+
+/**
+ * @brief Updates the Source and Destionation of incoming packets
+ * and forwards the packet to the next hop if necessary.
+ * 
+ * @param packet 
+ */
+void forward_routing(const plantio_packet_t *packet);
