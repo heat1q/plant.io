@@ -94,7 +94,21 @@ void clear_routing_table(void);
  * @param route Array of Node IDs
  * @param length Length of the array, i.e. the number of hops of the route
  */
-void write_routing_table(const uint8_t *route, const uint16_t length);
+void write_routing_table(const uint8_t *route, const uint8_t length);
+
+/**
+ * @brief Get the number of entries in the routing table.
+ * 
+ * @return const uint16_t Number of routes
+ */
+const uint16_t get_num_routes();
+
+/**
+ * @brief Set the number of entries in the routing table.
+ * 
+ * @param num_routes 
+ */
+void set_num_routes(const uint16_t num_routes);
 
 /**
  * @brief Get the number of hops for a route with given index in the routing table.
@@ -102,7 +116,7 @@ void write_routing_table(const uint8_t *route, const uint16_t length);
  * @param index Index of route in table
  * @return const uint16_t Number of hops
  */
-const uint16_t get_num_hops(const uint16_t index);
+const uint8_t get_num_hops(const uint16_t index);
 
 /**
  * @brief Get the route for given index in the routing table.
