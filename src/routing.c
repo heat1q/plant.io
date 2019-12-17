@@ -44,7 +44,6 @@ PROCESS(p_init_reply_timer, "");
 PROCESS_THREAD(p_init_reply_timer, ev, data)
 {
     PROCESS_BEGIN();
-    printf("===========================etimer set\r\n");
     etimer_set(&et_init_reply, 2 * CLOCK_SECOND);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et_init_reply));
     init_rreq_reply(find_best_route());
@@ -54,11 +53,12 @@ PROCESS_THREAD(p_init_reply_timer, ev, data)
 
 void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
 {
-    leds_on(LEDS_GREEN);
     int16_t rssi = (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI);
 
     if (rssi > PLANTIO_MIN_RSSI)
     {
+        leds_on(LEDS_GREEN);
+        
         // copy from buffer
         plantio_packet_t *packet_ptr = (plantio_packet_t *)packetbuf_dataptr();
         plantio_malloc(mmem, plantio_packet_t, packet, sizeof(plantio_packet_t) + packet_ptr->src_len + packet_ptr->dest_len + packet_ptr->data_len);
@@ -103,6 +103,23 @@ void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
     else
     {
         printf("Received packet with incorrect destination. Destination was %u, but Node ID is%u\r\n", get_packet_dest(packet)[packet->dest_len - 1], linkaddr_node_addr.u8[1]);
+    }
+
+    if (packet->type == 1) // route reply message
+    {
+        if (packet->dest_len == 1) // for gui node
+        {
+            printf("<"); // begin data message
+            printf("%u:route", get_packet_src(packet)[0]);
+            for (uint8_t i = 0; i < packet->src_len; i++)
+            {
+                printf(":%u", get_packet_src(packet)[i]);
+            }
+            printf(">"); // end data message
+
+            // write the table for the gui mote
+            write_routing_table(get_packet_src(packet), packet->src_len);
+        }
     }
 
     plantio_free(mmem);
@@ -160,9 +177,7 @@ void forward_discover(const plantio_packet_t *packet)
             process_start(&p_init_reply_timer, NULL);
         }
 
-        // append to the routing table
-        ++num_routes;
-        // write table
+        // append to the routing table & write table
         write_routing_table(get_packet_src(packet), packet->src_len);
 
         // append own id to src
@@ -237,6 +252,7 @@ void clear_routing_table(void)
 
 void write_routing_table(const uint8_t *route, const uint16_t length)
 {
+    ++num_routes;
     int f_hops = cfs_open(filename_hops, CFS_WRITE + CFS_APPEND);
     if (f_hops != -1)
     {
