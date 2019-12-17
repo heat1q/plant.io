@@ -49,6 +49,7 @@ PROCESS_THREAD(p_unicast, ev, data)
 void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
 {
     leds_on(LEDS_GREEN);
+    int16_t rssi = (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI);
 
     // copy from buffer
     plantio_packet_t *packet_ptr = (plantio_packet_t *)packetbuf_dataptr();
@@ -56,12 +57,12 @@ void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
     packetbuf_copyto(packet);
 
 #ifdef PLANTIO_DEBUG
-    printf("Broadcast message received from 0x%x%x: [RSSI %d]\r\n", from->u8[0], from->u8[1], (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
+    printf("Broadcast message received from 0x%x%x: [RSSI %d]\r\n", from->u8[0], from->u8[1], rssi);
     print_packet(packet);
 #endif
 
     // network discovery packet which has to be forwarded
-    if (packet->type == 0)
+    if (packet->type == 0 && rssi > PLANTIO_MIN_RSSI)
     {
         forward_discover(packet);
     }

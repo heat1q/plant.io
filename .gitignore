@@ -51,3 +51,4 @@ Makefile.target
 build*Debug/
 build*Release/
 
+src/obj_zoul/*

@@ -19,6 +19,8 @@
 #include <dev/serial-line.h>
 #include <lib/mmem.h>
 
+#define PLANTIO_MIN_RSSI -75
+
 /**
  * @brief Macro for allocating dynamic memory.
  * 
