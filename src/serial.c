@@ -85,5 +85,8 @@ void parse_serial_input(char *input)
     {
         print_routing_table();
     }
-    
+    else if (strcmp(task ,"reply") == 0)
+    {
+        init_rreq_reply(atol(args));
+    }
 }

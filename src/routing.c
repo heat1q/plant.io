@@ -51,25 +51,28 @@ void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
     leds_on(LEDS_GREEN);
     int16_t rssi = (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI);
 
-    // copy from buffer
-    plantio_packet_t *packet_ptr = (plantio_packet_t *)packetbuf_dataptr();
-    plantio_malloc(mmem, plantio_packet_t, packet, sizeof(plantio_packet_t) + packet_ptr->src_len + packet_ptr->dest_len + packet_ptr->data_len);
-    packetbuf_copyto(packet);
+    if (rssi > PLANTIO_MIN_RSSI)
+    {
+        // copy from buffer
+        plantio_packet_t *packet_ptr = (plantio_packet_t *)packetbuf_dataptr();
+        plantio_malloc(mmem, plantio_packet_t, packet, sizeof(plantio_packet_t) + packet_ptr->src_len + packet_ptr->dest_len + packet_ptr->data_len);
+        packetbuf_copyto(packet);
 
 #ifdef PLANTIO_DEBUG
-    printf("Broadcast message received from 0x%x%x: [RSSI %d]\r\n", from->u8[0], from->u8[1], rssi);
-    print_packet(packet);
+        printf("Broadcast message received from 0x%x%x: [RSSI %d]\r\n", from->u8[0], from->u8[1], rssi);
+        print_packet(packet);
 #endif
 
-    // network discovery packet which has to be forwarded
-    if (packet->type == 0 && rssi > PLANTIO_MIN_RSSI)
-    {
-        forward_discover(packet);
+        // network discovery packet which has to be forwarded
+        if (packet->type == 0)
+        {
+            forward_discover(packet);
+        }
+
+        plantio_free(mmem);
+
+        leds_off(LEDS_GREEN);
     }
-
-    plantio_free(mmem);
-
-    leds_off(LEDS_GREEN);
 }
 
 void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
@@ -291,11 +294,10 @@ void get_route(uint8_t *route, const uint16_t num_hops, const uint16_t index)
     }
 }
 
-void init_rreq_reply()
+void init_rreq_reply(const uint16_t index)
 {
     if (num_routes) // only if table is non-empty
     {
-        const uint16_t index = find_best_route();
         const uint16_t num_hops = get_num_hops(index);
 
         // get the route

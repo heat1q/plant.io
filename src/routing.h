@@ -117,7 +117,7 @@ void get_route(uint8_t *route, const uint16_t num_hops, const uint16_t index);
  * and transmits it to the GUI node.
  * 
  */
-void init_rreq_reply();
+void init_rreq_reply(const uint16_t index);
 
 /**
  * @brief Updates the Source and Destionation of incoming packets
