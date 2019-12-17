@@ -34,6 +34,7 @@ struct
 
 // Forward declaration of processes
 struct process p_conn; // Process that manages the Broadcast and Unicast Connections
+struct process p_init_reply_timer;
 
 struct broadcast_conn plantio_broadcast; // Creates an instance of a broadcast connection.
 struct unicast_conn plantio_unicast; // Creates an instance of a unicast connection.

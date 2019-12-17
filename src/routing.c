@@ -10,10 +10,12 @@
  */
 #include "routing.h"
 #include "cfs/cfs.h"
+#include "sys/etimer.h"
 
 static const struct broadcast_callbacks plantio_broadcast_call = {broadcast_receive};
 static const struct unicast_callbacks plantio_unicast_call = {unicast_receive};
 
+static struct etimer et_init_reply;
 static uint8_t network_discover_ctr; // synchronized network discovery id for all motes to check for repeated network discovery
 static uint16_t num_routes;
 static const char *filename_hops = "routing_hops";
@@ -38,10 +40,14 @@ PROCESS_THREAD(p_conn, ev, data)
     PROCESS_END();
 }
 
-PROCESS(p_unicast, "");
-PROCESS_THREAD(p_unicast, ev, data)
+PROCESS(p_init_reply_timer, "");
+PROCESS_THREAD(p_init_reply_timer, ev, data)
 {
     PROCESS_BEGIN();
+    printf("===========================etimer set\r\n");
+    etimer_set(&et_init_reply, 2 * CLOCK_SECOND);
+    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et_init_reply));
+    init_rreq_reply(find_best_route());
 
     PROCESS_END();
 }
@@ -149,6 +155,11 @@ void forward_discover(const plantio_packet_t *packet)
 
     if (!tmp) // Proceed only if node id was not found in src
     {
+        if (num_routes == 0)
+        {
+            process_start(&p_init_reply_timer, NULL);
+        }
+
         // append to the routing table
         ++num_routes;
         // write table
