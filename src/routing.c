@@ -11,12 +11,14 @@
 #include "routing.h"
 #include "cfs/cfs.h"
 #include "sys/etimer.h"
+#include "random.h"
+#include "clock.h"
 
 static const struct broadcast_callbacks plantio_broadcast_call = {broadcast_receive};
 static const struct unicast_callbacks plantio_unicast_call = {unicast_receive};
 
 static struct etimer et_init_reply;
-static uint8_t network_discover_ctr; // synchronized network discovery id for all motes to check for repeated network discovery
+static uint16_t flood_time;
 static const char *filename_num_routes = "num_routes";
 static const char *filename_hops = "routing_hops";
 static const char *filename_routing = "routing";
@@ -129,34 +131,40 @@ void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
 
 void init_network(void)
 {
-    leds_on(LEDS_RED);
-
-    // increase the counter to check if network discovery has been restarted
-    network_discover_ctr++; // if this overflows, we start at 0
+    // add timestamps to flooding packets
+    flood_time = (uint16_t) clock_time(); // the 16 lsb should be enough
+    // convert to byte array
+    uint8_t timestamp[2];
+    timestamp[0] = (uint8_t) (flood_time >> 8);
+    timestamp[1] = (uint8_t) flood_time;
 
     // broadcast packet with type 0, node id as src
-    create_packet(0, &linkaddr_node_addr.u8[1], 1, NULL, 0, &network_discover_ctr, 1);
+    create_packet(0, &linkaddr_node_addr.u8[1], 1, NULL, 0, timestamp, 2);
     broadcast_send(&plantio_broadcast);
 
-    leds_off(LEDS_RED);
+#ifdef PLANTIO_DEBUG
+    printf("Initialized Network with timestamp %u\r\n", flood_time);
+#endif
 }
 
 void forward_discover(const plantio_packet_t *packet)
 {
+    uint16_t timestamp = (((uint16_t)get_packet_data(packet)[0]) << 8) | get_packet_data(packet)[1];
+
     // check first if the routing tables need to be cleared in case of new network discovery packet
     if (get_num_routes()) // only if table is non-empty
     {
         uint8_t ref;
         get_route(&ref, 1, 0); // just get the first id in the first route for reference
-        // if src of current packet doesnt match src of table OR ctr doesnt match the current packet
-        if (ref != *get_packet_src(packet) || network_discover_ctr != *get_packet_data(packet))
+        // if src of current packet doesnt match src of table OR new timestamp
+        if (ref != *get_packet_src(packet) || flood_time != timestamp)
         {
             // clear if network discovery is started from different mote
             clear_routing_table();
         }
     }
 
-    network_discover_ctr = *get_packet_data(packet); // set the id
+    flood_time = timestamp; // update timestamp
 
     // Find node id in src array
     uint16_t tmp = packet->src_len;
@@ -188,7 +196,12 @@ void forward_discover(const plantio_packet_t *packet)
         memcpy(src_new, get_packet_src(packet), sizeof(uint8_t) * packet->src_len); // copy old arr to new
         src_new[packet->src_len] = linkaddr_node_addr.u8[1];                        // append node id
 
-        create_packet(0, src_new, src_len_new, NULL, 0, &network_discover_ctr, 1);
+        // transmit the timestamp further
+        uint8_t time[2];
+        time[0] = (uint8_t) (flood_time >> 8);
+        time[1] = (uint8_t) flood_time;
+
+        create_packet(0, src_new, src_len_new, NULL, 0, time, 2);
         broadcast_send(&plantio_broadcast);
         plantio_free(mmem);
     }
