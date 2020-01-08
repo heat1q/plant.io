@@ -44,7 +44,7 @@ int create_packet(const uint8_t type, const uint8_t *src, uint8_t src_len, const
 
 void print_packet(const plantio_packet_t *packet)
 {
-    printf("Packet Type: %u\r\n", packet->type);
+    printf("Packet Type: %u [%u Bytes]\r\n", packet->type, sizeof(plantio_packet_t) + packet->src_len + packet->dest_len + packet->data_len);
     printf("Src [%u]: ", packet->src_len);
     for (int i = 0; i < packet->src_len; i++)
     {

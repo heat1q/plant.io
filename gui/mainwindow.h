@@ -33,12 +33,13 @@ private:
     QMessageBox error;
     QGraphicsScene* mScene;
     void reset_graph();
-    void create_graph(QStringList List);
-    void make_plot();
-    void send2port(QString Input);
+    void create_graph(QStringList list);
+    void send2port(QString msg);
+    void print(QString msg);
 
 private slots:
     void receive();
+    void enableButton();
     void on_pushButton_Close_clicked();
     void on_pushButton_Open_clicked();
     void on_pushButton_Reload_clicked();
@@ -48,6 +49,9 @@ private slots:
     void on_pushButton_ZoomOut_clicked();
     void on_pushButton_SetMax_clicked();
     void on_pushButton_creategraph_clicked();
+    void on_pushButton_Refresh_Tab2_clicked();
+    void on_pushButton_SelectAll_Tab2_clicked();
+    void on_pushButton_UnselectAll_Tab2_clicked();
     void on_pushButton_Refresh_clicked();
     void on_pushButton_SetTemp_clicked();
     void on_pushButton_SetHum_clicked();
@@ -58,6 +62,10 @@ private slots:
     void on_pushButton_SendHum_clicked();
     void on_pushButton_SendLight_clicked();
     void on_pushButton_SendAll_clicked();
+    void on_pushButton_SelectAll_clicked();
+    void on_pushButton_UnselectAll_clicked();
+    void on_pushButton_Center_clicked();
+    void on_pushButton_Clear_clicked();
 };
 
 #endif // MAINWINDOW_H
