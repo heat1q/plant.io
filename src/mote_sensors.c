@@ -41,12 +41,12 @@ static void save_to_flash(char *filename, int fd_write, char *message, int n){
 
 	fd_write = cfs_open(filename, CFS_WRITE);
 	if(fd_write != -1) {
-	    n = cfs_write(fd_write, message, 32);
+	    n = cfs_write(fd_write, message, n);
 	    cfs_close(fd_write);
-	    printf("step 2: successfully written to cfs. wrote %i bytes\n", n);
+	    printf("\r\nSuccessfully written to cfs. wrote %i bytes", n);
 	}
 	else {
-	    printf("ERROR: could not write to memory in step 2.\n");
+	    printf("\r\nERROR: could not write to memory.");
 	}
 }
 
@@ -55,10 +55,10 @@ static void read_from_flash(char *filename, int fd_read,  char *buf, int n){
 	  fd_read = cfs_open(filename, CFS_READ);
 	  if(fd_read!=-1) {
 	    cfs_read(fd_read, buf, n);
-	    printf("step 3: %s\n", buf);
+	    printf("\r\n%s", buf);
 	    cfs_close(fd_read);
 	  } else {
-	    printf("ERROR: could not read from memory in step 3.\n");
+	    printf("\r\nERROR: could not read from memory");
 	  }
 }
 
