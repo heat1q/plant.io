@@ -8,7 +8,7 @@
 #include "cfs/cfs.h"
 #include "clock.h"
 
-#define TEMP_READ_INTERVAL CLOCK_SECOND * 1
+#define TEMP_READ_INTERVAL CLOCK_SECOND * 5
 
 //static int threshold_light = 100;
 
@@ -26,39 +26,43 @@ const uint16_t get_light_sensor_value(float m, float b, uint16_t adc_input)
 
 void write_sensor_data(const uint16_t temp, const uint16_t hum, const uint16_t light)
 {
-	set_num_sensor_data(get_num_senor_data() + 1);
+	set_num_sensor_data(get_num_sensor_data() + 1);
 	uint16_t timestamp = (uint16_t)clock_time();
 
 	// timestamps
 	int f_timestamps = cfs_open(FILE_SENSOR_DATA_TIMESTAMP, CFS_WRITE + CFS_APPEND);
 	if (f_timestamps != -1)
 	{
-		int n = cfs_write(f_timestamps, &timestamp, sizeof(uint16_t));
+		cfs_write(f_timestamps, &timestamp, sizeof(uint16_t));
 		cfs_close(f_timestamps);
+        printf("timestamp: %u\r\n", timestamp);
 	}
 
 	// temperature
 	int f_temp = cfs_open(FILE_TEMPERATURE, CFS_WRITE + CFS_APPEND);
 	if (f_temp != -1)
 	{
-		int n = cfs_write(f_temp, &temp, sizeof(uint16_t));
+		cfs_write(f_temp, &temp, sizeof(uint16_t));
 		cfs_close(f_temp);
+        printf("temp: %u\r\n", temp);
 	}
 
 	// humidity
 	int f_hum = cfs_open(FILE_HUMIDITY, CFS_WRITE + CFS_APPEND);
 	if (f_hum != -1)
 	{
-		int n = cfs_write(f_hum, &hum, sizeof(uint16_t));
+		cfs_write(f_hum, &hum, sizeof(uint16_t));
 		cfs_close(f_hum);
+        printf("hum: %u\r\n", hum);
 	}
 
 	// light
-	int f_light = cfs_open(FILE_HUMIDITY, CFS_WRITE + CFS_APPEND);
+	int f_light = cfs_open(FILE_LIGHT, CFS_WRITE + CFS_APPEND);
 	if (f_light != -1)
 	{
-		int n = cfs_write(f_light, &light, sizeof(uint16_t));
+		cfs_write(f_light, &light, sizeof(uint16_t));
 		cfs_close(f_light);
+        printf("light: %u\r\n", light);
 	}
 }
 
@@ -66,10 +70,10 @@ const uint16_t fetch_sensor_data(const char *filename, const uint16_t index)
 {
 	uint16_t data = 0;
 	int file = cfs_open(FILE_NUM_HOPS, CFS_READ);
-	if (filename != -1)
+	if (file != -1)
 	{
 		cfs_seek(file, sizeof(uint16_t) * index, CFS_SEEK_SET); // jump to right position
-		cfs_read(file, &data, sizeof(uint8_t));
+		cfs_read(file, &data, sizeof(uint16_t));
 		cfs_close(file);
 	}
 	return data;
@@ -109,12 +113,8 @@ PROCESS_THREAD(p_sensors, ev, data)
 			hum = adc_zoul.value(ZOUL_SENSORS_ADC3) >> 4;		// Humidity Sensor
 			temp = cc2538_temp_sensor.value(CC2538_SENSORS_VALUE_TYPE_CONVERTED);
 
-			printf("\r\nLight Sensor[Raw] = %d", light_raw);
-			printf("\r\nHumidity [Raw] = %d", hum);
-			printf("\r\nLuminosity [ADC1]: %d lux", getLightSensorValue(1.2, 0.0, light_raw));
-
 			//Save values
-			write_sensor_data(temp, hum, getLightSensorValue(1.2, 0.0, light_raw));
+			write_sensor_data(temp, hum, get_light_sensor_value(1.2, 0.0, light_raw));
 
 			//Check Thresholds
 			/*
@@ -170,7 +170,7 @@ void set_num_sensor_data(const uint16_t num_sensor_data)
 	int f_num_sensor_data = cfs_open(FILE_SENSOR_DATA_LENGTH, CFS_WRITE + CFS_APPEND);
 	if (f_num_sensor_data != -1)
 	{
-		int n = cfs_write(f_num_sensor_data, &num_sensor_data, sizeof(uint16_t));
+		cfs_write(f_num_sensor_data, &num_sensor_data, sizeof(uint16_t));
 		cfs_close(f_num_sensor_data);
 	}
 }

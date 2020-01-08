@@ -30,7 +30,7 @@
 #define FILE_SENSOR_DATA_LENGTH "fsensorsdatalen"
 #define FILE_LIGHT "flight"
 #define FILE_TEMPERATURE "ftemp"
-#define FILE_HUMIDITY "fhum"
+#define FILE_HUMIDITY "fhumidity"
 #define FILE_SENSOR_DATA_TIMESTAMP "ftimestamps"
 
 
