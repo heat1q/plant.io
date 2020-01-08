@@ -19,9 +19,6 @@ static const struct unicast_callbacks plantio_unicast_call = {unicast_receive};
 
 static struct etimer et_init_reply;
 static uint16_t flood_time;
-static const char *filename_num_routes = "num_routes";
-static const char *filename_hops = "routing_hops";
-static const char *filename_routing = "routing";
 
 PROCESS(p_conn, "");
 PROCESS_THREAD(p_conn, ev, data)
@@ -46,7 +43,7 @@ PROCESS(p_init_reply_timer, "");
 PROCESS_THREAD(p_init_reply_timer, ev, data)
 {
     PROCESS_BEGIN();
-    etimer_set(&et_init_reply, 2 * CLOCK_SECOND);
+    etimer_set(&et_init_reply, PLANTIO_RREP_TIMEOUT * CLOCK_SECOND);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et_init_reply));
     init_rreq_reply(find_best_route());
 
@@ -131,6 +128,9 @@ void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
 
 void init_network(void)
 {
+    // clear own routing table
+    clear_routing_table();
+
     // add timestamps to flooding packets
     flood_time = (uint16_t) clock_time(); // the 16 lsb should be enough
     // convert to byte array
@@ -154,10 +154,10 @@ void forward_discover(const plantio_packet_t *packet)
     // check first if the routing tables need to be cleared in case of new network discovery packet
     if (get_num_routes()) // only if table is non-empty
     {
-        uint8_t ref;
-        get_route(&ref, 1, 0); // just get the first id in the first route for reference
+        //uint8_t ref;
+        //get_route(&ref, 1, 0); // just get the first id in the first route for reference
         // if src of current packet doesnt match src of table OR new timestamp
-        if (ref != *get_packet_src(packet) || flood_time != timestamp)
+        if (/*ref != *get_packet_src(packet) || */flood_time != timestamp)
         {
             // clear if network discovery is started from different mote
             clear_routing_table();
@@ -184,7 +184,13 @@ void forward_discover(const plantio_packet_t *packet)
         {
             process_start(&p_init_reply_timer, NULL);
         }
-
+        else if (!etimer_expired(&et_init_reply))
+        {
+            PROCESS_CONTEXT_BEGIN(&p_init_reply_timer);
+            etimer_set(&et_init_reply, PLANTIO_RREP_TIMEOUT * CLOCK_SECOND);
+            PROCESS_CONTEXT_END(&p_init_reply_timer);
+        }
+        
         // append to the routing table & write table
         write_routing_table(get_packet_src(packet), packet->src_len);
 
@@ -258,8 +264,8 @@ void print_routing_table(void)
 
 void clear_routing_table(void)
 {
-    cfs_remove(filename_hops);
-    cfs_remove(filename_routing);
+    cfs_remove(FILE_NUM_HOPS);
+    cfs_remove(FILE_ROUTES);
     set_num_routes(0);
 }
 
@@ -267,7 +273,7 @@ void write_routing_table(const uint8_t *route, const uint8_t length)
 {
     set_num_routes(get_num_routes() + 1);
 
-    int f_hops = cfs_open(filename_hops, CFS_WRITE + CFS_APPEND);
+    int f_hops = cfs_open(FILE_NUM_HOPS, CFS_WRITE + CFS_APPEND);
     if (f_hops != -1)
     {
         int n = cfs_write(f_hops, &length, sizeof(uint8_t));
@@ -283,7 +289,7 @@ void write_routing_table(const uint8_t *route, const uint8_t length)
 #endif
     }
 
-    int f_routes = cfs_open(filename_routing, CFS_WRITE + CFS_APPEND);
+    int f_routes = cfs_open(FILE_ROUTES, CFS_WRITE + CFS_APPEND);
     if (f_routes != -1)
     {
         int n = cfs_write(f_routes, route, sizeof(uint8_t) * length);
@@ -303,7 +309,7 @@ void write_routing_table(const uint8_t *route, const uint8_t length)
 const uint16_t get_num_routes()
 {
     uint16_t num_routes = 0;
-    int f_num_routes = cfs_open(filename_num_routes, CFS_READ);
+    int f_num_routes = cfs_open(FILE_NUM_ROUTES, CFS_READ);
     if (f_num_routes != -1)
     {
         cfs_seek(f_num_routes, 0, CFS_SEEK_SET); // jump to first position
@@ -316,8 +322,8 @@ const uint16_t get_num_routes()
 
 void set_num_routes(const uint16_t num_routes)
 {
-    cfs_remove(filename_num_routes);
-    int f_num_routes = cfs_open(filename_num_routes, CFS_WRITE + CFS_APPEND);
+    cfs_remove(FILE_NUM_ROUTES);
+    int f_num_routes = cfs_open(FILE_NUM_ROUTES, CFS_WRITE + CFS_APPEND);
     if (f_num_routes != -1)
     {
         int n = cfs_write(f_num_routes, &num_routes, sizeof(uint16_t));
@@ -337,7 +343,7 @@ void set_num_routes(const uint16_t num_routes)
 const uint8_t get_num_hops(const uint16_t index)
 {
     uint8_t num_hops = 0;
-    int f_hops = cfs_open(filename_hops, CFS_READ);
+    int f_hops = cfs_open(FILE_NUM_HOPS, CFS_READ);
     if (f_hops != -1)
     {
         cfs_seek(f_hops, sizeof(uint8_t) * index, CFS_SEEK_SET); // jump to right position
@@ -358,7 +364,7 @@ void get_route(uint8_t *route, const uint16_t num_hops, const uint16_t index)
         route_index += get_num_hops(i);
     }
 
-    int f_route = cfs_open(filename_routing, CFS_READ);
+    int f_route = cfs_open(FILE_ROUTES, CFS_READ);
     if (f_route != -1)
     {
         cfs_seek(f_route, route_index, CFS_SEEK_SET); // jump to right position
@@ -385,6 +391,10 @@ void init_rreq_reply(const uint16_t index)
         unicast_send(&plantio_unicast, &next_hop);
 
         plantio_free(mmem_route);
+
+#ifdef PLANTIO_DEBUG
+        printf("Initialized Route Request Reply\r\n");
+#endif
     }
 }
 

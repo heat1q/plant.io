@@ -19,7 +19,14 @@
 #include <dev/serial-line.h>
 #include <lib/mmem.h>
 
-#define PLANTIO_MIN_RSSI -75
+#define PLANTIO_MIN_RSSI -60
+
+#define PLANTIO_RREP_TIMEOUT 3
+
+#define FILE_NUM_ROUTES "num_routes"
+#define FILE_NUM_HOPS "routing_hops"
+#define FILE_ROUTES "routing"
+
 
 /**
  * @brief Macro for allocating dynamic memory.
