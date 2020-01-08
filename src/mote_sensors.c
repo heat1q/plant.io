@@ -50,15 +50,14 @@ static void save_to_flash(char *filename, int fd_write, char *message, int n){
 	}
 }
 
-static void read_from_flash(char *filename, int fd_read, char *buf, ){
+static void read_from_flash(char *filename, int fd_read,  char *buf, int n){
 	strcpy(buf,"empty string");
-	fd_read = cfs_open(filename, CFS_READ);
-	if(fd_read!=-1) {
-	    cfs_read(fd_read, buf, sizeof(message));
+	  fd_read = cfs_open(filename, CFS_READ);
+	  if(fd_read!=-1) {
+	    cfs_read(fd_read, buf, n);
 	    printf("step 3: %s\n", buf);
 	    cfs_close(fd_read);
-	  }
-	else {
+	  } else {
 	    printf("ERROR: could not read from memory in step 3.\n");
 	  }
 }
@@ -95,7 +94,16 @@ PROCESS_THREAD (ext_sensors_process, ev, data) {
 	static struct etimer temp_reading_timer;
 	static uint16_t adc1_value, adc3_value;
 	static int counter = 0;
-
+	
+	//Test Daten fuer Flashspeicher
+	char message[32];
+	char buf[100];
+	strcpy(message,"#1.hello world.");
+	strcpy(buf,message);
+	char *filename = "msg_file";
+	int fd_read;
+	int n = sizeof(message);
+	
 	PROCESS_BEGIN ();
 
 	/* Configure the ADC ports */
@@ -109,8 +117,9 @@ PROCESS_THREAD (ext_sensors_process, ev, data) {
 
 		/* If timer expired, print sensor readings */
 	    if(ev == PROCESS_EVENT_TIMER) {
-
-
+		
+	    	//Aus Flashspeicher lesen
+		read_from_flash(filename, fd_read, buf, n);
 	    	/*
 	    	 * Read ADC values. Data is in the 12 MSBs
 	    	 */
@@ -152,8 +161,17 @@ PROCESS_THREAD (ext_sensors_process, ev, data) {
 }
 
 PROCESS_THREAD (call_data_storage, ev, data) {
-
+	//Daten auslesen, aktuell nach Event Button pressed, spaeter auf Anfrage GUI
 	int i;
+	
+	//Testdaten fuer Flashspeicher
+	char message[32];
+	char buf[100];
+	strcpy(message,"#1.hello world.");
+	strcpy(buf,message);
+	char *filename = "msg_file";
+	int fd_write
+	int n = sizeof(message);
 	PROCESS_BEGIN ();
 
 	while (1) {
@@ -165,7 +183,12 @@ PROCESS_THREAD (call_data_storage, ev, data) {
 					for(i=0;i<10;i++){
 						printf("\r\nNum_%i: Light: %i, Temp: %i", debug[i].counter, debug[i].light, debug[i].temp);
 					}
-				    debug = empty_measure;
+					
+				    //Speichern in Flashspeicher
+				    save_to_flash(filename, fd_write, message, n);
+				    //memset
+				    //debug = empty_measure;
+					
 
 				}
 		}
