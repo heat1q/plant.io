@@ -13,7 +13,8 @@
                 "${HOME}/.contiki/platform/zoul/remote-revb",
                 "${HOME}/.contiki/cpu/cc2538",
                 "${HOME}/.contiki/cpu/arm/common/CMSIS",
-                "${HOME}/.contiki/core/cfs"
+                "${HOME}/.contiki/core/cfs",
+                "${HOME}/.contiki/core/lib"
             ]
         }
     ],

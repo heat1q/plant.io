@@ -97,28 +97,33 @@ void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
     // check if packet is for current node
     if (get_packet_dest(packet)[packet->dest_len - 1] == linkaddr_node_addr.u8[1])
     {
-        forward_routing(packet);
+        if (packet->dest_len == 1) // check if packet reached destination
+        {
+            if (packet->type == 1) // for gui node
+            {
+                printf("<"); // begin data message
+                printf("%u:route", get_packet_src(packet)[0]);
+                for (uint8_t i = 0; i < packet->src_len; i++)
+                {
+                    printf(":%u", get_packet_src(packet)[i]);
+                }
+                printf(">"); // end data message
+
+                // write the table for the gui mote
+                write_routing_table(get_packet_src(packet), packet->src_len);
+            } else if (packet->type == 2) // data packet
+            {
+                //process_data_packet(packet);
+            }
+        }
+        else
+        {
+            forward_routing(packet);
+        }
     }
     else
     {
         printf("Received packet with incorrect destination. Destination was %u, but Node ID is%u\r\n", get_packet_dest(packet)[packet->dest_len - 1], linkaddr_node_addr.u8[1]);
-    }
-
-    if (packet->type == 1) // route reply message
-    {
-        if (packet->dest_len == 1) // for gui node
-        {
-            printf("<"); // begin data message
-            printf("%u:route", get_packet_src(packet)[0]);
-            for (uint8_t i = 0; i < packet->src_len; i++)
-            {
-                printf(":%u", get_packet_src(packet)[i]);
-            }
-            printf(">"); // end data message
-
-            // write the table for the gui mote
-            write_routing_table(get_packet_src(packet), packet->src_len);
-        }
     }
 
     plantio_free(mmem);
@@ -132,11 +137,11 @@ void init_network(void)
     clear_routing_table();
 
     // add timestamps to flooding packets
-    flood_time = (uint16_t) clock_time(); // the 16 lsb should be enough
+    flood_time = (uint16_t)clock_time(); // the 16 lsb should be enough
     // convert to byte array
     uint8_t timestamp[2];
-    timestamp[0] = (uint8_t) (flood_time >> 8);
-    timestamp[1] = (uint8_t) flood_time;
+    timestamp[0] = (uint8_t)(flood_time >> 8);
+    timestamp[1] = (uint8_t)flood_time;
 
     // broadcast packet with type 0, node id as src
     create_packet(0, &linkaddr_node_addr.u8[1], 1, NULL, 0, timestamp, 2);
@@ -157,7 +162,7 @@ void forward_discover(const plantio_packet_t *packet)
         //uint8_t ref;
         //get_route(&ref, 1, 0); // just get the first id in the first route for reference
         // if src of current packet doesnt match src of table OR new timestamp
-        if (/*ref != *get_packet_src(packet) || */flood_time != timestamp)
+        if (/*ref != *get_packet_src(packet) || */ flood_time != timestamp)
         {
             // clear if network discovery is started from different mote
             clear_routing_table();
@@ -190,7 +195,7 @@ void forward_discover(const plantio_packet_t *packet)
             etimer_set(&et_init_reply, PLANTIO_RREP_TIMEOUT * CLOCK_SECOND);
             PROCESS_CONTEXT_END(&p_init_reply_timer);
         }
-        
+
         // append to the routing table & write table
         write_routing_table(get_packet_src(packet), packet->src_len);
 
@@ -204,8 +209,8 @@ void forward_discover(const plantio_packet_t *packet)
 
         // transmit the timestamp further
         uint8_t time[2];
-        time[0] = (uint8_t) (flood_time >> 8);
-        time[1] = (uint8_t) flood_time;
+        time[0] = (uint8_t)(flood_time >> 8);
+        time[1] = (uint8_t)flood_time;
 
         create_packet(0, src_new, src_len_new, NULL, 0, time, 2);
         broadcast_send(&plantio_broadcast);
@@ -400,21 +405,50 @@ void init_rreq_reply(const uint16_t index)
 
 void forward_routing(const plantio_packet_t *packet)
 {
-    if (packet->dest_len > 1) // check if destination is already reached
+    // append own id to src
+    plantio_malloc(mmem_src, uint8_t, src_new, packet->src_len + 1);
+    memcpy(src_new, get_packet_src(packet), packet->src_len);
+    src_new[packet->src_len] = linkaddr_node_addr.u8[1];
+
+    // remove last id of dest, i.e. copy dest_len-1 bytes
+    create_packet(packet->type, src_new, packet->src_len + 1, get_packet_dest(packet), packet->dest_len - 1, get_packet_data(packet), packet->data_len);
+
+    linkaddr_t next_hop;
+    next_hop.u8[0] = 0;
+    next_hop.u8[1] = get_packet_dest(packet)[packet->dest_len - 2]; // get the next hop in the route
+    unicast_send(&plantio_unicast, &next_hop);
+
+    plantio_free(mmem_src);
+}
+
+void init_data_packet(const uint8_t dest, const uint8_t *data, const uint8_t data_len)
+{
+    // find the route to destination in table
+    uint16_t index = 0;
+    for (uint16_t i = 0; i < get_num_routes(); ++i)
     {
-        // append own id to src
-        plantio_malloc(mmem_src, uint8_t, src_new, packet->src_len + 1);
-        memcpy(src_new, get_packet_src(packet), packet->src_len);
-        src_new[packet->src_len] = linkaddr_node_addr.u8[1];
+        // just the first entry of the route
+        plantio_malloc(mmem, uint8_t, dest_ref, sizeof(uint8_t));
+        get_route(dest_ref, 1, i);
+        if (*dest_ref == dest) { index = i; }
+        plantio_free(mmem);
 
-        // remove last id of dest, i.e. copy dest_len-1 bytes
-        create_packet(packet->type, src_new, packet->src_len + 1, get_packet_dest(packet), packet->dest_len - 1, get_packet_data(packet), packet->data_len);
+        if (index) { break; }
+    }
 
+    const uint8_t num_hops = get_num_hops(index);
+
+    if (index)
+    {
+        plantio_malloc(mmem_route, uint8_t, route, sizeof(uint8_t) * num_hops);
+        get_route(route, num_hops, index);
+
+        create_packet(2, &linkaddr_node_addr.u8[1], 1, route, num_hops, data, data_len);
         linkaddr_t next_hop;
         next_hop.u8[0] = 0;
-        next_hop.u8[1] = get_packet_dest(packet)[packet->dest_len - 2]; // get the next hop in the route
+        next_hop.u8[1] = route[num_hops - 1];
         unicast_send(&plantio_unicast, &next_hop);
 
-        plantio_free(mmem_src);
+        plantio_free(mmem_route);
     }
 }

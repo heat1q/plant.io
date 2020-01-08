@@ -73,7 +73,16 @@ void parse_serial_input(char *input)
         {
             led_id = LEDS_ALL;
         }
-        leds_toggle(led_id);
+
+        if (id == linkaddr_node_addr.u8[1])
+        {
+            leds_toggle(led_id);
+        }
+        else // send to the right node
+        {
+            
+        }
+        
     }
     else if (strcmp(task, "init") == 0)
     {

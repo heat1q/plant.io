@@ -141,3 +141,11 @@ void init_rreq_reply(const uint16_t index);
  * @param packet 
  */
 void forward_routing(const plantio_packet_t *packet);
+
+/**
+ * @brief Sends a data packet to any node in the network.
+ * 
+ * @param dest Destination node id
+ * @param data Pointer to byte array data
+ */
+void init_data_packet(const uint8_t dest, const uint8_t *data, const uint8_t data_len);

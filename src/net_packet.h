@@ -34,8 +34,11 @@ struct __attribute__((__packed__)) //disable padding
  * given by the size of the data.
  * 
  * @details The following packet types are defined:
- * 0 --> Network discovery packet, scr_len=1, dest_len=0, data_len=1
- * 1 --> Route Request (RREQ) Reply packet
+ * 0 ==> [Broadcast] Network discovery packet
+ * 
+ * 1 ==> [Unicast] Route Request (RREQ) Reply packet
+ * 
+ * 2 ==> [Unicast] General Data 
  * 
  * @param type Type of packet
  * @param src Array of source addresses, i.e. node ids
