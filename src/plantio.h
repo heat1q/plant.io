@@ -27,6 +27,12 @@
 #define FILE_NUM_HOPS "routing_hops"
 #define FILE_ROUTES "routing"
 
+#define FILE_SENSOR_DATA_LENGTH "fsensorsdatalen"
+#define FILE_LIGHT "flight"
+#define FILE_TEMPERATURE "ftemp"
+#define FILE_HUMIDITY "fhum"
+#define FILE_SENSOR_DATA_TIMESTAMP "ftimestamps"
+
 
 /**
  * @brief Macro for allocating dynamic memory.
