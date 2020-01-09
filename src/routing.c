@@ -82,7 +82,7 @@ void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
 
 void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
 {
-    leds_on(LEDS_BLUE);
+    leds_toggle(LEDS_BLUE);
 
     // copy from buffer
     plantio_packet_t *packet_ptr = (plantio_packet_t *)packetbuf_dataptr();
@@ -93,6 +93,8 @@ void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
     printf("Unicast message received from 0x%x%x: [RSSI %d]\n", from->u8[0], from->u8[1], (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
     print_packet(packet);
 #endif
+
+    leds_toggle(LEDS_BLUE);
 
     // check if packet is for current node
     if (get_packet_dest(packet)[packet->dest_len - 1] == linkaddr_node_addr.u8[1])
@@ -111,9 +113,10 @@ void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
 
                 // write the table for the gui mote
                 write_routing_table(get_packet_src(packet), packet->src_len);
-            } else if (packet->type == 2) // data packet
+            }
+            else if (packet->type >= 10) // data packet
             {
-                //process_data_packet(packet);
+                process_data_packet(packet);
             }
         }
         else
@@ -127,8 +130,6 @@ void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
     }
 
     plantio_free(mmem);
-
-    leds_off(LEDS_BLUE);
 }
 
 void init_network(void)
@@ -421,29 +422,31 @@ void forward_routing(const plantio_packet_t *packet)
     plantio_free(mmem_src);
 }
 
-void init_data_packet(const uint8_t dest, const uint8_t *data, const uint8_t data_len)
+void init_data_packet(const uint8_t type, const uint8_t dest, const uint8_t *data, const uint8_t data_len, int index)
 {
-    // find the route to destination in table
-    uint16_t index = 0;
-    for (uint16_t i = 0; i < get_num_routes(); ++i)
+    if (index < 0) // index in rt is not specified
     {
-        // just the first entry of the route
-        plantio_malloc(mmem, uint8_t, dest_ref, sizeof(uint8_t));
-        get_route(dest_ref, 1, i);
-        if (*dest_ref == dest) { index = i; }
-        plantio_free(mmem);
+        // find the route to destination in table
+        for (uint16_t i = 0; i < get_num_routes(); ++i)
+        {
+            // just the first entry of the route
+            plantio_malloc(mmem, uint8_t, dest_ref, sizeof(uint8_t));
+            get_route(dest_ref, 1, i);
+            if (*dest_ref == dest) { index = i; }
+            plantio_free(mmem);
 
-        if (index) { break; }
+            if (index) { break; }
+        }
     }
 
-    const uint8_t num_hops = get_num_hops(index);
-
-    if (index)
+    if (index >= 0)
     {
+        const uint8_t num_hops = get_num_hops(index);
+
         plantio_malloc(mmem_route, uint8_t, route, sizeof(uint8_t) * num_hops);
         get_route(route, num_hops, index);
 
-        create_packet(2, &linkaddr_node_addr.u8[1], 1, route, num_hops, data, data_len);
+        create_packet(type, &linkaddr_node_addr.u8[1], 1, route, num_hops, data, data_len);
         linkaddr_t next_hop;
         next_hop.u8[0] = 0;
         next_hop.u8[1] = route[num_hops - 1];

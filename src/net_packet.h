@@ -38,7 +38,7 @@ struct __attribute__((__packed__)) //disable padding
  * 
  * 1 ==> [Unicast] Route Request (RREQ) Reply packet
  * 
- * 2 ==> [Unicast] General Data 
+ * >=10 ==> [Unicast] General Data 
  * 
  * @param type Type of packet
  * @param src Array of source addresses, i.e. node ids
@@ -61,3 +61,10 @@ void print_packet(const plantio_packet_t *packet);
 const uint8_t* get_packet_src(const plantio_packet_t *packet);
 const uint8_t* get_packet_dest(const plantio_packet_t *packet);
 const uint8_t* get_packet_data(const plantio_packet_t *packet);
+
+/**
+ * @brief Processes packets with id >= 10
+ * 
+ * @param packet Instance of packet struct
+ */
+void process_data_packet(const plantio_packet_t *packet);
