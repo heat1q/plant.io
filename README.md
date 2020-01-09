@@ -10,7 +10,11 @@ $ cd ~/.contiki
 $ git submodule update --init
 ```
 3. Install Python Serial\
-`$ pip install pyserial --user`
+```
+$ pip install pyserial --user
+```
 
 4. Building the source for Zolertia Re-mote and upload it\
-`$ ./src/build`
+```
+$ ./src/build
+```
