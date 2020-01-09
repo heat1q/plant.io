@@ -42,7 +42,7 @@ void parse_serial_input(char *input)
 
     char *tmp = strtok(input, ":");
     // check id
-    int id = atoi(tmp);
+    uint8_t id = (uint8_t) atoi(tmp);
 
     tmp = strtok(NULL, ":");
     // check task
@@ -55,7 +55,7 @@ void parse_serial_input(char *input)
     // continue with correct format
     if (strcmp(task, "led") == 0)
     {
-        int led_id;
+        uint8_t led_id;
         if (strcmp(args, "blue") == 0)
         {
             led_id = LEDS_BLUE;

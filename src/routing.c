@@ -56,7 +56,7 @@ void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
 
     if (rssi > PLANTIO_MIN_RSSI)
     {
-        leds_on(LEDS_GREEN);
+        leds_toggle(LEDS_GREEN);
 
         // copy from buffer
         plantio_packet_t *packet_ptr = (plantio_packet_t *)packetbuf_dataptr();
@@ -82,7 +82,7 @@ void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
 
         plantio_free(mmem);
 
-        leds_off(LEDS_GREEN);
+        leds_toggle(LEDS_GREEN);
     }
 }
 
@@ -468,7 +468,7 @@ void init_data_packet(const uint8_t type, const uint8_t dest, const uint8_t *dat
             if (*dest_ref == dest) { index = i; }
             plantio_free(mmem);
 
-            if (index) { break; }
+            if (index >= 0) { break; }
         }
     }
 
