@@ -30,10 +30,7 @@
 #define FILE_ROUTES "routing"
 
 #define FILE_SENSOR_DATA_LENGTH "fsensorsdatalen"
-#define FILE_LIGHT "flight"
-#define FILE_TEMPERATURE "ftemp"
-#define FILE_HUMIDITY "fhumidity"
-#define FILE_SENSOR_DATA_TIMESTAMP "ftimestamps"
+#define FILE_SENSOR_DATA "fsensordata"
 
 
 /**

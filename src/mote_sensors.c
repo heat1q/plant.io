@@ -8,11 +8,7 @@
 #include "cfs/cfs.h"
 #include "clock.h"
 
-#define TEMP_READ_INTERVAL CLOCK_SECOND * 5
-
 //static int threshold_light = 100;
-
-static struct etimer sensor_data_read_timer;
 
 const uint16_t get_light_sensor_value(float m, float b, uint16_t adc_input)
 {
@@ -28,101 +24,46 @@ void write_sensor_data(const uint16_t temp, const uint16_t hum, const uint16_t l
 {
 	uint16_t timestamp = (uint16_t)clock_time();
 	uint16_t newLength = get_num_sensor_data() + 1; // New amount of sensor values
+	printf("Write: timestamp = %i; temp = %i; hum = %i; light = %i\n", timestamp, temp, hum, light);
+
 	if (newLength <= MAX_NUM_OF_VALUES) { // Array wasn't full yet
 		set_num_sensor_data(newLength);
-
-		// timestamps
-		int f_timestamps = cfs_open(FILE_SENSOR_DATA_TIMESTAMP, CFS_WRITE + CFS_APPEND);
-		if (f_timestamps != -1)
+		uint16_t new_data [4];
+		new_data[0] = timestamp;
+		new_data[1] = temp;
+		new_data[2] = hum;
+		new_data[3] = light;
+		
+		int fd = cfs_open(FILE_SENSOR_DATA, CFS_WRITE + CFS_APPEND);
+		if (fd != -1)
 		{
-			cfs_write(f_timestamps, &timestamp, sizeof(uint16_t));
-			cfs_close(f_timestamps);
-			printf("timestamp: %u\r\n", timestamp);
-		}
-
-		// temperature
-		int f_temp = cfs_open(FILE_TEMPERATURE, CFS_WRITE + CFS_APPEND);
-		if (f_temp != -1)
-		{
-			cfs_write(f_temp, &temp, sizeof(uint16_t));
-			cfs_close(f_temp);
-			printf("temp: %u\r\n", temp);
-		}
-
-		// humidity
-		int f_hum = cfs_open(FILE_HUMIDITY, CFS_WRITE + CFS_APPEND);
-		if (f_hum != -1)
-		{
-			cfs_write(f_hum, &hum, sizeof(uint16_t));
-			cfs_close(f_hum);
-			printf("hum: %u\r\n", hum);
-		}
-
-		// light
-		int f_light = cfs_open(FILE_LIGHT, CFS_WRITE + CFS_APPEND);
-		if (f_light != -1)
-		{
-			cfs_write(f_light, &light, sizeof(uint16_t));
-			cfs_close(f_light);
-			printf("light: %u\r\n", light);
+			cfs_write(fd, &new_data, 4 * sizeof(uint16_t));
+			cfs_close(fd);
 		}
 	}
 	else { // Array was already full
-		int16_t timeValues[MAX_NUM_OF_VALUES];
-		int16_t tempValues[MAX_NUM_OF_VALUES];
-		int16_t humValues[MAX_NUM_OF_VALUES];
-		int16_t lightValues[MAX_NUM_OF_VALUES];
-		for (uint16_t i = 0; i < MAX_NUM_OF_VALUES - 1; ++i){ // Fetch all values except oldest
-			timeValues[i] = fetch_sensor_data(FILE_SENSOR_DATA_TIMESTAMP, i + 1);
-			tempValues[i] = fetch_sensor_data(FILE_TEMPERATURE, i + 1);
-			humValues[i] = fetch_sensor_data(FILE_HUMIDITY, i + 1);
-			lightValues[i] = fetch_sensor_data(FILE_LIGHT, i + 1);
+		set_num_sensor_data(MAX_NUM_OF_VALUES); // Probably redundant!
+
+		// Get old values (except oldest)
+		int16_t sensor_data[4 * MAX_NUM_OF_VALUES];
+		for (uint16_t i = 0; i < MAX_NUM_OF_VALUES - 1; ++i){ // Fetch all values except from oldest block
+			sensor_data[4 * i]     = fetch_sensor_data(FILE_SENSOR_DATA, 4 * i + 4); // timestamp
+			sensor_data[4 * i + 1] = fetch_sensor_data(FILE_SENSOR_DATA, 4 * i + 5); // temp
+			sensor_data[4 * i + 2] = fetch_sensor_data(FILE_SENSOR_DATA, 4 * i + 6); // hum
+			sensor_data[4 * i + 3] = fetch_sensor_data(FILE_SENSOR_DATA, 4 * i + 7); // light
 		}
-		timeValues[MAX_NUM_OF_VALUES-1] = timestamp;
-		tempValues[MAX_NUM_OF_VALUES-1] = temp;
-		humValues[MAX_NUM_OF_VALUES-1] = hum;
-		lightValues[MAX_NUM_OF_VALUES-1] = light;
+		sensor_data[4 * MAX_NUM_OF_VALUES - 4] = timestamp;
+		sensor_data[4 * MAX_NUM_OF_VALUES - 3] = temp;
+		sensor_data[4 * MAX_NUM_OF_VALUES - 2] = hum;
+		sensor_data[4 * MAX_NUM_OF_VALUES - 1] = light;
 
-		cfs_remove(FILE_SENSOR_DATA_TIMESTAMP);
-		cfs_remove(FILE_LIGHT);
-		cfs_remove(FILE_TEMPERATURE);
-		cfs_remove(FILE_HUMIDITY);
-		set_num_sensor_data(MAX_NUM_OF_VALUES);
-
-		// timestamps
-		int f_timestamps = cfs_open(FILE_SENSOR_DATA_TIMESTAMP, CFS_WRITE);
-		if (f_timestamps != -1)
+		// Remove and subsequently replace files with new data array
+		cfs_remove(FILE_SENSOR_DATA);
+		int fd = cfs_open(FILE_SENSOR_DATA, CFS_WRITE);
+		if (fd != -1)
 		{
-			cfs_write(f_timestamps, &timeValues, MAX_NUM_OF_VALUES * sizeof(uint16_t));
-			cfs_close(f_timestamps);
-			printf("timestamp: %u\r\n", timestamp);
-		}
-
-		// temperature
-		int f_temp = cfs_open(FILE_TEMPERATURE, CFS_WRITE);
-		if (f_temp != -1)
-		{
-			cfs_write(f_temp, &tempValues, MAX_NUM_OF_VALUES * sizeof(uint16_t));
-			cfs_close(f_temp);
-			printf("temp: %u\r\n", temp);
-		}
-
-		// humidity
-		int f_hum = cfs_open(FILE_HUMIDITY, CFS_WRITE);
-		if (f_hum != -1)
-		{
-			cfs_write(f_hum, &humValues, MAX_NUM_OF_VALUES * sizeof(uint16_t));
-			cfs_close(f_hum);
-			printf("hum: %u\r\n", hum);
-		}
-
-		// light
-		int f_light = cfs_open(FILE_LIGHT, CFS_WRITE);
-		if (f_light != -1)
-		{
-			cfs_write(f_light, &lightValues, MAX_NUM_OF_VALUES * sizeof(uint16_t));
-			cfs_close(f_light);
-			printf("light: %u\r\n", light);
+			cfs_write(fd, &sensor_data, 4 * MAX_NUM_OF_VALUES * sizeof(uint16_t));
+			cfs_close(fd);
 		}
 	}
 }
@@ -139,6 +80,9 @@ const uint16_t fetch_sensor_data(const char *filename, const uint16_t index)
 	}
 	return data;
 }
+
+#define TEMP_READ_INTERVAL CLOCK_SECOND * 3
+static struct etimer sensor_data_read_timer;
 
 //Prozesse
 PROCESS(p_sensors, "");
@@ -176,7 +120,7 @@ PROCESS_THREAD(p_sensors, ev, data)
 
 			//Save values
 			write_sensor_data(temp, hum, get_light_sensor_value(1.2, 0.0, light_raw));
-
+			
 			//Check Thresholds
 			/*
 			if (adc1_value < threshold_light)
@@ -228,7 +172,7 @@ const uint16_t get_num_sensor_data()
 void set_num_sensor_data(const uint16_t num_sensor_data)
 {
 	cfs_remove(FILE_SENSOR_DATA_LENGTH);
-	int f_num_sensor_data = cfs_open(FILE_SENSOR_DATA_LENGTH, CFS_WRITE + CFS_APPEND);
+	int f_num_sensor_data = cfs_open(FILE_SENSOR_DATA_LENGTH, CFS_WRITE);
 	if (f_num_sensor_data != -1)
 	{
 		cfs_write(f_num_sensor_data, &num_sensor_data, sizeof(uint16_t));
@@ -239,22 +183,21 @@ void set_num_sensor_data(const uint16_t num_sensor_data)
 void clear_sensor_data()
 {
 	set_num_sensor_data(0);
-	cfs_remove(FILE_LIGHT);
-	cfs_remove(FILE_TEMPERATURE);
-	cfs_remove(FILE_HUMIDITY);
+	cfs_remove(FILE_SENSOR_DATA);
 }
 
 void print_sensor_data()
 {
 	printf("Thresholds: \r\n");
-	printf("Timestamp |  Light   | Humidity | Temperatur\r\n");
+	printf("Timestamp |  Temp    | Humidity | Light     \r\n");
 	printf("----------+----------+----------+-----------\r\n");
+
 	for (uint16_t i = 0; i < get_num_sensor_data(); ++i)
 	{
 		printf(" %8u | %8u | %8u | %8u\r\n",
-			   fetch_sensor_data(FILE_SENSOR_DATA_TIMESTAMP, i),
-			   fetch_sensor_data(FILE_LIGHT, i),
-			   fetch_sensor_data(FILE_HUMIDITY, i),
-			   fetch_sensor_data(FILE_TEMPERATURE, i));
+			   fetch_sensor_data(FILE_SENSOR_DATA, i*4),		// time
+			   fetch_sensor_data(FILE_SENSOR_DATA, i*4 + 1),	// temperature
+			   fetch_sensor_data(FILE_SENSOR_DATA, i*4 + 2),	// humidity
+			   fetch_sensor_data(FILE_SENSOR_DATA, i*4 + 3));	// light
 	}
 }
