@@ -27,7 +27,8 @@ void on_button_pressed(void)
     if (button_sensor.value(0) == 0) // pressed
     {
         //init_network(); // for testing
-        init_rreq_reply(find_best_route());
+        //init_rreq_reply(find_best_route());
+        add_device_to_network();
     }
 
     /*

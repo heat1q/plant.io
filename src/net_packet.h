@@ -38,6 +38,10 @@ struct __attribute__((__packed__)) //disable padding
  * 
  * 1 ==> [Unicast] Route Request (RREQ) Reply packet
  * 
+ * 2 ==> [Broadcast] Request for the best route of the neighbouring nodes
+ * 
+ * 3 ==> [Unicast] Reply with the best route to new integrated node 
+ * 
  * >=10 ==> [Unicast] General Data 
  * 
  * @param type Type of packet
