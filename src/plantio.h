@@ -23,6 +23,8 @@
 
 #define PLANTIO_RREP_TIMEOUT 3
 
+#define MAX_NUM_OF_VALUES 5
+
 #define FILE_NUM_ROUTES "num_routes"
 #define FILE_NUM_HOPS "routing_hops"
 #define FILE_ROUTES "routing"

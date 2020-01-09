@@ -26,50 +26,111 @@ const uint16_t get_light_sensor_value(float m, float b, uint16_t adc_input)
 
 void write_sensor_data(const uint16_t temp, const uint16_t hum, const uint16_t light)
 {
-	set_num_sensor_data(get_num_sensor_data() + 1);
 	uint16_t timestamp = (uint16_t)clock_time();
+	uint16_t newLength = get_num_sensor_data() + 1; // New amount of sensor values
+	if (newLength <= MAX_NUM_OF_VALUES) { // Array wasn't full yet
+		set_num_sensor_data(newLength);
 
-	// timestamps
-	int f_timestamps = cfs_open(FILE_SENSOR_DATA_TIMESTAMP, CFS_WRITE + CFS_APPEND);
-	if (f_timestamps != -1)
-	{
-		cfs_write(f_timestamps, &timestamp, sizeof(uint16_t));
-		cfs_close(f_timestamps);
-        printf("timestamp: %u\r\n", timestamp);
+		// timestamps
+		int f_timestamps = cfs_open(FILE_SENSOR_DATA_TIMESTAMP, CFS_WRITE + CFS_APPEND);
+		if (f_timestamps != -1)
+		{
+			cfs_write(f_timestamps, &timestamp, sizeof(uint16_t));
+			cfs_close(f_timestamps);
+			printf("timestamp: %u\r\n", timestamp);
+		}
+
+		// temperature
+		int f_temp = cfs_open(FILE_TEMPERATURE, CFS_WRITE + CFS_APPEND);
+		if (f_temp != -1)
+		{
+			cfs_write(f_temp, &temp, sizeof(uint16_t));
+			cfs_close(f_temp);
+			printf("temp: %u\r\n", temp);
+		}
+
+		// humidity
+		int f_hum = cfs_open(FILE_HUMIDITY, CFS_WRITE + CFS_APPEND);
+		if (f_hum != -1)
+		{
+			cfs_write(f_hum, &hum, sizeof(uint16_t));
+			cfs_close(f_hum);
+			printf("hum: %u\r\n", hum);
+		}
+
+		// light
+		int f_light = cfs_open(FILE_LIGHT, CFS_WRITE + CFS_APPEND);
+		if (f_light != -1)
+		{
+			cfs_write(f_light, &light, sizeof(uint16_t));
+			cfs_close(f_light);
+			printf("light: %u\r\n", light);
+		}
 	}
+	else { // Array was already full
+		int16_t timeValues[MAX_NUM_OF_VALUES];
+		int16_t tempValues[MAX_NUM_OF_VALUES];
+		int16_t humValues[MAX_NUM_OF_VALUES];
+		int16_t lightValues[MAX_NUM_OF_VALUES];
+		for (uint16_t i = 0; i < MAX_NUM_OF_VALUES - 1; ++i){ // Fetch all values except oldest
+			timeValues[i] = fetch_sensor_data(FILE_SENSOR_DATA_TIMESTAMP, i + 1);
+			tempValues[i] = fetch_sensor_data(FILE_TEMPERATURE, i + 1);
+			humValues[i] = fetch_sensor_data(FILE_HUMIDITY, i + 1);
+			lightValues[i] = fetch_sensor_data(FILE_LIGHT, i + 1);
+		}
+		timeValues[MAX_NUM_OF_VALUES-1] = timestamp;
+		tempValues[MAX_NUM_OF_VALUES-1] = temp;
+		humValues[MAX_NUM_OF_VALUES-1] = hum;
+		lightValues[MAX_NUM_OF_VALUES-1] = light;
 
-	// temperature
-	int f_temp = cfs_open(FILE_TEMPERATURE, CFS_WRITE + CFS_APPEND);
-	if (f_temp != -1)
-	{
-		cfs_write(f_temp, &temp, sizeof(uint16_t));
-		cfs_close(f_temp);
-        printf("temp: %u\r\n", temp);
-	}
+		cfs_remove(FILE_SENSOR_DATA_TIMESTAMP);
+		cfs_remove(FILE_LIGHT);
+		cfs_remove(FILE_TEMPERATURE);
+		cfs_remove(FILE_HUMIDITY);
+		set_num_sensor_data(MAX_NUM_OF_VALUES);
 
-	// humidity
-	int f_hum = cfs_open(FILE_HUMIDITY, CFS_WRITE + CFS_APPEND);
-	if (f_hum != -1)
-	{
-		cfs_write(f_hum, &hum, sizeof(uint16_t));
-		cfs_close(f_hum);
-        printf("hum: %u\r\n", hum);
-	}
+		// timestamps
+		int f_timestamps = cfs_open(FILE_SENSOR_DATA_TIMESTAMP, CFS_WRITE);
+		if (f_timestamps != -1)
+		{
+			cfs_write(f_timestamps, &timeValues, MAX_NUM_OF_VALUES * sizeof(uint16_t));
+			cfs_close(f_timestamps);
+			printf("timestamp: %u\r\n", timestamp);
+		}
 
-	// light
-	int f_light = cfs_open(FILE_LIGHT, CFS_WRITE + CFS_APPEND);
-	if (f_light != -1)
-	{
-		cfs_write(f_light, &light, sizeof(uint16_t));
-		cfs_close(f_light);
-        printf("light: %u\r\n", light);
+		// temperature
+		int f_temp = cfs_open(FILE_TEMPERATURE, CFS_WRITE);
+		if (f_temp != -1)
+		{
+			cfs_write(f_temp, &tempValues, MAX_NUM_OF_VALUES * sizeof(uint16_t));
+			cfs_close(f_temp);
+			printf("temp: %u\r\n", temp);
+		}
+
+		// humidity
+		int f_hum = cfs_open(FILE_HUMIDITY, CFS_WRITE);
+		if (f_hum != -1)
+		{
+			cfs_write(f_hum, &humValues, MAX_NUM_OF_VALUES * sizeof(uint16_t));
+			cfs_close(f_hum);
+			printf("hum: %u\r\n", hum);
+		}
+
+		// light
+		int f_light = cfs_open(FILE_LIGHT, CFS_WRITE);
+		if (f_light != -1)
+		{
+			cfs_write(f_light, &lightValues, MAX_NUM_OF_VALUES * sizeof(uint16_t));
+			cfs_close(f_light);
+			printf("light: %u\r\n", light);
+		}
 	}
 }
 
 const uint16_t fetch_sensor_data(const char *filename, const uint16_t index)
 {
 	uint16_t data = 0;
-	int file = cfs_open(FILE_NUM_HOPS, CFS_READ);
+	int file = cfs_open(filename, CFS_READ);
 	if (file != -1)
 	{
 		cfs_seek(file, sizeof(uint16_t) * index, CFS_SEEK_SET); // jump to right position
