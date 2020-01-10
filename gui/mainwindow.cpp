@@ -168,6 +168,8 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
         {
             str.remove("\n", Qt::CaseSensitive);
             print(str);
+            //if (str.startsWith(""))
+            //create_graph(str)
             this->repaint();    // Update content of window immediately
             str.clear();
         }
