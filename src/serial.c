@@ -12,6 +12,7 @@
 #include "serial.h"
 #include "routing.h"
 #include "net_packet.h"
+#include "mote_sensors.h"
 
 PROCESS(p_serial, "Serial Event listener");
 PROCESS_THREAD(p_serial, ev, data)
@@ -94,5 +95,27 @@ void parse_serial_input(char *input)
     else if (strcmp(task ,"reply") == 0)
     {
         init_rreq_reply(atol(args));
+    }
+    else if (strcmp(task ,"set_th") == 0)
+    {
+        if (id == linkaddr_node_addr.u8[1])
+        {
+            write_thresholds(args);
+        }
+        else // send to the right node
+        {
+            init_data_packet(11, id, args, strlen(args), -1);
+        }
+    }
+    else if (strcmp(task ,"get_th") == 0)
+    {
+        if (id == linkaddr_node_addr.u8[1])
+        {
+            printf("<%u:th:%li:%li:%li:%li:%li:%li>", linkaddr_node_addr.u8[1], get_threshold(0), get_threshold(1), get_threshold(2), get_threshold(3), get_threshold(4), get_threshold(5));
+        }
+        else 
+        {
+            init_data_packet(12, id, args, strlen(args), -1);
+        }
     }
 }

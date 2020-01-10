@@ -89,7 +89,7 @@ PROCESS_THREAD(p_sensors, ev, data)
     // set default thresholds if necessary
     if (get_threshold(LIGHT_LOW) < 0 || get_threshold(LIGHT_HIGH) < 0 || get_threshold(TEMP_LOW) < 0 || get_threshold(TEMP_HIGH) < 0 || get_threshold(HUM_LOW) < 0 || get_threshold(HUM_HIGH) < 0) 
     {
-        write_thresholds(0, 50000, 0, 100, 0, 50000);
+        write_thresholds("0:50000:0:100:0:50000");
     }
 
     uint16_t light; // adc1
@@ -220,8 +220,16 @@ void print_sensor_data()
     }
 }
 
-void write_thresholds(int32_t temp_low, int32_t temp_high, int32_t hum_low, int32_t hum_high, int32_t light_low, int32_t light_high)
+void write_thresholds(const char *str)
 {
+    int32_t data[6];
+    char* tmp = strtok(str, ":");
+    for (uint8_t i = 0; i < 6; i++)
+    {
+        data[i] = atoi(tmp);
+        tmp = strtok(NULL, ":");
+    }
+
     int32_t th[6] = {-1};
     int f_th = cfs_open(FILE_THRESHOLD, CFS_READ);
     if (f_th != -1)
@@ -233,12 +241,12 @@ void write_thresholds(int32_t temp_low, int32_t temp_high, int32_t hum_low, int3
 
     cfs_remove(FILE_THRESHOLD);
 
-    if (temp_low >= 0) { th[TEMP_LOW] = temp_low; }
-    if (temp_high >= 0) { th[TEMP_HIGH] = temp_high; }
-    if (hum_low >= 0) { th[HUM_LOW] = hum_low; }
-    if (hum_high >= 0) { th[HUM_HIGH] = hum_high; }
-    if (light_low >= 0) { th[LIGHT_LOW] = light_low; }
-    if (light_high >= 0) { th[LIGHT_HIGH] = light_high; }
+    if (data[TEMP_LOW] >= 0) { th[TEMP_LOW] = data[TEMP_LOW]; }
+    if (data[TEMP_HIGH] >= 0) { th[TEMP_HIGH] = data[TEMP_HIGH]; }
+    if (data[HUM_LOW] >= 0) { th[HUM_LOW] = data[HUM_LOW]; }
+    if (data[HUM_HIGH] >= 0) { th[HUM_HIGH] = data[HUM_HIGH]; }
+    if (data[LIGHT_LOW] >= 0) { th[LIGHT_LOW] = data[LIGHT_LOW]; }
+    if (data[LIGHT_HIGH] >= 0) { th[LIGHT_HIGH] = data[LIGHT_HIGH]; }
 
     f_th = cfs_open(FILE_THRESHOLD, CFS_WRITE);
     if (f_th != -1)

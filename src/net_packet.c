@@ -10,6 +10,7 @@
  */
 #include "net_packet.h"
 #include "routing.h"
+#include "mote_sensors.h"
 
 int create_packet(const uint8_t type, const uint8_t *src, uint8_t src_len, const uint8_t *dest, uint8_t dest_len, const uint8_t *data, uint8_t data_len)
 {
@@ -74,5 +75,20 @@ void process_data_packet(const plantio_packet_t *packet)
     if (packet->type == 10)
     {
         leds_toggle(*get_packet_data(packet));
+    }
+    else if (packet->type == 11) // setting thresholds
+    {
+        write_thresholds(packet->data);
+    }
+    else if (packet->type == 12) // request thresholds
+    {
+        char str[128];
+        sprintf(str, "%li:%li:%li:%li:%li:%li", get_threshold(0), get_threshold(1), get_threshold(2), get_threshold(3), get_threshold(4), get_threshold(5));
+
+        init_data_packet(13, *get_packet_src(packet), str, strlen(str), get_best_route_index());
+    }
+    else if (packet->type == 13) // reply for request thresholds
+    {
+        printf("<%u:th:%s>", get_packet_src(packet)[0], get_packet_data(packet));
     }
 }
