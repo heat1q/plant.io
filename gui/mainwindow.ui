@@ -1260,6 +1260,14 @@ amount of motes</string>
             <height>300</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <family>Monospace</family>
+           </font>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
           <property name="inputMethodHints">
            <set>Qt::ImhNone</set>
           </property>

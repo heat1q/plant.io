@@ -18,6 +18,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWin
     if (ui->comboBox_Interface->count() == 0){
         print("No USB ports available.\nConnect a USB device and try again.\n");
     }
+
+    QPalette p = ui->textEdit_Status->palette(); // define pallete for textEdit..
+    p.setColor(QPalette::Base, Qt::black); // set color "Red" for textedit base
+    p.setColor(QPalette::Text, Qt::white); // set text color which is selected from color pallete
+    ui->textEdit_Status->setPalette(p); // change textedit palette
 }
 
 MainWindow::~MainWindow()
@@ -141,7 +146,7 @@ void MainWindow::send2port(QString input) // Send message to port
     byteArray.append('\n');
     if (port.write(byteArray)==-1)
     {
-        print("QextSerialPort: device not open");
+        print("QextSerialPort: device not open!\n");
     }
 }
 
