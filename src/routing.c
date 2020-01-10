@@ -56,7 +56,7 @@ void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
 
     if (rssi > PLANTIO_MIN_RSSI)
     {
-        leds_on(LEDS_GREEN);
+        leds_toggle(LEDS_GREEN);
 
         // copy from buffer
         plantio_packet_t *packet_ptr = (plantio_packet_t *)packetbuf_dataptr();
@@ -73,10 +73,16 @@ void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from)
         {
             forward_discover(packet);
         }
+        else if (packet->type == 2)
+        {
+            // a new node is integrated into the network
+            // send a unicast to the node with the best route
+            send_best_route(*get_packet_src(packet));
+        }
 
         plantio_free(mmem);
 
-        leds_off(LEDS_GREEN);
+        leds_toggle(LEDS_GREEN);
     }
 }
 
@@ -113,6 +119,10 @@ void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
 
                 // write the table for the gui mote
                 write_routing_table(get_packet_src(packet), packet->src_len);
+            }
+            else if (packet->type == 3) // reply with best route
+            {
+                receive_route(packet);
             }
             else if (packet->type >= 10) // data packet
             {
@@ -221,17 +231,24 @@ void forward_discover(const plantio_packet_t *packet)
 
 const uint16_t find_best_route(void)
 {
-    // for now, just return the shortest (hops) route
-    uint16_t min = 1 << 15;
     uint16_t index = 0;
-    for (uint16_t i = 0; i < get_num_routes(); ++i)
+    uint16_t num_routes = get_num_routes();
+    if (num_routes)
     {
-        uint16_t num_hops = get_num_hops(i);
-        if (num_hops < min)
+        // for now, just return the shortest (hops) route
+        uint16_t min = 1 << 15;
+        for (uint16_t i = 0; i < get_num_routes(); ++i)
         {
-            min = num_hops;
-            index = i;
+            uint16_t num_hops = get_num_hops(i);
+            if (num_hops < min)
+            {
+                min = num_hops;
+                index = i;
+            }
         }
+
+        // save the index of the optimal route
+        set_num_routes(num_routes, (int16_t) index);
     }
 
     return index;
@@ -239,7 +256,7 @@ const uint16_t find_best_route(void)
 
 void print_routing_table(void)
 {
-    uint16_t index = find_best_route();
+    uint16_t index = (uint16_t) get_best_route_index();
     printf("opt |  i  | Hops | Routes for Device %u\r\n", linkaddr_node_addr.u8[1]);
     printf("----+-----+------+------------------------\r\n");
     for (uint16_t i = 0; i < get_num_routes(); ++i)
@@ -272,12 +289,12 @@ void clear_routing_table(void)
 {
     cfs_remove(FILE_NUM_HOPS);
     cfs_remove(FILE_ROUTES);
-    set_num_routes(0);
+    set_num_routes(0, -1);
 }
 
 void write_routing_table(const uint8_t *route, const uint8_t length)
 {
-    set_num_routes(get_num_routes() + 1);
+    set_num_routes(get_num_routes() + 1, get_best_route_index());
 
     int f_hops = cfs_open(FILE_NUM_HOPS, CFS_WRITE + CFS_APPEND);
     if (f_hops != -1)
@@ -326,13 +343,28 @@ const uint16_t get_num_routes()
     return num_routes;
 }
 
-void set_num_routes(const uint16_t num_routes)
+const int16_t get_best_route_index()
+{
+    int16_t best_route_index = -1;
+    int f_num_routes = cfs_open(FILE_NUM_ROUTES, CFS_READ);
+    if (f_num_routes != -1)
+    {
+        cfs_seek(f_num_routes, sizeof(uint16_t)*1, CFS_SEEK_SET);
+        cfs_read(f_num_routes, &best_route_index, sizeof(int16_t));
+        cfs_close(f_num_routes);
+    }
+    // if file cannot be read, return 0
+    return best_route_index;
+}
+
+void set_num_routes(const uint16_t num_routes, const int16_t best_route_index)
 {
     cfs_remove(FILE_NUM_ROUTES);
     int f_num_routes = cfs_open(FILE_NUM_ROUTES, CFS_WRITE + CFS_APPEND);
     if (f_num_routes != -1)
     {
         int n = cfs_write(f_num_routes, &num_routes, sizeof(uint16_t));
+        n += cfs_write(f_num_routes, &best_route_index, sizeof(int16_t));
         cfs_close(f_num_routes);
 #ifdef PLANTIO_DEBUG
         printf("f_num_routes: successfully written to routing table. wrote %i bytes\r\n", n);
@@ -361,22 +393,23 @@ const uint8_t get_num_hops(const uint16_t index)
 
 void get_route(uint8_t *route, const uint16_t num_hops, const uint16_t index)
 {
-    //plantio_malloc(mmem_hops, uint16_t, hops, num_routes);
-
-    uint16_t route_index = 0;
-    // find the right index in the route array
-    for (uint16_t i = 0; i < index; i++)
+    if (get_num_routes())
     {
-        route_index += get_num_hops(i);
-    }
+        uint16_t route_index = 0;
+        // find the right index in the route array
+        for (uint16_t i = 0; i < index; i++)
+        {
+            route_index += get_num_hops(i);
+        }
 
-    int f_route = cfs_open(FILE_ROUTES, CFS_READ);
-    if (f_route != -1)
-    {
-        cfs_seek(f_route, route_index, CFS_SEEK_SET); // jump to right position
-        // the next 2 bytes are the right value
-        cfs_read(f_route, route, sizeof(uint8_t) * num_hops);
-        cfs_close(f_route);
+        int f_route = cfs_open(FILE_ROUTES, CFS_READ);
+        if (f_route != -1)
+        {
+            cfs_seek(f_route, route_index, CFS_SEEK_SET); // jump to right position
+            // the next 2 bytes are the right value
+            cfs_read(f_route, route, sizeof(uint8_t) * num_hops);
+            cfs_close(f_route);
+        }
     }
 }
 
@@ -435,7 +468,7 @@ void init_data_packet(const uint8_t type, const uint8_t dest, const uint8_t *dat
             if (*dest_ref == dest) { index = i; }
             plantio_free(mmem);
 
-            if (index) { break; }
+            if (index >= 0) { break; }
         }
     }
 
@@ -454,4 +487,71 @@ void init_data_packet(const uint8_t type, const uint8_t dest, const uint8_t *dat
 
         plantio_free(mmem_route);
     }
+}
+
+void add_device_to_network(void)
+{
+    clear_routing_table();
+
+    // broadcast packet with type 2, node id as src
+    create_packet(2, &linkaddr_node_addr.u8[1], 1, NULL, 0, NULL, 0);
+    broadcast_send(&plantio_broadcast);
+}
+
+void send_best_route(const uint8_t dest)
+{
+    int16_t index = get_best_route_index();
+
+    if (index >= 0)
+    {
+        uint8_t num_hops = get_num_hops(index);
+
+        plantio_malloc(mmem_route, uint8_t, route, sizeof(uint8_t) * (num_hops + 1));
+        get_route(route, num_hops, index);
+
+        for (uint8_t i = 0; i < num_hops; i++)
+        {
+            // if dest id is in the selected route, cut the route
+            // to prevent loops
+            if (route[i] == dest)
+            {
+                num_hops = i;
+            }
+        }
+
+        route[num_hops] = linkaddr_node_addr.u8[1]; // append own id to src
+
+        create_packet(3, route, num_hops + 1, &dest, 1, NULL, 0);
+        linkaddr_t next_hop;
+        next_hop.u8[0] = 0;
+        next_hop.u8[1] = dest;
+        unicast_send(&plantio_unicast, &next_hop);
+
+        plantio_free(mmem_route);
+    }
+    else // the table is either empty or the current node is the GUI node
+    {
+        create_packet(3, &linkaddr_node_addr.u8[1], 1, &dest, 1, NULL, 0);
+        linkaddr_t next_hop;
+        next_hop.u8[0] = 0;
+        next_hop.u8[1] = dest;
+        unicast_send(&plantio_unicast, &next_hop);
+    }
+}
+
+void receive_route(const plantio_packet_t *packet)
+{
+    if (get_num_routes() == 0)
+    {
+        process_start(&p_init_reply_timer, NULL);
+    }
+    else if (!etimer_expired(&et_init_reply))
+    {
+        PROCESS_CONTEXT_BEGIN(&p_init_reply_timer);
+        etimer_set(&et_init_reply, PLANTIO_RREP_TIMEOUT/2 * CLOCK_SECOND);
+        PROCESS_CONTEXT_END(&p_init_reply_timer);
+    }
+
+    // save the route to the routing table
+    write_routing_table(get_packet_src(packet), packet->src_len);
 }

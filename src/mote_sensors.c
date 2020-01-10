@@ -159,7 +159,7 @@ void on_button_pressed(void)
     {
         //init_network(); // for testing
         //init_rreq_reply(find_best_route());
-        print_sensor_data();
+        add_device_to_network();
     }
 
     /*

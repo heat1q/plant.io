@@ -104,11 +104,20 @@ void write_routing_table(const uint8_t *route, const uint8_t length);
 const uint16_t get_num_routes();
 
 /**
+ * @brief Get the index of the optimal route in the routing table.
+ * -1 if table is empty or the current node is the GUI node.
+ * 
+ * @return const int16_t Index of route in the routing table
+ */
+const int16_t get_best_route_index();
+
+/**
  * @brief Set the number of entries in the routing table.
  * 
- * @param num_routes 
+ * @param num_routes Number of routes
+ * @param best_route_index Index of optimal route
  */
-void set_num_routes(const uint16_t num_routes);
+void set_num_routes(const uint16_t num_routes, const int16_t best_route_index);
 
 /**
  * @brief Get the number of hops for a route with given index in the routing table.
@@ -138,7 +147,7 @@ void init_rreq_reply(const uint16_t index);
  * @brief Updates the Source and Destionation of incoming packets
  * and forwards the packet to the next hop if necessary.
  * 
- * @param packet 
+ * @param packet Instance of packet struct
  */
 void forward_routing(const plantio_packet_t *packet);
 
@@ -152,3 +161,28 @@ void forward_routing(const plantio_packet_t *packet);
  * @param index Index of route in table, set to -1 if not known
  */
 void init_data_packet(const uint8_t type, const uint8_t dest, const uint8_t *data, const uint8_t data_len, int index);
+
+/**
+ * @brief Add the current node to an existing network.
+ * 
+ * @details Starts a broadcast to neighbouring nodes which then
+ * reply with their best route to the GUI node.
+ * 
+ */
+void add_device_to_network(void);
+
+/**
+ * @brief Sends the best route of current device to the destination
+ * via unicast.
+ * 
+ * @param dest Node id of destination
+ */
+void send_best_route(const uint8_t dest);
+
+/**
+ * @brief Saves the route in the routing table, starts a timer and
+ * schedules an RREP to the GUI node with the best route.
+ * 
+ * @param packet Instance of packet struct
+ */
+void receive_route(const plantio_packet_t *packet);
