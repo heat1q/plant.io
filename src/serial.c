@@ -17,7 +17,6 @@ PROCESS(p_serial, "Serial Event listener");
 PROCESS_THREAD(p_serial, ev, data)
 {
     PROCESS_BEGIN();
-    leds_off(LEDS_ALL);
 
     while (1)
     {
@@ -73,12 +72,19 @@ void parse_serial_input(char *input)
         {
             led_id = LEDS_ALL;
         }
-        leds_toggle(led_id);
+
+        if (id == linkaddr_node_addr.u8[1])
+        {
+            leds_toggle(led_id);
+        }
+        else // send to the right node
+        {
+            init_data_packet(10, id, &led_id, 1, -1);
+        }
     }
     else if (strcmp(task, "init") == 0)
     {
         // start network discovery
-        leds_off(LEDS_ALL);
         init_network();
     }
     else if (strcmp(task ,"rt") == 0)
