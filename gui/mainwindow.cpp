@@ -498,11 +498,8 @@ void MainWindow::on_pushButton_SendTemp_clicked()
             QListWidgetItem listItem = *selection.at(i);
             QStringList stringList = listItem.text().split("ID");
             QString id = stringList[1];
-            QString cmd = id + ":temp:" + QString::number(minTemp) + ":" + QString::number(maxTemp);
-            QByteArray byteArray = cmd.toLocal8Bit();
-            byteArray.append('\n');
-            port.write(byteArray);
-            qDebug() << "port.write" << byteArray;
+            QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp) + ":-1:-1:-1:-1";
+            send2port(cmd);
         }
     }
     else {
@@ -521,11 +518,8 @@ void MainWindow::on_pushButton_SendHum_clicked()
             QListWidgetItem listItem = *selection.at(i);
             QStringList stringList = listItem.text().split("ID");
             QString id = stringList[1];
-            QString cmd = id + ":hum:" + QString::number(minHum) + ":" + QString::number(maxHum);
-            QByteArray byteArray = cmd.toLocal8Bit();
-            byteArray.append('\n');
-            port.write(byteArray);
-            qDebug() << "port.write" << byteArray;
+            QString cmd = id + ":set_th:-1:-1:" + QString::number(minHum) + ":" + QString::number(maxHum) + ":-1:-1";
+            send2port(cmd);
         }
     }
     else {
@@ -544,7 +538,7 @@ void MainWindow::on_pushButton_SendLight_clicked()
             QListWidgetItem listItem = *selection.at(i);
             QStringList stringList = listItem.text().split("ID");
             QString id = stringList[1];
-            QString cmd = id + ":light:" + QString::number(minLight) + ":" + QString::number(maxLight);
+            QString cmd = id + ":set_th:-1:-1:-1:-1:" + QString::number(minLight) + ":" + QString::number(maxLight);
             send2port(cmd);
         }
     }
@@ -568,13 +562,10 @@ void MainWindow::on_pushButton_SendAll_clicked()
             QListWidgetItem listItem = *selection.at(i);
             QStringList stringList = listItem.text().split("ID");
             QString id = stringList[1];
-            QString cmd = id + ":all:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
+            QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
                     + ":" + QString::number(minHum) + ":" + QString::number(maxHum)
                     + ":" + QString::number(minLight) + ":" + QString::number(maxLight);
-            QByteArray byteArray = cmd.toLocal8Bit();
-            byteArray.append('\n');
-            port.write(byteArray);
-            qDebug() << "port.write" << byteArray;
+            send2port(cmd);
         }
     }
     else {
