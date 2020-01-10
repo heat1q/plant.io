@@ -32,6 +32,17 @@
 #define FILE_SENSOR_DATA_LENGTH "fsensorsdatalen"
 #define FILE_SENSOR_DATA "fsensordata"
 
+#define FILE_THRESHOLD "fthreshold"
+
+enum thresh {
+    TEMP_LOW,
+    TEMP_HIGH,
+    HUM_LOW,
+    HUM_HIGH,
+    LIGHT_LOW,
+    LIGHT_HIGH
+};
+
 
 /**
  * @brief Macro for allocating dynamic memory.

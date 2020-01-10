@@ -18,3 +18,6 @@ void write_sensor_data(const uint16_t temp, const uint16_t hum, const uint16_t l
 const uint16_t fetch_sensor_data(const char *filename, const uint16_t index);
 void clear_sensor_data();
 void print_sensor_data();
+
+void write_thresholds(int32_t temp_low, int32_t temp_high, int32_t hum_low, int32_t hum_high, int32_t light_low, int32_t light_high);
+const int32_t get_threshold(enum thresh id);
