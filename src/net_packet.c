@@ -58,9 +58,21 @@ void print_packet(const plantio_packet_t *packet)
     }
     printf("\r\n");
     printf("Data [%u]: ", packet->data_len);
-    printf("%s\r\n", packet->data + packet->src_len + packet->dest_len);
+    for (int i = packet->src_len + packet->dest_len; i < (packet->src_len + packet->dest_len + packet->data_len); i++)
+    {
+        printf("0x%x ", packet->data[i]);
+    }
+    printf("\r\n");
 }
 
 const uint8_t* get_packet_src(const plantio_packet_t *packet) { return packet->data; }
 const uint8_t* get_packet_dest(const plantio_packet_t *packet) { return packet->data + packet->src_len; }
 const uint8_t* get_packet_data(const plantio_packet_t *packet) { return packet->data + packet->src_len + packet->dest_len; }
+
+void process_data_packet(const plantio_packet_t *packet)
+{
+    if (packet->type == 10)
+    {
+        leds_toggle(*get_packet_data(packet));
+    }
+}
