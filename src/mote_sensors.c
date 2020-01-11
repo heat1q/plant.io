@@ -165,6 +165,7 @@ void on_button_pressed(void)
         //init_rreq_reply(find_best_route());
         //add_device_to_network();
         print_sensor_data();
+        write_thresholds("0:420:69:1337:11:22");
     }
     /*
     else if (button_sensor.value(0) == 8) // released
@@ -201,6 +202,9 @@ void print_sensor_data()
 void write_thresholds(const char *str)
 {
     int32_t new_thresholds[6];
+    int32_t thresholds[6] = {-1};
+    uint16_t sensordata[4 * MAX_NUM_OF_VALUES];
+
     char* tmp = strtok(str, ":");
     for (uint8_t i = 0; i < 6; i++)
     {
@@ -208,16 +212,16 @@ void write_thresholds(const char *str)
         tmp = strtok(NULL, ":");
     }
 
-    int32_t thresholds[6] = {-1};
+    // Put existing data from file in buffer
     int f_th = cfs_open(FILE_SENSORS, CFS_READ);
     if (f_th != -1)
     {
-        cfs_seek(f_th, 0, CFS_SEEK_SET); // jump to first position
+        cfs_seek(f_th, 0, CFS_SEEK_SET);
         cfs_read(f_th, thresholds, sizeof(int32_t)*6);
+        cfs_seek(f_th, sizeof(int32_t) * 6, CFS_SEEK_SET);
+        cfs_read(f_th, sensordata, sizeof(uint16_t) * 4 * MAX_NUM_OF_VALUES);
         cfs_close(f_th);
     }
-
-    cfs_remove(FILE_SENSORS);
 
     if (new_thresholds[TEMP_LOW] >= 0) { thresholds[TEMP_LOW] = new_thresholds[TEMP_LOW]; }
     if (new_thresholds[TEMP_HIGH] >= 0) { thresholds[TEMP_HIGH] = new_thresholds[TEMP_HIGH]; }
@@ -226,18 +230,6 @@ void write_thresholds(const char *str)
     if (new_thresholds[LIGHT_LOW] >= 0) { thresholds[LIGHT_LOW] = new_thresholds[LIGHT_LOW]; }
     if (new_thresholds[LIGHT_HIGH] >= 0) { thresholds[LIGHT_HIGH] = new_thresholds[LIGHT_HIGH]; }
 
-    uint16_t sensordata[4 * MAX_NUM_OF_VALUES];
-
-    // Put existing data from file in buffer
-    int fd_open = cfs_open(FILE_SENSORS, CFS_READ);
-    if (fd_open != -1)
-    {
-        cfs_seek(fd_open, 0, CFS_SEEK_SET); // Redundant?
-        cfs_read(fd_open, thresholds, sizeof(int32_t) * 6);
-        cfs_seek(fd_open, sizeof(int32_t) * 6, CFS_SEEK_SET);
-        cfs_read(fd_open, sensordata, sizeof(uint16_t) * 4 * MAX_NUM_OF_VALUES);
-        cfs_close(fd_open);
-    }
     // Remove file
     cfs_remove(FILE_SENSORS);
 
