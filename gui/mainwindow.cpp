@@ -159,16 +159,38 @@ void MainWindow::print(QString msg) // Print a message in GUI console
 
 void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
 {
+    qDebug() << "gg";
     static QString str;
+    static QString msg;
     char ch;
     while (port.getChar(&ch))
     {
+        qDebug() << ch;
         str.append(ch);
+        msg.append(ch);
+        if (ch == '<'){
+            msg.clear();
+        }
+        else if (ch == '>') {
+            msg.remove(">");
+            /*
+            QStringList route = msg.split(":");
+            qDebug() << route;
+            route.removeAt(0);
+            route.removeAt(0);
+            create_graph(route);
+            */
+        }
+
         if (ch == '\n')     // End of line, start decoding
         {
             str.remove("\n", Qt::CaseSensitive);
             print(str);
-            //if (str.startsWith(""))
+            QStringList split = str.split(":"); // <1:route:1:2:3:4:...>
+            if (split[1] == "route"){
+
+            }
+            if (str.startsWith(""))
             //create_graph(str)
             this->repaint();    // Update content of window immediately
             str.clear();
@@ -238,6 +260,8 @@ void MainWindow::on_pushButton_CreateRoute_clicked() // test button for graph
 
 void MainWindow::on_pushButton_Explore_clicked()
 {
+    send2port("0:init:"); // Initialize network exploration on mote
+
     // create networkgraph
     mScene = new QGraphicsScene();
     ui->graphicsView_Networkgraph->setScene( mScene );
