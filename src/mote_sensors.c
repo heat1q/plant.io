@@ -222,6 +222,7 @@ void print_sensor_data()
 
 void write_thresholds(const char *str)
 {
+    /*
     int32_t data[6];
     char* tmp = strtok(str, ":");
     for (uint8_t i = 0; i < 6; i++)
@@ -254,10 +255,12 @@ void write_thresholds(const char *str)
         cfs_write(f_th, th, sizeof(int32_t)*6);
         cfs_close(f_th);
     }
+    */
 }
 
 const int32_t get_threshold(enum thresh id)
 {
+    /*
     int32_t threshold = -1;
     int f_th = cfs_open(FILE_THRESHOLD, CFS_READ);
     if (f_th != -1)
@@ -268,4 +271,5 @@ const int32_t get_threshold(enum thresh id)
     }
 
     return threshold;
+    */
 }

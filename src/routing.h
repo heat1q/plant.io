@@ -71,10 +71,8 @@ void forward_discover(const plantio_packet_t* packet);
 /**
  * @brief Finds the optimal route given the current routing metric by applying
  * the Shortest Path Tree (SPT) algorithm.
- * 
- * @return const uint16_t Index of the optimal route in the routing table
  */
-const uint16_t find_best_route(void);
+void find_best_route(void);
 
 /**
  * @brief Prints the routing table.
@@ -110,14 +108,6 @@ const uint16_t get_num_routes();
  * @return const int16_t Index of route in the routing table
  */
 const int16_t get_best_route_index();
-
-/**
- * @brief Set the number of entries in the routing table.
- * 
- * @param num_routes Number of routes
- * @param best_route_index Index of optimal route
- */
-void set_num_routes(const uint16_t num_routes, const int16_t best_route_index);
 
 /**
  * @brief Get the number of hops for a route with given index in the routing table.

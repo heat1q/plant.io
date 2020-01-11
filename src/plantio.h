@@ -25,13 +25,10 @@
 
 #define MAX_NUM_OF_VALUES 5
 
-#define FILE_NUM_ROUTES "num_routes"
-#define FILE_NUM_HOPS "routing_hops"
-#define FILE_ROUTES "routing"
+#define FILE_ROUTING "routing"
 
 #define FILE_SENSOR_DATA_LENGTH "fsensorsdatalen"
 #define FILE_SENSOR_DATA "fsensordata"
-
 #define FILE_THRESHOLD "fthreshold"
 
 enum thresh {

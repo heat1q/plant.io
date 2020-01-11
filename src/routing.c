@@ -19,12 +19,14 @@ static const struct unicast_callbacks plantio_unicast_call = {unicast_receive};
 
 static struct etimer et_init_reply;
 static uint16_t flood_time;
+static int16_t best_route_index = -1;
 
 PROCESS(p_conn, "");
 PROCESS_THREAD(p_conn, ev, data)
 {
     PROCESS_EXITHANDLER({ broadcast_close(&plantio_broadcast); unicast_close(&plantio_unicast); })
     PROCESS_BEGIN();
+    find_best_route();
 
     // Defines the functions used as callbacks for a broadcast connection.
     broadcast_open(&plantio_broadcast, 129, &plantio_broadcast_call);
@@ -45,7 +47,8 @@ PROCESS_THREAD(p_init_reply_timer, ev, data)
     PROCESS_BEGIN();
     etimer_set(&et_init_reply, PLANTIO_RREP_TIMEOUT * CLOCK_SECOND);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et_init_reply));
-    init_rreq_reply(find_best_route());
+    find_best_route();
+    init_rreq_reply(best_route_index);
 
     PROCESS_END();
 }
@@ -229,9 +232,8 @@ void forward_discover(const plantio_packet_t *packet)
     }
 }
 
-const uint16_t find_best_route(void)
+void find_best_route(void)
 {
-    uint16_t index = 0;
     uint16_t num_routes = get_num_routes();
     if (num_routes)
     {
@@ -243,20 +245,20 @@ const uint16_t find_best_route(void)
             if (num_hops < min)
             {
                 min = num_hops;
-                index = i;
+                best_route_index = (int16_t) i;
             }
         }
-
-        // save the index of the optimal route
-        set_num_routes(num_routes, (int16_t) index);
     }
+}
 
-    return index;
+const int16_t get_best_route_index()
+{
+    return best_route_index;
 }
 
 void print_routing_table(void)
 {
-    uint16_t index = (uint16_t) get_best_route_index();
+    uint16_t index = (uint16_t) best_route_index;
     printf("opt |  i  | Hops | Routes for Device %u\r\n", linkaddr_node_addr.u8[1]);
     printf("----+-----+------+------------------------\r\n");
     for (uint16_t i = 0; i < get_num_routes(); ++i)
@@ -287,114 +289,122 @@ void print_routing_table(void)
 
 void clear_routing_table(void)
 {
-    cfs_remove(FILE_NUM_HOPS);
-    cfs_remove(FILE_ROUTES);
-    set_num_routes(0, -1);
+    cfs_remove(FILE_ROUTING);
 }
 
 void write_routing_table(const uint8_t *route, const uint8_t length)
 {
-    set_num_routes(get_num_routes() + 1, get_best_route_index());
+    //set_num_routes(get_num_routes() + 1);
+    uint16_t num_routes = get_num_routes();
+    // get current file length
+    if (num_routes)
+    {
+        uint16_t all_routes_len = 0;
+        for (uint16_t i = 0; i < num_routes; i++)
+        {
+            all_routes_len += get_num_hops(i);
+        }
 
-    int f_hops = cfs_open(FILE_NUM_HOPS, CFS_WRITE + CFS_APPEND);
-    if (f_hops != -1)
-    {
-        int n = cfs_write(f_hops, &length, sizeof(uint8_t));
-        cfs_close(f_hops);
-#ifdef PLANTIO_DEBUG
-        printf("f_hops: successfully written to routing table. wrote %i bytes\r\n", n);
-#endif
-    }
-    else
-    {
-#ifdef PLANTIO_DEBUG
-        printf("f_hops: ERROR: could not write routing table.\r\n");
-#endif
-    }
+        // temporarly load data to memory
+        plantio_malloc(mmem_file_data, uint8_t, data, all_routes_len + sizeof(uint16_t) + num_routes);
 
-    int f_routes = cfs_open(FILE_ROUTES, CFS_WRITE + CFS_APPEND);
-    if (f_routes != -1)
-    {
-        int n = cfs_write(f_routes, route, sizeof(uint8_t) * length);
-        cfs_close(f_routes);
-#ifdef PLANTIO_DEBUG
-        printf("f_routes: successfully written to routing table. wrote %i bytes\r\n", n);
-#endif
+        int f_routing = cfs_open(FILE_ROUTING, CFS_READ);
+        if (f_routing != -1)
+        {
+            cfs_seek(f_routing, 0, CFS_SEEK_SET);
+            cfs_read(f_routing, data, all_routes_len + sizeof(uint16_t) + num_routes);
+            cfs_close(f_routing);
+        }
+        cfs_remove(FILE_ROUTING);
+
+        ++num_routes;
+
+        f_routing = cfs_open(FILE_ROUTING, CFS_WRITE + CFS_APPEND);    
+        if (f_routing != -1)
+        {
+            int n = cfs_write(f_routing, &num_routes, sizeof(uint16_t));
+            n += cfs_write(f_routing, data+sizeof(uint16_t), num_routes - 1); // old num_hops array
+            n += cfs_write(f_routing, &length, sizeof(uint8_t)); // new num_hops
+            n += cfs_write(f_routing, data+sizeof(uint16_t)+num_routes-1, all_routes_len); // old routes
+            n += cfs_write(f_routing, route, length); // new route
+
+            cfs_close(f_routing);
+
+            #ifdef PLANTIO_DEBUG
+            printf("f_routing: successfully written to routing table. wrote %i bytes\r\n", n);
+            #endif
+        }
+        else
+        {
+            #ifdef PLANTIO_DEBUG
+            printf("f_routing: ERROR: could not write routing table.\r\n");
+            #endif
+        }
+
+        plantio_free(mmem_file_data);
     }
-    else
+    else // table was emtpy
     {
-#ifdef PLANTIO_DEBUG
-        printf("f_routes: ERROR: could not write routing table.\r\n");
-#endif
+        ++num_routes;
+
+        int f_routing = cfs_open(FILE_ROUTING, CFS_WRITE + CFS_APPEND);
+        if (f_routing != -1)
+        {
+            int n = cfs_write(f_routing, &num_routes, sizeof(uint16_t));
+            n += cfs_write(f_routing, &length, sizeof(uint8_t)); // new num_hops
+            n += cfs_write(f_routing, route, length); // new route
+
+            cfs_close(f_routing);
+            #ifdef PLANTIO_DEBUG
+            printf("f_routing: successfully written to routing table. wrote %i bytes\r\n", n);
+            #endif
+        }
+        else
+        {
+            #ifdef PLANTIO_DEBUG
+            printf("f_routing: ERROR: could not write routing table.\r\n");
+            #endif
+        }
     }
 }
 
 const uint16_t get_num_routes()
 {
     uint16_t num_routes = 0;
-    int f_num_routes = cfs_open(FILE_NUM_ROUTES, CFS_READ);
-    if (f_num_routes != -1)
+    int f_routing = cfs_open(FILE_ROUTING, CFS_READ);
+    if (f_routing != -1)
     {
-        cfs_seek(f_num_routes, 0, CFS_SEEK_SET); // jump to first position
-        cfs_read(f_num_routes, &num_routes, sizeof(uint16_t));
-        cfs_close(f_num_routes);
+        cfs_seek(f_routing, 0, CFS_SEEK_SET); // num routes is at index 0-1
+        cfs_read(f_routing, &num_routes, sizeof(uint16_t));
+        cfs_close(f_routing);
     }
     // if file cannot be read, return 0
     return num_routes;
 }
 
-const int16_t get_best_route_index()
-{
-    int16_t best_route_index = -1;
-    int f_num_routes = cfs_open(FILE_NUM_ROUTES, CFS_READ);
-    if (f_num_routes != -1)
-    {
-        cfs_seek(f_num_routes, sizeof(uint16_t)*1, CFS_SEEK_SET);
-        cfs_read(f_num_routes, &best_route_index, sizeof(int16_t));
-        cfs_close(f_num_routes);
-    }
-    // if file cannot be read, return 0
-    return best_route_index;
-}
-
-void set_num_routes(const uint16_t num_routes, const int16_t best_route_index)
-{
-    cfs_remove(FILE_NUM_ROUTES);
-    int f_num_routes = cfs_open(FILE_NUM_ROUTES, CFS_WRITE + CFS_APPEND);
-    if (f_num_routes != -1)
-    {
-        int n = cfs_write(f_num_routes, &num_routes, sizeof(uint16_t));
-        n += cfs_write(f_num_routes, &best_route_index, sizeof(int16_t));
-        cfs_close(f_num_routes);
-#ifdef PLANTIO_DEBUG
-        printf("f_num_routes: successfully written to routing table. wrote %i bytes\r\n", n);
-#endif
-    }
-    else
-    {
-#ifdef PLANTIO_DEBUG
-        printf("f_num_routes: ERROR: could not write routing table.\r\n");
-#endif
-    }
-}
-
 const uint8_t get_num_hops(const uint16_t index)
 {
+    uint16_t num_routes = get_num_routes();
     uint8_t num_hops = 0;
-    int f_hops = cfs_open(FILE_NUM_HOPS, CFS_READ);
-    if (f_hops != -1)
+    if (num_routes)
     {
-        cfs_seek(f_hops, sizeof(uint8_t) * index, CFS_SEEK_SET); // jump to right position
-        cfs_read(f_hops, &num_hops, sizeof(uint8_t));
-        cfs_close(f_hops);
+        int f_hops = cfs_open(FILE_ROUTING, CFS_READ);
+        if (f_hops != -1)
+        {
+            cfs_seek(f_hops, sizeof(uint16_t) + index, CFS_SEEK_SET); // num_hops array starts at 2
+            cfs_read(f_hops, &num_hops, sizeof(uint8_t));
+            cfs_close(f_hops);
+        }
     }
     return num_hops;
 }
 
 void get_route(uint8_t *route, const uint16_t num_hops, const uint16_t index)
 {
-    if (get_num_routes())
+    uint16_t num_routes = get_num_routes();
+    if (num_routes)
     {
+        uint8_t num_hops = get_num_hops(index);
         uint16_t route_index = 0;
         // find the right index in the route array
         for (uint16_t i = 0; i < index; i++)
@@ -402,7 +412,9 @@ void get_route(uint8_t *route, const uint16_t num_hops, const uint16_t index)
             route_index += get_num_hops(i);
         }
 
-        int f_route = cfs_open(FILE_ROUTES, CFS_READ);
+        route_index += sizeof(uint16_t) + num_routes; // route is at 2 + num_routes + sum(num_hops of previous routes)
+
+        int f_route = cfs_open(FILE_ROUTING, CFS_READ);
         if (f_route != -1)
         {
             cfs_seek(f_route, route_index, CFS_SEEK_SET); // jump to right position
@@ -500,14 +512,12 @@ void add_device_to_network(void)
 
 void send_best_route(const uint8_t dest)
 {
-    int16_t index = get_best_route_index();
-
-    if (index >= 0)
+    if (best_route_index >= 0)
     {
-        uint8_t num_hops = get_num_hops(index);
+        uint8_t num_hops = get_num_hops(best_route_index);
 
         plantio_malloc(mmem_route, uint8_t, route, sizeof(uint8_t) * (num_hops + 1));
-        get_route(route, num_hops, index);
+        get_route(route, num_hops, best_route_index);
 
         for (uint8_t i = 0; i < num_hops; i++)
         {
