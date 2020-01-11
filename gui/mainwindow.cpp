@@ -19,9 +19,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWin
         print("No USB ports available.\nConnect a USB device and try again.\n");
     }
 
-    QPalette p = ui->textEdit_Status->palette(); // define pallete for textEdit..
-    p.setColor(QPalette::Base, Qt::black); // set color "Red" for textedit base
-    p.setColor(QPalette::Text, Qt::white); // set text color which is selected from color pallete
+    QPalette p = ui->textEdit_Status->palette(); // define palette for textEdit
+    p.setColor(QPalette::Base, Qt::black); // set background color
+    p.setColor(QPalette::Text, Qt::white); // set text color
     ui->textEdit_Status->setPalette(p); // change textedit palette
 }
 
@@ -86,8 +86,8 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
             }
             else{ // ring 2 and above
                 len = sqrt(pow(curr_pos[0],2)+pow(curr_pos[1],2));
-                new_length = len+circle_radius;
-                new_alpha = atan2(curr_pos[1],curr_pos[0]) + (node_pos[curr_id][2]) / double(2.5*i*n_max) * 2*pi;
+                new_length = len + circle_radius;
+                new_alpha = atan2(curr_pos[1],curr_pos[0]) + (node_pos[curr_id][2]) / double(2.5*(i+1)*n_max) * 2*pi;
                 x_offset = new_length*cos(new_alpha)-curr_pos[0];
                 y_offset = new_length*sin(new_alpha)-curr_pos[1];
             }
@@ -159,20 +159,18 @@ void MainWindow::print(QString msg) // Print a message in GUI console
 
 void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
 {
-    qDebug() << "gg";
     static QString str;
-    static QString msg;
+    //static QString msg;
     char ch;
     while (port.getChar(&ch))
     {
-        qDebug() << ch;
+        //qDebug() << ch;
         str.append(ch);
-        msg.append(ch);
+        //msg.append(ch);
         if (ch == '<'){
-            msg.clear();
+            str.clear();
         }
         else if (ch == '>') {
-            msg.remove(">");
             /*
             QStringList route = msg.split(":");
             qDebug() << route;
@@ -180,18 +178,22 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
             route.removeAt(0);
             create_graph(route);
             */
+            str.remove(">");
+            print(str);
+            str.clear();
         }
-
-        if (ch == '\n')     // End of line, start decoding
+        else if (ch == '\n')     // End of line, start decoding
         {
             str.remove("\n", Qt::CaseSensitive);
             print(str);
+            /*
             QStringList split = str.split(":"); // <1:route:1:2:3:4:...>
             if (split[1] == "route"){
 
             }
             if (str.startsWith(""))
             //create_graph(str)
+            */
             this->repaint();    // Update content of window immediately
             str.clear();
         }
