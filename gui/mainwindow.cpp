@@ -184,7 +184,7 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
         }
         else if (ch == '\n')     // End of line, start decoding
         {
-            str.remove("\n", Qt::CaseSensitive);
+            //str.remove("\n", Qt::CaseSensitive);
             print(str);
             /*
             QStringList split = str.split(":"); // <1:route:1:2:3:4:...>
