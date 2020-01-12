@@ -78,17 +78,17 @@ void process_data_packet(const plantio_packet_t *packet)
     }
     else if (packet->type == 11) // setting thresholds
     {
-        write_thresholds(packet->data);
+        write_thresholds((char*) get_packet_data(packet));
     }
     else if (packet->type == 12) // request thresholds
     {
         char str[128];
         sprintf(str, "%li:%li:%li:%li:%li:%li", get_threshold(0), get_threshold(1), get_threshold(2), get_threshold(3), get_threshold(4), get_threshold(5));
 
-        init_data_packet(13, *get_packet_src(packet), str, strlen(str), get_best_route_index());
+        init_data_packet(13, *get_packet_src(packet), (uint8_t*) str, strlen(str)+1, get_best_route_index());
     }
     else if (packet->type == 13) // reply for request thresholds
     {
-        printf("<%u:th:%s>", get_packet_src(packet)[0], get_packet_data(packet));
+        printf("<%u:th:%s>", get_packet_src(packet)[0], (char*) get_packet_data(packet));
     }
 }

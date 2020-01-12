@@ -44,14 +44,15 @@ void parse_serial_input(char *input)
     char *tmp = strtok(input, ":");
     // check id
     uint8_t id = (uint8_t) atoi(tmp);
+    uint8_t len = strlen(tmp) + 1; // the length of the id + delim
 
     tmp = strtok(NULL, ":");
     // check task
     char *task = tmp;
+    len += strlen(task) + 1;
 
-    tmp = strtok(NULL, ":");
     //args
-    char *args = tmp;
+    char *args = input + len;
 
     // continue with correct format
     if (strcmp(task, "led") == 0)
@@ -104,7 +105,7 @@ void parse_serial_input(char *input)
         }
         else // send to the right node
         {
-            init_data_packet(11, id, args, strlen(args), -1);
+            init_data_packet(11, id, (uint8_t*) args, strlen(args)+1, -1);
         }
     }
     else if (strcmp(task ,"get_th") == 0)
@@ -115,7 +116,7 @@ void parse_serial_input(char *input)
         }
         else 
         {
-            init_data_packet(12, id, args, strlen(args), -1);
+            init_data_packet(12, id, NULL, 0, -1);
         }
     }
 }

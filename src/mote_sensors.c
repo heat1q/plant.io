@@ -108,7 +108,7 @@ void write_sensor_data(const uint16_t temp, const uint16_t hum, const uint16_t l
     uint16_t sensordata[4 * MAX_NUM_OF_VALUES];
     uint16_t new_sensordata[4 * MAX_NUM_OF_VALUES];
 
-    printf("Write: timestamp = %i; temp = %i; hum = %i; light = %i\n", timestamp, temp, hum, light);
+    //printf("Write: timestamp = %i; temp = %i; hum = %i; light = %i\n", timestamp, temp, hum, light);
 
     // Put existing data from file in buffer
     int fd_open = cfs_open(FILE_SENSORS, CFS_READ);
@@ -199,7 +199,7 @@ void print_sensor_data()
     }
 }
 
-void write_thresholds(const char *str)
+void write_thresholds(char *str)
 {
     int32_t new_thresholds[6];
     int32_t thresholds[6] = {-1};

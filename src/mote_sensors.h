@@ -20,5 +20,5 @@ void clear_sensor_data();
 void print_sensor_data();
 const uint16_t fetch_sensor_data(const uint16_t index);
 
-void write_thresholds(const char *str);
+void write_thresholds(char *str);
 const int32_t get_threshold(enum thresh id);
