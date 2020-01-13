@@ -21,7 +21,7 @@
 
 #define PLANTIO_MIN_RSSI -60
 #define PLANTIO_RREP_TIMEOUT 3
-#define MAX_NUM_OF_VALUES 5
+#define MAX_NUM_OF_VALUES 10
 
 // structure: 6 * [int32_t] THRESH | LEN * [uint16_t] DATA
 #define FILE_SENSORS "fsensors"
