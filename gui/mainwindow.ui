@@ -478,7 +478,7 @@ amount of motes</string>
           </widget>
          </item>
          <item row="6" column="0">
-          <widget class="QPushButton" name="pushButton_creategraph">
+          <widget class="QPushButton" name="pushButton_CreatePlot">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>

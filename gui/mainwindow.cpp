@@ -163,13 +163,17 @@ void MainWindow::on_pushButton_clicked() // <- TESTBENCH DELETE LATER
     QString string = "3:sensors_data:12:53:112:51:11:77:23:123:12:111:1:67";
     QStringList data = string.split(":");
     plot(type, data);
+
+    int type2 = 3;
+    QString string2 = "1:sensors_data:55:53:72:51:66:77:77:88:1:11:8:67";
+    QStringList data2 = string.split(":");
+    plot(type2, data2);
 }
 
 // outside function for plot() to access the graphs
 static QCPAxisRect *TempAxisRect;
 static QCPAxisRect *HumAxisRect;
 static QCPAxisRect *LightAxisRect;
-static QCPLegend *Legend;
 
 void MainWindow::plot(int type, QStringList data)
 {
@@ -413,7 +417,7 @@ void MainWindow::on_pushButton_CreatePlot_clicked()
     LightAxisRect = new QCPAxisRect(plot);
     plot->plotLayout()->addElement(2, 0, LightAxisRect);
 
-    Legend = new QCPLegend;
+    QCPLegend *Legend = new QCPLegend;
     plot->axisRect()->insetLayout()->addElement(Legend, Qt::AlignTop|Qt::AlignRight);
 
     for (int i = 0; i < 3; ++i) {
@@ -427,13 +431,14 @@ void MainWindow::on_pushButton_CreatePlot_clicked()
     int listCount = ui->listWidget_Tab2->selectedItems().count();
 
     QList<QListWidgetItem *> ids = ui->listWidget_Tab2->selectedItems();
+    QCPLegend *legend = new QCPLegend;
+    plot->axisRect()->insetLayout()->addElement(legend, Qt::AlignTop|Qt::AlignRight);
 
     for (int i = 0; i < listCount; i++) {
         // get sensor data from mote id: i
         QString id = (*ids[i]).text().split("ID")[1];
         print("ID#"+id+"\n");
-
-        //Legend->addItem(new QCPPlottableLegendItem(Legend, TempGraphVector[i])); //is enough if done for first graph only (shared legend)
+        //send2port();
     }
 
     QList<QCPAxis*> allAxes;
