@@ -1,0 +1,20 @@
+## NETWORK PACKETS
+All information exchange by the nodes is encapsuled by a packet structure blueprint, containing an array of destination mote ids,
+an array of source mote ids, the payload and a type identifier. The ids are given as unsigned chars (bytes). The payload as unsigned char (byte)
+array. Thus also providing the possibility to assign strings as payload. Dest & Src arrays are used by path-based routing to find
+the correct path of the packet.
+The following packet types are defined:
+Type                Description                           Payload
+0     (Broadcast)   Network discovery packet              Timestamp of Network discovery
+1     (Unicast)     Route Request (RREQ) Reply packet     None
+2     (Broadcast)   Request for integration to network    None
+3     (Unicast)     Reply to (2) new integrated node      None
+>=10  (Unicast)     Data packets
+  10                Toggle LED                            LED color identifier integer
+  11                Set Thresholds                        Thresholds formated as string
+  12                Request Thresholds                    None
+  13                Thresholds                            All thresholds of target node, formated as string
+  14                Request Sensor data                   integer to identify temp, hum or light
+  15                Sensors data                          All sensors data, identified by request
+  16                Request Routing Table                 None
+  17                Routing Table                         Routing table, same format as in files
