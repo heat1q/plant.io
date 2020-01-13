@@ -157,6 +157,66 @@ void MainWindow::print(QString msg) // Print a message in GUI console
     ui->textEdit_Status->moveCursor (QTextCursor::End);
 }
 
+void MainWindow::on_pushButton_clicked() // <- TESTBENCH DELETE LATER
+{
+    int type = 2;
+    QString string = "3:sensors_data:12:53:112:51:11:77:23:123:12:111:1:67";
+    QStringList data = string.split(":");
+    plot(type, data);
+}
+
+// outside function for plot() to access the graphs
+static QCPAxisRect *TempAxisRect;
+static QCPAxisRect *HumAxisRect;
+static QCPAxisRect *LightAxisRect;
+static QCPLegend *Legend;
+
+void MainWindow::plot(int type, QStringList data)
+{
+    QCustomPlot* plot = ui->customPlot;
+    QCPGraph* target_graph;
+
+    // Assign the correct graph according to the input type
+    if (type == 1){ // TEMPERATURE
+        target_graph = plot->addGraph(TempAxisRect->axis(QCPAxis::atBottom), TempAxisRect->axis(QCPAxis::atLeft));
+    }
+    else if (type == 2) { // HUMIDITY
+        target_graph = plot->addGraph(HumAxisRect->axis(QCPAxis::atBottom), HumAxisRect->axis(QCPAxis::atLeft));
+    }
+    else if (type == 3){ // LIGHT
+        target_graph = plot->addGraph(LightAxisRect->axis(QCPAxis::atBottom), LightAxisRect->axis(QCPAxis::atLeft));
+    }
+    else { // INVALID
+        print("WARNING: Invalid sensor data type recieved!");
+        return;
+    }
+
+    // Extract the data from the input sequence
+    QString id = data[0]; // ID from which the data came from
+    int num_elements = data.count() - 2;
+    QVector<double> x,y;
+    for (int i = 0; i < num_elements; ++i) {
+        x.append(i);
+        y.append(data[i+2].toDouble());
+    }
+
+    // Plot the data
+    target_graph->setName("ID#"+id);
+    target_graph->setData(x,y);
+    target_graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::black), QBrush(Qt::white), 3));
+    int i = id.toInt();
+    target_graph->setPen(QPen(QColor((255+i*100)%255, (255+i*200)%255, (255+i*300)%255), 2));
+    target_graph->rescaleAxes();
+
+    /*
+    QCPLegend *legend = new QCPLegend;
+    plot->axisRect()->insetLayout()->addElement(legend, Qt::AlignTop|Qt::AlignRight);
+    legend->addItem(new QCPPlottableLegendItem(legend, plot->graph(0)));
+    */
+
+    plot->replot(); // update the graphs
+}
+
 void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
 {
     static QString str;
@@ -171,15 +231,36 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
             str.clear();
         }
         else if (ch == '>') {
-            /*
-            QStringList route = msg.split(":");
-            qDebug() << route;
-            route.removeAt(0);
-            route.removeAt(0);
-            create_graph(route);
-            */
             str.remove(">");
             print(str);
+
+            /* INC DATA STRUCTURE:
+             * <$src_id:route:$r_1:$_2:...>
+             * # get optimal path to node with id $src_id
+             * <$src_id:th:$temp_low:$temp_high:$hum_low:$hum_high:$light_low:$light_high>
+             * # get thresholds of node with id $src_id
+             * <$src_id:sensors_data:$i_1:...:$i_max>
+             * # get sensors data of node with id $src_id with datapoint $i_1 to $i_max
+             * <$src_id:rt:$data>
+             * # get routing table of node with id $src_id with $data formatted equivalent to file structure
+             */
+
+            QStringList data = str.split(":");
+            if (data[1] == "route"){
+                data.removeFirst();
+                data.removeFirst();
+                create_graph(data); // create visualization of route which also registers the ID's as valid targets
+            }
+            else if (data[1] == "sensors_data"){
+                //plot(type, data);
+            }
+            else if (data[1] == "th") {
+                print("pls fix me :(");
+            }
+            else if (data[1] == "rt") {
+                print("pls fix me :(");
+            }
+
             str.clear();
         }
         else if (ch == '\n')     // End of line, start decoding
@@ -317,7 +398,7 @@ void MainWindow::on_pushButton_SetMax_clicked()
     else{print("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
 
-void MainWindow::on_pushButton_creategraph_clicked()
+void MainWindow::on_pushButton_CreatePlot_clicked()
 {
     QCustomPlot* plot = ui->customPlot;
     plot->plotLayout()->clear();
@@ -325,34 +406,14 @@ void MainWindow::on_pushButton_creategraph_clicked()
     plot->clearGraphs();
     plot->plotLayout()->simplify();
 
-    QVector<double> x(61),y(61);
-    for (int i = 0; i < 61; ++i) {
-        x[i] = i/50.0 - 1;
-        y[i] = 4*x[i]*x[i];
-    }
-
-    QVector<double> x2(101),y2(101);
-    for (int i = 0; i < 101; ++i) {
-        x2[i] = i/50.0 - 1;
-        y2[i] = x2[i]*x2[i];
-    }
-
-    QVector<double> x3(200),y3(200);
-    for (int i = 0; i < 200; ++i) {
-        x3[i] = 0.1*i - 10;
-        y3[i] = x3[i]*x3[i]*3/i;
-    }
-
-    QCPAxisRect *TempAxisRect = new QCPAxisRect(plot);
+    TempAxisRect = new QCPAxisRect(plot);
     plot->plotLayout()->addElement(0, 0, TempAxisRect);
-
-    QCPAxisRect *HumAxisRect = new QCPAxisRect(plot);
+    HumAxisRect = new QCPAxisRect(plot);
     plot->plotLayout()->addElement(1, 0, HumAxisRect);
-
-    QCPAxisRect *LightAxisRect = new QCPAxisRect(plot);
+    LightAxisRect = new QCPAxisRect(plot);
     plot->plotLayout()->addElement(2, 0, LightAxisRect);
 
-    QCPLegend *Legend = new QCPLegend;
+    Legend = new QCPLegend;
     plot->axisRect()->insetLayout()->addElement(Legend, Qt::AlignTop|Qt::AlignRight);
 
     for (int i = 0; i < 3; ++i) {
@@ -361,60 +422,18 @@ void MainWindow::on_pushButton_creategraph_clicked()
     }
     plot->axisRect(0)->insetLayout()->setInsetPlacement(0, QCPLayoutInset::ipFree);
     plot->axisRect(0)->insetLayout()->setInsetRect(0, QRectF(1,0,0,0));
-
     plot->setAutoAddPlottableToLegend(false);
 
     int listCount = ui->listWidget_Tab2->selectedItems().count();
-    QVector<QCPGraph *> TempGraphVector;
-    QVector<QCPGraph *> HumGraphVector;
-    QVector<QCPGraph *> LightGraphVector;
+
     QList<QListWidgetItem *> ids = ui->listWidget_Tab2->selectedItems();
-
-
 
     for (int i = 0; i < listCount; i++) {
         // get sensor data from mote id: i
         QString id = (*ids[i]).text().split("ID")[1];
         print("ID#"+id+"\n");
 
-        QCPGraph *TempGraph = plot->addGraph(TempAxisRect->axis(QCPAxis::atBottom), TempAxisRect->axis(QCPAxis::atLeft));
-        QCPGraph *HumGraph = plot->addGraph(HumAxisRect->axis(QCPAxis::atBottom), HumAxisRect->axis(QCPAxis::atLeft));
-        QCPGraph *LightGraph = plot->addGraph(LightAxisRect->axis(QCPAxis::atBottom), LightAxisRect->axis(QCPAxis::atLeft));
-
-        // TempGraph->setData(node_data[i][0],node_data[i][1]);
-
-        QVector<double> x(61),y(61);
-        for (int j = 0; j < 61; ++j) {
-            x[j] = j/50.0 - 1;
-            y[j] = i*4*x[j]*x[j];
-        }
-        TempGraph->setName("ID#"+id);
-        TempGraph->setData(x,y);
-        TempGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::black), QBrush(Qt::white), 3));
-        TempGraph->setPen(QPen(QColor((255+i*100)%255, (255+i*200)%255, (255+i*300)%255), 2));
-        TempGraph->keyAxis()->setLabel("Time");
-        TempGraph->valueAxis()->setLabel("Temp in °C");
-        TempGraph->rescaleAxes();
-        TempGraphVector.append(TempGraph);
-        Legend->addItem(new QCPPlottableLegendItem(Legend, TempGraphVector[i])); //is enough if done for first graph only (shared legend)
-
-        HumGraph->setName("H - ID#"+id);
-        HumGraph->setData(x2,y2);
-        HumGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::black), QBrush(Qt::white), 3));
-        HumGraph->setPen(QPen(QColor(120, 120, 120), 2));
-        HumGraph->keyAxis()->setLabel("Time");
-        HumGraph->valueAxis()->setLabel("Humidity in %");
-        HumGraph->rescaleAxes();
-        HumGraphVector.append(HumGraph);
-
-        LightGraph->setName("L - ID#"+id);
-        LightGraph->setData(x3,y3);
-        LightGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::green), QBrush(Qt::red), 3));
-        LightGraph->setPen(QPen(QColor(120, 255, 120), 2));
-        LightGraph->keyAxis()->setLabel("Time");
-        LightGraph->valueAxis()->setLabel("Light in Lumen");
-        LightGraph->rescaleAxes();
-        LightGraphVector.append(LightGraph);
+        //Legend->addItem(new QCPPlottableLegendItem(Legend, TempGraphVector[i])); //is enough if done for first graph only (shared legend)
     }
 
     QList<QCPAxis*> allAxes;
