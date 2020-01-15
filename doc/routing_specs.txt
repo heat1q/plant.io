@@ -1,3 +1,16 @@
+## CONTIKI STRUCTURE
+Following processes are running in parallel:
+Process         Description
+p_serial        Serial Event Listener Process
+p_conn          Process handling all broadcast and unicast connections and transmissions
+p_sensors       Process handling sensor data on nodes and managing thresholds
+
+
+## FILE STRUCTURE
+CFS is used to store data on non-volatile flash memory of the motes in order to keep the information beyond restarts of nodes.
+The routing tables and the sensor data + thresholds are saved in the flash memory.
+
+
 ## NETWORK PACKETS
 All information exchange by the nodes is encapsuled by a packet structure blueprint, containing an array of destination mote ids,
 an array of source mote ids, the payload and a type identifier. The ids are given as unsigned chars (bytes). The payload as unsigned char (byte)
@@ -18,3 +31,32 @@ Type                Description                           Payload
   15                Sensors data                          All sensors data, identified by request
   16                Request Routing Table                 None
   17                Routing Table                         Routing table, same format as in files
+
+
+## SERIAL COMMUNICATION
+Nodes are constantly listen to serial inputs from the UART to react on formatted string commands from the GUI/Terminal.
+Data transfer from nodes to GUI are string formatted commands enclosed in `<>`.
+
+#### NODE TO GUI SERIAL COMMUNICATION
+Output String (from mote)                                                           Description
+<$src_id:route:$r_1:$_2:...>                                                        get optimal path to node with id $src_id
+<$src_id:th:$temp_low:$temp_high:$hum_low:$hum_high:$light_low:$light_high>         get thresholds of node with id $src_id
+<$src_id:sensors_data:$i_1:...:$i_max>                                              get sensors data of node with id $src_id with datapoint $i_1 to $i_max
+<$src_id:rt:$data>                                                                  get routing table of node with id $src_id with $data formatted equivalent to file structure
+
+#### GUI TO NODE SERIAL COMMUNICATION
+Input String (from GUI)                                                             Description
+0:init                                                                              Start network discovery from current node
+$dest_id:led:$args                                                                  Set LED of node $dest_id, where $args = {blue, green, red, all}
+$dest_id:rt                                                                         Fetch routing table of node $dest_id
+$dest_id:get_th                                                                     Fetch thresholds of node $dest_id
+$dest_id:set_th:$temp_low:$temp_high:$hum_low:$hum_high:$light_low:$light_high      Set thresholds of node $dest_id
+$dest_id:get_data:$type                                                             Get MAX_NUM_OF_VALUES values of sensor data, where $type = {1: temp, 2: hum, 3: light}
+
+
+## ROUTING
+#### SETUP
+We have one central GUI node and all other regular nodes. Communication and data transfer is only between GUI node and any other node in the network. Thus the regular nodes only need to know how to reach the GUI node. The GUI node however needs to know at least one path to any (and all) regular nodes.
+
+#### NETWORK DISCOVERY
+A network discovery is required to build the network and is initialized by the GUI node broadcasting a packet with its id in the src array. All nodes then perform controlled flooding, i.e. each node only forwards unkown packets to avoid loops. In particular, the if a new incoming packet already has the id of the processing node in the src array, the packet will not be forwarded. 
