@@ -56,7 +56,12 @@ $dest_id:get_data:$type                                                         
 
 ## ROUTING
 #### SETUP
-We have one central GUI node and all other regular nodes. Communication and data transfer is only between GUI node and any other node in the network. Thus the regular nodes only need to know how to reach the GUI node. The GUI node however needs to know at least one path to any (and all) regular nodes.
+We have one central GUI node and all other regular nodes. Communication and data transfer is only between GUI node and any
+other node in the network. Thus the regular nodes only need to know how to reach the GUI node. The GUI node however needs to
+know at least one path to any (and all) regular nodes.
 
 #### NETWORK DISCOVERY
-A network discovery is required to build the network and is initialized by the GUI node broadcasting a packet with its id in the src array. All nodes then perform controlled flooding, i.e. each node only forwards unkown packets to avoid loops. In particular, the if a new incoming packet already has the id of the processing node in the src array, the packet will not be forwarded. 
+A network discovery is required to build the network and is initialized by the GUI node broadcasting a packet with its id in
+the src array. All nodes then perform controlled flooding, i.e. each node only forwards unkown packets to avoid loops. In
+particular, the if a new incoming packet already has the id of the processing node in the src array, the packet will not be
+forwarded. 
