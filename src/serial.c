@@ -44,6 +44,8 @@ void parse_serial_input(char *input)
     char *tmp = strtok(input, ":");
     // check id
     uint8_t id = (uint8_t) atoi(tmp);
+    id = linkaddr_node_addr.u8[1] ? id == 0 : id;
+
     uint8_t len = strlen(tmp) + 1; // the length of the id + delim
 
     tmp = strtok(NULL, ":");
@@ -115,7 +117,7 @@ void parse_serial_input(char *input)
     {
         if (id == linkaddr_node_addr.u8[1])
         {
-            printf("<%u:th:%li:%li:%li:%li:%li:%li>", linkaddr_node_addr.u8[1], get_threshold(0), get_threshold(1), get_threshold(2), get_threshold(3), get_threshold(4), get_threshold(5));
+            printf("<%u:th:%li:%li:%li:%li:%li:%li>\r\n", linkaddr_node_addr.u8[1], get_threshold(0), get_threshold(1), get_threshold(2), get_threshold(3), get_threshold(4), get_threshold(5));
         }
         else 
         {
@@ -132,7 +134,7 @@ void parse_serial_input(char *input)
             {
                 printf(":%u", fetch_sensor_data(i * 4 + data_id));
             }
-            printf(">");
+            printf(">\r\n");
         }
         else // send to the right node
         {
