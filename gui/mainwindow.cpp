@@ -63,7 +63,7 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
     double x,y,x_offset,y_offset,len,new_length,new_alpha;
     double circle_radius=100+4.20*n_max;
 
-    for(int i = 0; i<InputList.size()-1; i++) // Iterate all items in header "11:14:7:215:PAYLOAD"
+    for(int i = InputList.size()-1; i>=0; i--) // Iterate all items in header "11:14:7:215"
     {
         int target_id = InputList[i].toInt();
 
@@ -235,7 +235,6 @@ void MainWindow::plot(int type, QStringList data)
 void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
 {
     static QString str;
-    //static QString msg;
     char ch;
     while (port.getChar(&ch))
     {
@@ -248,7 +247,6 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
         else if (ch == '>') {
             str.remove(">");
             print(str);
-
             /* INC DATA STRUCTURE:
              * <$src_id:route:$r_1:$_2:...>
              * # get optimal path to node with id $src_id

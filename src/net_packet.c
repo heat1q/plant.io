@@ -109,6 +109,7 @@ void process_data_packet(const plantio_packet_t *packet)
     {
         uint16_t data;
         printf("<%u:sensor_data", *get_packet_src(packet));
+        // FIXME: INSERT PRINT SENSOR TYPE
         for (uint16_t i = 0; i < MAX_NUM_OF_VALUES; ++i)
         {
             data = (((uint16_t)get_packet_data(packet)[2*i]) << 8) | get_packet_data(packet)[2*i+1];
