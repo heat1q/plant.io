@@ -41,7 +41,7 @@ Data transfer from nodes to GUI are string formatted commands enclosed in `<>`.
 Output String (from mote)                                                           Description
 <$src_id:route:$r_1:$_2:...>                                                        get optimal path to node with id $src_id
 <$src_id:th:$temp_low:$temp_high:$hum_low:$hum_high:$light_low:$light_high>         get thresholds of node with id $src_id
-<$src_id:sensors_data:$i_1:...:$i_max>                                              get sensors data of node with id $src_id with datapoint $i_1 to $i_max
+<$src_id:sensors_data:$type:$i_1:...:$i_max>                                        get sensors data of node with id $src_id with datapoint $i_1 to $i_max and $type = {1: temp, 2: hum, 3: light}
 <$src_id:rt:$data>                                                                  get routing table of node with id $src_id with $data formatted equivalent to file structure
 
 #### GUI TO NODE SERIAL COMMUNICATION
