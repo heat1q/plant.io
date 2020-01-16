@@ -68,6 +68,7 @@ private slots:
     void on_pushButton_Center_clicked();
     void on_pushButton_Clear_clicked();
     void on_pushButton_clicked();
+    void on_pushButton_GetSensorData_clicked();
 };
 
 #endif // MAINWINDOW_H

@@ -40,7 +40,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab1">
         <attribute name="title">
@@ -124,7 +124,7 @@
             </size>
            </property>
            <property name="plainText">
-            <string>1:2:3:4:5:PAYLOAD</string>
+            <string>1:2:3:4:5</string>
            </property>
            <property name="tabStopWidth">
             <number>80</number>
@@ -196,7 +196,7 @@
          <item row="2" column="0" colspan="3">
           <widget class="QPlainTextEdit" name="plainTextEdit_Debug">
            <property name="plainText">
-            <string>5:write:text</string>
+            <string>id:task:arg</string>
            </property>
           </widget>
          </item>
@@ -451,6 +451,31 @@ amount of motes</string>
            </property>
           </widget>
          </item>
+         <item row="6" column="0">
+          <widget class="QPushButton" name="pushButton_CreatePlot">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Create Graph</string>
+           </property>
+          </widget>
+         </item>
          <item row="3" column="0">
           <widget class="QPushButton" name="pushButton_Refresh_Tab2">
            <property name="maximumSize">
@@ -477,31 +502,6 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="0">
-          <widget class="QPushButton" name="pushButton_CreatePlot">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>200</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>200</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Create Graph</string>
-           </property>
-          </widget>
-         </item>
          <item row="4" column="0">
           <widget class="QPushButton" name="pushButton_SelectAll_Tab2">
            <property name="maximumSize">
@@ -522,13 +522,6 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Plot</string>
-           </property>
-          </widget>
-         </item>
          <item row="7" column="0">
           <widget class="QPushButton" name="pushButton">
            <property name="text">
@@ -536,7 +529,21 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1" rowspan="7">
+         <item row="0" column="1">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Plot</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QPushButton" name="pushButton_GetSensorData">
+           <property name="text">
+            <string>Fetch Data From Selection</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" rowspan="8">
           <widget class="QCustomPlot" name="customPlot" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">

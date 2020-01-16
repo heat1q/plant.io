@@ -246,7 +246,7 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
         }
         else if (ch == '>') {
             str.remove(">");
-            print(str);
+            print(str+"\n");
             /* INC DATA STRUCTURE:
              * <$src_id:route:$r_1:$_2:...>
              * # get optimal path to node with id $src_id
@@ -411,6 +411,81 @@ void MainWindow::on_pushButton_SetMax_clicked()
     else{print("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
 
+void MainWindow::on_pushButton_GetSensorData_clicked()
+{
+    existingLegendIDs.clear();
+    QCustomPlot* plot = ui->customPlot;
+    plot->plotLayout()->clear();
+    plot->clearItems();
+    plot->clearGraphs();
+    plot->plotLayout()->simplify();
+
+    TempAxisRect = new QCPAxisRect(plot);
+    plot->plotLayout()->addElement(0, 0, TempAxisRect);
+    HumAxisRect = new QCPAxisRect(plot);
+    plot->plotLayout()->addElement(1, 0, HumAxisRect);
+    LightAxisRect = new QCPAxisRect(plot);
+    plot->plotLayout()->addElement(2, 0, LightAxisRect);
+
+    // Add graphs to name the key and value axis
+    QCPGraph *TempGraph = plot->addGraph(TempAxisRect->axis(QCPAxis::atBottom), TempAxisRect->axis(QCPAxis::atLeft));
+    QCPGraph *HumGraph = plot->addGraph(HumAxisRect->axis(QCPAxis::atBottom), HumAxisRect->axis(QCPAxis::atLeft));
+    QCPGraph *LightGraph = plot->addGraph(LightAxisRect->axis(QCPAxis::atBottom), LightAxisRect->axis(QCPAxis::atLeft));
+    // Name the key and value axis
+    TempGraph->keyAxis()->setLabel("Time");
+    TempGraph->valueAxis()->setLabel("Temp in °C");
+    HumGraph->keyAxis()->setLabel("Time");
+    HumGraph->valueAxis()->setLabel("Humidity in %");
+    LightGraph->keyAxis()->setLabel("Time");
+    LightGraph->valueAxis()->setLabel("Light in Lumen");
+
+    // Add the legend at the top right position
+    legend = new QCPLegend;
+    plot->axisRect()->insetLayout()->addElement(legend, Qt::AlignTop|Qt::AlignRight);
+
+    // Set margins for all (3) figures
+    for (int i = 0; i < 3; ++i) {
+        plot->axisRect(i)->setAutoMargins(QCP::msLeft | QCP::msTop | QCP::msBottom);
+        plot->axisRect(i)->setMargins(QMargins(0,0,100,0));
+    }
+    // Settings for custom legend
+    plot->axisRect(0)->insetLayout()->setInsetPlacement(0, QCPLayoutInset::ipFree);
+    plot->axisRect(0)->insetLayout()->setInsetRect(0, QRectF(1,0,0,0));
+    plot->setAutoAddPlottableToLegend(false);
+
+    // Fetch mote ID selection from listWidget
+    int listCount = ui->listWidget_Tab2->selectedItems().count();
+    QList<QListWidgetItem *> ids = ui->listWidget_Tab2->selectedItems();
+
+    // Iterate through all list items and request the data @GUI mote
+    for (int i = 0; i < listCount; i++) {
+        // get sensor data from mote id: i
+        QString id;
+        if ((*ids[i]).text().contains("GUI")){
+            id = "0"; // GUI TARGET ID
+        }
+        else{
+            id = (*ids[i]).text().split("ID")[1];
+        }
+
+        send2port(id + ":get_data:1");
+        send2port(id + ":get_data:2");
+        send2port(id + ":get_data:3");
+    }
+
+    // Set the plots to grid mode
+    QList<QCPAxis*> allAxes;
+    allAxes << TempAxisRect->axes() << HumAxisRect->axes() << LightAxisRect->axes();
+    foreach (QCPAxis *axis, allAxes)
+    {
+        axis->setLayer("axes");
+        axis->grid()->setLayer("grid");
+    }
+
+    // Apply the configuration changes by replotting
+    plot->replot();
+}
+
 void MainWindow::on_pushButton_CreatePlot_clicked()
 {
     existingLegendIDs.clear();
@@ -480,6 +555,12 @@ void MainWindow::on_pushButton_CreatePlot_clicked()
 void MainWindow::on_pushButton_Refresh_Tab2_clicked()
 {
     ui->listWidget_Tab2->clear();
+    QString message = "Zolertia™ GUI Re-Mote";
+    QListWidgetItem *listItem = new QListWidgetItem(
+                QIcon("/home/andreas/Documents/University/Wireless "
+                      "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab2);
+    ui->listWidget_Tab2->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
+
     for (int i = 0; i < n_max; ++i) {
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
             QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
@@ -504,9 +585,15 @@ void MainWindow::on_pushButton_UnselectAll_Tab2_clicked()
     }
 }
 
-void MainWindow::on_pushButton_Refresh_clicked()
+void MainWindow::on_pushButton_Refresh_clicked() // Tab 3
 {
     ui->listWidget->clear();
+    QString message = "Zolertia™ GUI Re-Mote";
+    QListWidgetItem *listItem = new QListWidgetItem(
+                QIcon("/home/andreas/Documents/University/Wireless "
+                      "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab2);
+    ui->listWidget_Tab2->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
+
     for (int i = 0; i < n_max; ++i) {
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
             QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
@@ -668,3 +755,4 @@ void MainWindow::on_pushButton_Clear_clicked()
 {
     ui->textEdit_Status->clear();
 }
+
