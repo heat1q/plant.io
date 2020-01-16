@@ -11,6 +11,7 @@
 #include "net_packet.h"
 #include "routing.h"
 #include "mote_sensors.h"
+#include "cfs/cfs.h"
 
 int create_packet(const uint8_t type, const uint8_t *src, uint8_t src_len, const uint8_t *dest, uint8_t dest_len, const uint8_t *data, uint8_t data_len)
 {
@@ -90,5 +91,99 @@ void process_data_packet(const plantio_packet_t *packet)
     else if (packet->type == 13) // reply for request thresholds
     {
         printf("<%u:th:%s>", get_packet_src(packet)[0], (char*) get_packet_data(packet));
+    }
+    else if (packet->type == 14) // request sensor data
+    {
+        uint8_t data_id = *get_packet_data(packet);
+        // pack the data into byte array
+        uint8_t data[sizeof(uint16_t) * MAX_NUM_OF_VALUES];
+        for (uint16_t i = 0; i < MAX_NUM_OF_VALUES; ++i)
+        {
+            data[2*i] = (uint8_t) (fetch_sensor_data(i*4 + data_id) >> 8);
+            data[2*i+1] = (uint8_t) fetch_sensor_data(i*4 + data_id);
+        }
+
+        init_data_packet(15, *get_packet_src(packet), data, sizeof(uint16_t) * MAX_NUM_OF_VALUES, get_best_route_index());
+    }
+    else if (packet->type == 15) // reply for request sensor data
+    {
+        uint16_t data;
+        printf("<%u:sensor_data", *get_packet_src(packet));
+        for (uint16_t i = 0; i < MAX_NUM_OF_VALUES; ++i)
+        {
+            data = (((uint16_t)get_packet_data(packet)[2*i]) << 8) | get_packet_data(packet)[2*i+1];
+            printf(":%u", data);
+        }
+        printf(">");
+    }
+    else if (packet->type == 16) // request for rt
+    {
+        uint16_t num_routes = get_num_routes();
+        if (num_routes)
+        {
+            uint16_t all_routes_len = 0;
+            for (uint16_t i = 0; i < num_routes; i++)
+            {
+                all_routes_len += get_num_hops(i);
+            }
+            uint16_t filelen = all_routes_len + 2*sizeof(uint16_t) + num_routes;
+            plantio_malloc(mmem_file_data, uint8_t, data, filelen);
+
+            int f_routing = cfs_open(FILE_ROUTING, CFS_READ);
+            if (f_routing != -1)
+            {
+                cfs_seek(f_routing, 0, CFS_SEEK_SET);
+                cfs_read(f_routing, data, filelen - sizeof(uint16_t));
+                cfs_close(f_routing);
+            }
+
+            // append best route index
+            data[filelen - 2] = (uint8_t)(get_best_route_index() >> 8);
+            data[filelen - 1] = (uint8_t) get_best_route_index();
+
+            init_data_packet(17, *get_packet_src(packet), data, filelen, get_best_route_index());
+
+            plantio_free(mmem_file_data);
+        }
+        else
+        {
+            init_data_packet(17, *get_packet_src(packet), NULL, 0, get_best_route_index());
+        }
+    }
+    else if (packet->type == 17) // reply for rt
+    {
+        printf("opt |  i  | Hops | Routes for Device %u\r\n", *get_packet_src(packet));
+        printf("----+-----+------+------------------------\r\n");
+        if (packet->data_len)
+        {
+            uint16_t index = (((uint16_t)get_packet_data(packet)[packet->data_len-2]) << 8) | get_packet_data(packet)[packet->data_len-1];
+            uint16_t num_routes = (((uint16_t)get_packet_data(packet)[1]) << 8) | get_packet_data(packet)[0]; // in file right is msb
+            for (uint16_t i = 0; i < num_routes; ++i)
+            {
+                uint16_t num_hops = get_packet_data(packet)[2 + i];
+
+                if (i == index)
+                {
+                    printf(" x  | %3u |  %3u | ", i, num_hops);
+                }
+                else
+                {
+                    printf("    | %3u |  %3u | ", i, num_hops);
+                }
+
+                uint16_t route_index = 2 + num_routes;
+                for (uint16_t j = 0; j < i; j++)
+                {
+                    route_index += get_packet_data(packet)[2 + j];
+                }
+                
+                const uint8_t *route = get_packet_data(packet) + route_index;
+                for (uint16_t j = 0; j < num_hops; ++j)
+                {
+                    printf("%i ", route[j]);
+                }
+                printf("\r\n");
+            }
+        }
     }
 }

@@ -163,9 +163,7 @@ void on_button_pressed(void)
     {
         //init_network(); // for testing
         //init_rreq_reply(find_best_route());
-        //add_device_to_network();
-        print_sensor_data();
-        write_thresholds("0:420:69:1337:11:22");
+        add_device_to_network();
     }
     /*
     else if (button_sensor.value(0) == 8) // released

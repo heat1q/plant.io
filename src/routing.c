@@ -404,7 +404,7 @@ void get_route(uint8_t *route, const uint16_t num_hops, const uint16_t index)
     uint16_t num_routes = get_num_routes();
     if (num_routes)
     {
-        uint8_t num_hops = get_num_hops(index);
+        //uint8_t num_hops = get_num_hops(index);
         uint16_t route_index = 0;
         // find the right index in the route array
         for (uint16_t i = 0; i < index; i++)
@@ -472,15 +472,21 @@ void init_data_packet(const uint8_t type, const uint8_t dest, const uint8_t *dat
     if (index < 0) // index in rt is not specified
     {
         // find the route to destination in table
+        uint16_t min = 1 << 15;
         for (uint16_t i = 0; i < get_num_routes(); ++i)
         {
-            // just the first entry of the route
-            plantio_malloc(mmem, uint8_t, dest_ref, sizeof(uint8_t));
-            get_route(dest_ref, 1, i);
-            if (*dest_ref == dest) { index = i; }
-            plantio_free(mmem);
-
-            if (index >= 0) { break; }
+            // find the route with the correct dest & min num_hops
+            uint8_t dest_ref;
+            get_route(&dest_ref, 1, i);
+            if (dest_ref == dest) 
+            { 
+                if (get_num_hops(i) < min)
+                {
+                    index = i;
+                    min = get_num_hops(i);
+                }
+            }
+            //if (index >= 0) { break; }
         }
     }
 

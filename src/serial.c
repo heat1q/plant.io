@@ -91,11 +91,14 @@ void parse_serial_input(char *input)
     }
     else if (strcmp(task ,"rt") == 0)
     {
-        print_routing_table();
-    }
-    else if (strcmp(task ,"reply") == 0)
-    {
-        init_rreq_reply(atol(args));
+        if (id == linkaddr_node_addr.u8[1])
+        {
+            print_routing_table();
+        }
+        else // send to the right node
+        {
+            init_data_packet(16, id, NULL, 0, -1);
+        }
     }
     else if (strcmp(task ,"set_th") == 0)
     {
@@ -117,6 +120,23 @@ void parse_serial_input(char *input)
         else 
         {
             init_data_packet(12, id, NULL, 0, -1);
+        }
+    }
+    else if (strcmp(task ,"get_data") == 0)
+    {
+        uint8_t data_id = (uint8_t) atoi(args); // 1 for temp, 2 for hum, 3 for light
+        if (id == linkaddr_node_addr.u8[1])
+        {
+            printf("<%u:sensor_data", linkaddr_node_addr.u8[1]);
+            for (uint16_t i = 0; i < MAX_NUM_OF_VALUES; ++i)
+            {
+                printf(":%u", fetch_sensor_data(i * 4 + data_id));
+            }
+            printf(">");
+        }
+        else // send to the right node
+        {
+            init_data_packet(14, id, &data_id, 1, -1);
         }
     }
 }
