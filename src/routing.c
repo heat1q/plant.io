@@ -118,7 +118,7 @@ void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
                 {
                     printf(":%u", get_packet_src(packet)[i]);
                 }
-                printf(">"); // end data message
+                printf(">\r\n"); // end data message
 
                 // write the table for the gui mote
                 write_routing_table(get_packet_src(packet), packet->src_len);

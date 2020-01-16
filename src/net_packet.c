@@ -90,7 +90,7 @@ void process_data_packet(const plantio_packet_t *packet)
     }
     else if (packet->type == 13) // reply for request thresholds
     {
-        printf("<%u:th:%s>", get_packet_src(packet)[0], (char*) get_packet_data(packet));
+        printf("<%u:th:%s>\r\n", get_packet_src(packet)[0], (char*) get_packet_data(packet));
     }
     else if (packet->type == 14) // request sensor data
     {
@@ -102,19 +102,20 @@ void process_data_packet(const plantio_packet_t *packet)
             data[2*i] = (uint8_t) (fetch_sensor_data(i*4 + data_id) >> 8);
             data[2*i+1] = (uint8_t) fetch_sensor_data(i*4 + data_id);
         }
+        data[sizeof(uint16_t) * MAX_NUM_OF_VALUES] = data_id; // append the id for temp, hum, light
 
         init_data_packet(15, *get_packet_src(packet), data, sizeof(uint16_t) * MAX_NUM_OF_VALUES, get_best_route_index());
     }
     else if (packet->type == 15) // reply for request sensor data
     {
         uint16_t data;
-        printf("<%u:sensor_data", *get_packet_src(packet));
+        printf("<%u:sensor_data:%u", *get_packet_src(packet), get_packet_data(packet)[sizeof(uint16_t) * MAX_NUM_OF_VALUES]);
         for (uint16_t i = 0; i < MAX_NUM_OF_VALUES; ++i)
         {
             data = (((uint16_t)get_packet_data(packet)[2*i]) << 8) | get_packet_data(packet)[2*i+1];
             printf(":%u", data);
         }
-        printf(">");
+        printf(">\r\n");
     }
     else if (packet->type == 16) // request for rt
     {
