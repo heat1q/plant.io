@@ -467,6 +467,27 @@ void MainWindow::on_pushButton_GetSensorData_clicked()
     plot->replot();
 }
 
+void MainWindow::on_pushButton_GetRoutingTable_clicked()
+{
+    // Fetch mote ID selection from listWidget
+    int listCount = ui->listWidget_Tab2->selectedItems().count();
+    QList<QListWidgetItem *> ids = ui->listWidget_Tab2->selectedItems();
+
+    // Iterate through all list items and request the data @GUI mote
+    for (int i = 0; i < listCount; i++) {
+        // get sensor data from mote id: i
+        QString id;
+        if ((*ids[i]).text().contains("GUI")){
+            id = "0"; // GUI TARGET ID
+        }
+        else{
+            id = (*ids[i]).text().split("ID")[1];
+        }
+
+        send2port(id + ":rt");
+    }
+}
+
 void MainWindow::on_pushButton_Refresh_Tab2_clicked()
 {
     ui->listWidget_Tab2->clear();
@@ -670,4 +691,3 @@ void MainWindow::on_pushButton_Clear_clicked()
 {
     ui->textEdit_Status->clear();
 }
-
