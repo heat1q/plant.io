@@ -44,7 +44,6 @@ void parse_serial_input(char *input)
     char *tmp = strtok(input, ":");
     // check id
     uint8_t id = (uint8_t) atoi(tmp);
-    id = linkaddr_node_addr.u8[1] ? id == 0 : id;
 
     uint8_t len = strlen(tmp) + 1; // the length of the id + delim
 
@@ -77,7 +76,7 @@ void parse_serial_input(char *input)
             led_id = LEDS_ALL;
         }
 
-        if (id == linkaddr_node_addr.u8[1])
+        if (id == linkaddr_node_addr.u8[1] || id == 0)
         {
             leds_toggle(led_id);
         }
@@ -93,7 +92,7 @@ void parse_serial_input(char *input)
     }
     else if (strcmp(task ,"rt") == 0)
     {
-        if (id == linkaddr_node_addr.u8[1])
+        if (id == linkaddr_node_addr.u8[1] || id == 0)
         {
             print_routing_table();
         }
@@ -104,7 +103,7 @@ void parse_serial_input(char *input)
     }
     else if (strcmp(task ,"set_th") == 0)
     {
-        if (id == linkaddr_node_addr.u8[1])
+        if (id == linkaddr_node_addr.u8[1] || id == 0)
         {
             write_thresholds(args);
         }
@@ -115,7 +114,7 @@ void parse_serial_input(char *input)
     }
     else if (strcmp(task ,"get_th") == 0)
     {
-        if (id == linkaddr_node_addr.u8[1])
+        if (id == linkaddr_node_addr.u8[1] || id == 0)
         {
             printf("<%u:th:%li:%li:%li:%li:%li:%li>\r\n", linkaddr_node_addr.u8[1], get_threshold(0), get_threshold(1), get_threshold(2), get_threshold(3), get_threshold(4), get_threshold(5));
         }
@@ -127,9 +126,9 @@ void parse_serial_input(char *input)
     else if (strcmp(task ,"get_data") == 0)
     {
         uint8_t data_id = (uint8_t) atoi(args); // 1 for temp, 2 for hum, 3 for light
-        if (id == linkaddr_node_addr.u8[1])
+        if (id == linkaddr_node_addr.u8[1] || id == 0)
         {
-            printf("<%u:sensor_data", linkaddr_node_addr.u8[1]);
+            printf("<%u:sensor_data:%u", linkaddr_node_addr.u8[1], data_id);
             for (uint16_t i = 0; i < MAX_NUM_OF_VALUES; ++i)
             {
                 printf(":%u", fetch_sensor_data(i * 4 + data_id));
