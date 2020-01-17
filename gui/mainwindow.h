@@ -49,7 +49,6 @@ private slots:
     void on_pushButton_ZoomIn_clicked();
     void on_pushButton_ZoomOut_clicked();
     void on_pushButton_SetMax_clicked();
-    void on_pushButton_CreatePlot_clicked();
     void on_pushButton_Refresh_Tab2_clicked();
     void on_pushButton_SelectAll_Tab2_clicked();
     void on_pushButton_UnselectAll_Tab2_clicked();
@@ -67,7 +66,6 @@ private slots:
     void on_pushButton_UnselectAll_clicked();
     void on_pushButton_Center_clicked();
     void on_pushButton_Clear_clicked();
-    void on_pushButton_clicked();
     void on_pushButton_GetSensorData_clicked();
 };
 

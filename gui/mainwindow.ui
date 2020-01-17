@@ -451,31 +451,6 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="0">
-          <widget class="QPushButton" name="pushButton_CreatePlot">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>200</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>200</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Create Graph</string>
-           </property>
-          </widget>
-         </item>
          <item row="3" column="0">
           <widget class="QPushButton" name="pushButton_Refresh_Tab2">
            <property name="maximumSize">
@@ -522,28 +497,7 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
-          <widget class="QPushButton" name="pushButton">
-           <property name="text">
-            <string>Data Received TB</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Plot</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="0">
-          <widget class="QPushButton" name="pushButton_GetSensorData">
-           <property name="text">
-            <string>Fetch Data From Selection</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" rowspan="8">
+         <item row="1" column="1" rowspan="6">
           <widget class="QCustomPlot" name="customPlot" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -562,6 +516,20 @@ amount of motes</string>
              <width>100000</width>
              <height>100000</height>
             </size>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QPushButton" name="pushButton_GetSensorData">
+           <property name="text">
+            <string>Fetch Selected Sensor Data</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Plot</string>
            </property>
           </widget>
          </item>

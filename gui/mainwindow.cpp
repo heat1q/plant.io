@@ -157,29 +157,6 @@ void MainWindow::print(QString msg) // Print a message in GUI console
     ui->textEdit_Status->moveCursor (QTextCursor::End);
 }
 
-void MainWindow::on_pushButton_clicked() // <- TESTBENCH: DELETE LATER!
-{
-    int type1 = 1;
-    QString string1 = "1:sensors_data:12:53:112:51:11:77:23:123:12:111:1:67";
-    QStringList data1 = string1.split(":");
-    plot(type1, data1);
-
-    int type2 = 2;
-    QString string2 = "2:sensors_data:12:53:112:51:11:77:23:123:12:111:1:67";
-    QStringList data2 = string2.split(":");
-    plot(type2, data2);
-
-    int type3 = 3;
-    QString string3 = "3:sensors_data:55:53:72:51:66:77:77:88:1:11:8:67";
-    QStringList data3 = string3.split(":");
-    plot(type3, data3);
-
-    int type4 = 3;
-    QString string4 = "6:sensors_data:2:11:21:231:11:32:11:88:1:14:8:12";
-    QStringList data4 = string4.split(":");
-    plot(type4, data4);
-}
-
 // outside function for plot() to access the graphs
 static QCPAxisRect *TempAxisRect;
 static QCPAxisRect *HumAxisRect;
@@ -187,7 +164,7 @@ static QCPAxisRect *LightAxisRect;
 static QCPLegend *legend;
 static QVector<int> existingLegendIDs;
 
-void MainWindow::plot(int type, QStringList data)
+void MainWindow::plot(int type, QStringList data) // ID : SENSOR_DATA : TYPE : DATA
 {
     QCustomPlot* plot = ui->customPlot;
     QCPGraph* target_graph;
@@ -229,7 +206,9 @@ void MainWindow::plot(int type, QStringList data)
         existingLegendIDs.append(i);
     }
 
-    plot->replot(); // update the graphs
+    // Rescale and replot
+    plot->rescaleAxes();
+    plot->replot();
 }
 
 void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
@@ -264,8 +243,10 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
                 data.removeFirst();
                 create_graph(data); // create visualization of route which also registers the ID's as valid targets
             }
-            else if (data[1] == "sensors_data"){
-                //plot(type, data);
+            else if (data[1] == "sensor_data"){ // ID : SENSOR_DATA : TYPE : DATA
+                int type = data[2].toInt();
+                data.removeAt(2);
+                plot(type, data);
             }
             else if (data[1] == "th") {
                 print("pls fix me :(");
@@ -432,11 +413,11 @@ void MainWindow::on_pushButton_GetSensorData_clicked()
     QCPGraph *HumGraph = plot->addGraph(HumAxisRect->axis(QCPAxis::atBottom), HumAxisRect->axis(QCPAxis::atLeft));
     QCPGraph *LightGraph = plot->addGraph(LightAxisRect->axis(QCPAxis::atBottom), LightAxisRect->axis(QCPAxis::atLeft));
     // Name the key and value axis
-    TempGraph->keyAxis()->setLabel("Time");
-    TempGraph->valueAxis()->setLabel("Temp in °C");
-    HumGraph->keyAxis()->setLabel("Time");
+    TempGraph->keyAxis()->setLabel("Sample");
+    TempGraph->valueAxis()->setLabel("Temp in mC");
+    HumGraph->keyAxis()->setLabel("Sample");
     HumGraph->valueAxis()->setLabel("Humidity in %");
-    LightGraph->keyAxis()->setLabel("Time");
+    LightGraph->keyAxis()->setLabel("Sample");
     LightGraph->valueAxis()->setLabel("Light in Lumen");
 
     // Add the legend at the top right position
@@ -471,72 +452,6 @@ void MainWindow::on_pushButton_GetSensorData_clicked()
         send2port(id + ":get_data:1");
         send2port(id + ":get_data:2");
         send2port(id + ":get_data:3");
-    }
-
-    // Set the plots to grid mode
-    QList<QCPAxis*> allAxes;
-    allAxes << TempAxisRect->axes() << HumAxisRect->axes() << LightAxisRect->axes();
-    foreach (QCPAxis *axis, allAxes)
-    {
-        axis->setLayer("axes");
-        axis->grid()->setLayer("grid");
-    }
-
-    // Apply the configuration changes by replotting
-    plot->replot();
-}
-
-void MainWindow::on_pushButton_CreatePlot_clicked()
-{
-    existingLegendIDs.clear();
-    QCustomPlot* plot = ui->customPlot;
-    plot->plotLayout()->clear();
-    plot->clearItems();
-    plot->clearGraphs();
-    plot->plotLayout()->simplify();
-
-    TempAxisRect = new QCPAxisRect(plot);
-    plot->plotLayout()->addElement(0, 0, TempAxisRect);
-    HumAxisRect = new QCPAxisRect(plot);
-    plot->plotLayout()->addElement(1, 0, HumAxisRect);
-    LightAxisRect = new QCPAxisRect(plot);
-    plot->plotLayout()->addElement(2, 0, LightAxisRect);
-
-    // Add graphs to name the key and value axis
-    QCPGraph *TempGraph = plot->addGraph(TempAxisRect->axis(QCPAxis::atBottom), TempAxisRect->axis(QCPAxis::atLeft));
-    QCPGraph *HumGraph = plot->addGraph(HumAxisRect->axis(QCPAxis::atBottom), HumAxisRect->axis(QCPAxis::atLeft));
-    QCPGraph *LightGraph = plot->addGraph(LightAxisRect->axis(QCPAxis::atBottom), LightAxisRect->axis(QCPAxis::atLeft));
-    // Name the key and value axis
-    TempGraph->keyAxis()->setLabel("Time");
-    TempGraph->valueAxis()->setLabel("Temp in °C");
-    HumGraph->keyAxis()->setLabel("Time");
-    HumGraph->valueAxis()->setLabel("Humidity in %");
-    LightGraph->keyAxis()->setLabel("Time");
-    LightGraph->valueAxis()->setLabel("Light in Lumen");
-
-    // Add the legend at the top right position
-    legend = new QCPLegend;
-    plot->axisRect()->insetLayout()->addElement(legend, Qt::AlignTop|Qt::AlignRight);
-
-    // Set margins for all (3) figures
-    for (int i = 0; i < 3; ++i) {
-        plot->axisRect(i)->setAutoMargins(QCP::msLeft | QCP::msTop | QCP::msBottom);
-        plot->axisRect(i)->setMargins(QMargins(0,0,100,0));
-    }
-    // Settings for custom legend
-    plot->axisRect(0)->insetLayout()->setInsetPlacement(0, QCPLayoutInset::ipFree);
-    plot->axisRect(0)->insetLayout()->setInsetRect(0, QRectF(1,0,0,0));
-    plot->setAutoAddPlottableToLegend(false);
-
-    // Fetch mote ID selection from listWidget
-    int listCount = ui->listWidget_Tab2->selectedItems().count();
-    QList<QListWidgetItem *> ids = ui->listWidget_Tab2->selectedItems();
-
-    // Iterate through all list items and request the data @GUI mote
-    for (int i = 0; i < listCount; i++) {
-        // get sensor data from mote id: i
-        QString id = (*ids[i]).text().split("ID")[1];
-        //send2port(); <- IMPLEMENT ME
     }
 
     // Set the plots to grid mode
