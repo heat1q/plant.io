@@ -52,24 +52,33 @@ static QVector<double> alpha;
 void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
 {
     // Paint edges and nodes
-    QBrush greenBrush(Qt::green);
+    QBrush fillBrush(Qt::cyan);
     QPen blackPen(Qt::black);
-    blackPen.setWidth(1);
+    blackPen.setWidth(2);
+    QPen updatePen(Qt::green); // Color for updated route
+    updatePen.setWidth(2);
 
     curr_pos[0] = 0; // Initial x position
     curr_pos[1] = 0; // Initial y position
     static int curr_id = 0;
+    bool isUpdate = false;
 
     double x,y,x_offset,y_offset,len,new_length,new_alpha;
     double circle_radius=100+4.20*n_max;
+
+    // first if condition blocks the updated graph color so it doesn't mistrigger if e.g. 1:2:3 comes before 1:2 in exploration phase
+    int index_last = InputList.first().toInt(); // .first due to reverse order!
+    if (ui->pushButton_Explore->isEnabled() && ((abs(node_pos[index_last][0]) > 0) || (abs(node_pos[index_last][1]) > 0))){ // Route has been updated
+        isUpdate = true;
+    }
 
     for(int i = InputList.size()-1; i>=0; i--) // Iterate all items in header "11:14:7:215"
     {
         int target_id = InputList[i].toInt();
 
-        if (target_id >= n_max){ // doesn't check if header data is valid. invalid = 0. fix!?
-            print("Invalid header id. Abort mission\n");
-            break;
+        if (target_id >= n_max){
+            print("Invalid header id. Aborting graph creation!\n");
+            return;
         }
 
         if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)){ // Target node already exists
@@ -87,7 +96,7 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
             else{ // ring 2 and above
                 len = sqrt(pow(curr_pos[0],2)+pow(curr_pos[1],2));
                 new_length = len + circle_radius;
-                new_alpha = atan2(curr_pos[1],curr_pos[0]) + (node_pos[curr_id][2]) / double(2.5*(i+1)*n_max) * 2*pi;
+                new_alpha = atan2(curr_pos[1],curr_pos[0]) + (node_pos[curr_id][2]-0.5) / double(2.5*(InputList.size()-i)*n_max) * 2*pi;
                 x_offset = new_length*cos(new_alpha)-curr_pos[0];
                 y_offset = new_length*sin(new_alpha)-curr_pos[1];
             }
@@ -99,7 +108,7 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
             node_pos[curr_id][2] += 1;
 
             // add node circle
-            mScene->addEllipse(node_pos[target_id][0]-10,node_pos[target_id][1]-10,20,20,blackPen,greenBrush);
+            mScene->addEllipse(node_pos[target_id][0]-10,node_pos[target_id][1]-10,20,20,blackPen,fillBrush);
 
             // add node id text
             QString node_id = QString::number(target_id);
@@ -117,7 +126,12 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
         double y1 = node_pos[target_id][0]-normalizer*x_delta;
         double y2 = node_pos[target_id][1]-normalizer*y_delta;
 
-        mScene->addLine(x1,x2,y1,y2,blackPen); // add edge
+        if (isUpdate){
+            mScene->addLine(x1,x2,y1,y2,updatePen); // add edge
+        } else{
+            mScene->addLine(x1,x2,y1,y2,blackPen); // add edge
+        }
+
 
         curr_pos[0] = node_pos[target_id][0]; // Update current x position
         curr_pos[1] = node_pos[target_id][1]; // Update current y position
@@ -226,16 +240,6 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
         else if (ch == '>') {
             str.remove(">");
             print(str+"\n");
-            /* INC DATA STRUCTURE:
-             * <$src_id:route:$r_1:$_2:...>
-             * # get optimal path to node with id $src_id
-             * <$src_id:th:$temp_low:$temp_high:$hum_low:$hum_high:$light_low:$light_high>
-             * # get thresholds of node with id $src_id
-             * <$src_id:sensors_data:$i_1:...:$i_max>
-             * # get sensors data of node with id $src_id with datapoint $i_1 to $i_max
-             * <$src_id:rt:$data>
-             * # get routing table of node with id $src_id with $data formatted equivalent to file structure
-             */
 
             QStringList data = str.split(":");
             if (data[1] == "route"){
@@ -251,24 +255,12 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
             else if (data[1] == "th") {
                 print("pls fix me :(");
             }
-            else if (data[1] == "rt") {
-                print("pls fix me :(");
-            }
 
             str.clear();
         }
         else if (ch == '\n')     // End of line, start decoding
         {
-            //str.remove("\n", Qt::CaseSensitive);
             print(str);
-            /*
-            QStringList split = str.split(":"); // <1:route:1:2:3:4:...>
-            if (split[1] == "route"){
-
-            }
-            if (str.startsWith(""))
-            //create_graph(str)
-            */
             this->repaint();    // Update content of window immediately
             str.clear();
         }
@@ -363,8 +355,9 @@ void MainWindow::on_pushButton_Explore_clicked()
         alpha.insert(i, i / double(n_max) * 2 * pi);
     }
 
+    // Disable the button for 8000ms -> also blocks the updated graph color so it doesn't mistrigger if e.g. 1:2:3 comes before 1:2 in exploration phase
     ui->pushButton_Explore->setEnabled(false);
-    QTimer::singleShot(3000, this, SLOT(enableButton())); // first entry is time in ms
+    QTimer::singleShot(8000, this, SLOT(enableButton())); // first entry is time in ms
 }
 
 void MainWindow::enableButton() // enable the explore network button
