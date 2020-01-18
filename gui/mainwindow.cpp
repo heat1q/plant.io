@@ -78,7 +78,7 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
 
         else{ // target node doesn't exist
             // calculate new node position
-            if (i==0){ // first ring
+            if (i==InputList.size()-1){ // first ring
                 x = cos(alpha.at(target_id));
                 y = sin(alpha.at(target_id));
                 x_offset = x*circle_radius;
