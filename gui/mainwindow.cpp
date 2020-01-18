@@ -464,7 +464,7 @@ void MainWindow::on_pushButton_GetSensorData_clicked()
 
 void MainWindow::on_pushButton_GetRoutingTable_clicked()
 {
-    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
+    QList<QListWidgetItem *> selection = ui->listWidget_Tab2->selectedItems();
     if ((selection.count() > 0) && (port.isOpen())){
         for (int i = 0; i < selection.count(); ++i) {
             QListWidgetItem listItem = *selection.at(i);
