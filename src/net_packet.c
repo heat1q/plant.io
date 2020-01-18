@@ -96,7 +96,7 @@ void process_data_packet(const plantio_packet_t *packet)
     {
         uint8_t data_id = *get_packet_data(packet);
         // pack the data into byte array
-        uint8_t data[sizeof(uint16_t) * MAX_NUM_OF_VALUES];
+        uint8_t data[sizeof(uint16_t) * MAX_NUM_OF_VALUES + 1];
         for (uint16_t i = 0; i < MAX_NUM_OF_VALUES; ++i)
         {
             data[2*i] = (uint8_t) (fetch_sensor_data(i*4 + data_id) >> 8);
@@ -104,7 +104,7 @@ void process_data_packet(const plantio_packet_t *packet)
         }
         data[sizeof(uint16_t) * MAX_NUM_OF_VALUES] = data_id; // append the id for temp, hum, light
 
-        init_data_packet(15, *get_packet_src(packet), data, sizeof(uint16_t) * MAX_NUM_OF_VALUES, get_best_route_index());
+        init_data_packet(15, *get_packet_src(packet), data, sizeof(uint16_t) * MAX_NUM_OF_VALUES + 1, get_best_route_index());
     }
     else if (packet->type == 15) // reply for request sensor data
     {

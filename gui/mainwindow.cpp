@@ -18,6 +18,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWin
     if (ui->comboBox_Interface->count() == 0){
         print("No USB ports available.\nConnect a USB device and try again.\n");
     }
+
+    QPalette p = ui->textEdit_Status->palette(); // define palette for textEdit
+    p.setColor(QPalette::Base, Qt::black); // set background color
+    p.setColor(QPalette::Text, Qt::white); // set text color
+    ui->textEdit_Status->setPalette(p); // change textedit palette
 }
 
 MainWindow::~MainWindow()
@@ -47,24 +52,33 @@ static QVector<double> alpha;
 void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
 {
     // Paint edges and nodes
-    QBrush greenBrush(Qt::green);
+    QBrush fillBrush(Qt::cyan);
     QPen blackPen(Qt::black);
-    blackPen.setWidth(1);
+    blackPen.setWidth(2);
+    QPen updatePen(Qt::green); // Color for updated route
+    updatePen.setWidth(2);
 
     curr_pos[0] = 0; // Initial x position
     curr_pos[1] = 0; // Initial y position
     static int curr_id = 0;
+    bool isUpdate = false;
 
     double x,y,x_offset,y_offset,len,new_length,new_alpha;
     double circle_radius=100+4.20*n_max;
 
-    for(int i = 0; i<InputList.size()-1; i++) // Iterate all items in header "11:14:7:215:PAYLOAD"
+    // first if condition blocks the updated graph color so it doesn't mistrigger if e.g. 1:2:3 comes before 1:2 in exploration phase
+    int index_last = InputList.first().toInt(); // .first due to reverse order!
+    if (ui->pushButton_Explore->isEnabled() && ((abs(node_pos[index_last][0]) > 0) || (abs(node_pos[index_last][1]) > 0))){ // Route has been updated
+        isUpdate = true;
+    }
+
+    for(int i = InputList.size()-1; i>=0; i--) // Iterate all items in header "11:14:7:215"
     {
         int target_id = InputList[i].toInt();
 
-        if (target_id >= n_max){ // doesn't check if header data is valid. invalid = 0. fix!?
-            print("Invalid header id. Abort mission\n");
-            break;
+        if (target_id >= n_max){
+            print("Invalid header id. Aborting graph creation!\n");
+            return;
         }
 
         if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)){ // Target node already exists
@@ -73,7 +87,7 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
 
         else{ // target node doesn't exist
             // calculate new node position
-            if (i==0){ // first ring
+            if (i==InputList.size()-1){ // first ring
                 x = cos(alpha.at(target_id));
                 y = sin(alpha.at(target_id));
                 x_offset = x*circle_radius;
@@ -81,8 +95,8 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
             }
             else{ // ring 2 and above
                 len = sqrt(pow(curr_pos[0],2)+pow(curr_pos[1],2));
-                new_length = len+circle_radius;
-                new_alpha = atan2(curr_pos[1],curr_pos[0]) + (node_pos[curr_id][2]) / double(2.5*i*n_max) * 2*pi;
+                new_length = len + circle_radius;
+                new_alpha = atan2(curr_pos[1],curr_pos[0]) + (node_pos[curr_id][2]-0.5) / double(2.5*(InputList.size()-i)*n_max) * 2*pi;
                 x_offset = new_length*cos(new_alpha)-curr_pos[0];
                 y_offset = new_length*sin(new_alpha)-curr_pos[1];
             }
@@ -94,7 +108,7 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
             node_pos[curr_id][2] += 1;
 
             // add node circle
-            mScene->addEllipse(node_pos[target_id][0]-10,node_pos[target_id][1]-10,20,20,blackPen,greenBrush);
+            mScene->addEllipse(node_pos[target_id][0]-10,node_pos[target_id][1]-10,20,20,blackPen,fillBrush);
 
             // add node id text
             QString node_id = QString::number(target_id);
@@ -112,7 +126,12 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
         double y1 = node_pos[target_id][0]-normalizer*x_delta;
         double y2 = node_pos[target_id][1]-normalizer*y_delta;
 
-        mScene->addLine(x1,x2,y1,y2,blackPen); // add edge
+        if (isUpdate){
+            mScene->addLine(x1,x2,y1,y2,updatePen); // add edge
+        } else{
+            mScene->addLine(x1,x2,y1,y2,blackPen); // add edge
+        }
+
 
         curr_pos[0] = node_pos[target_id][0]; // Update current x position
         curr_pos[1] = node_pos[target_id][1]; // Update current y position
@@ -141,7 +160,7 @@ void MainWindow::send2port(QString input) // Send message to port
     byteArray.append('\n');
     if (port.write(byteArray)==-1)
     {
-        print("QextSerialPort: device not open");
+        print("QextSerialPort: device not open!\n");
     }
 }
 
@@ -152,16 +171,97 @@ void MainWindow::print(QString msg) // Print a message in GUI console
     ui->textEdit_Status->moveCursor (QTextCursor::End);
 }
 
+// outside function for plot() to access the graphs
+static QCPAxisRect *TempAxisRect;
+static QCPAxisRect *HumAxisRect;
+static QCPAxisRect *LightAxisRect;
+static QCPLegend *legend;
+static QVector<int> existingLegendIDs;
+
+void MainWindow::plot(int type, QStringList data) // ID : SENSOR_DATA : TYPE : DATA
+{
+    QCustomPlot* plot = ui->customPlot;
+    QCPGraph* target_graph;
+
+    // Assign the correct graph according to the input type
+    if (type == 1){ // TEMPERATURE
+        target_graph = plot->addGraph(TempAxisRect->axis(QCPAxis::atBottom), TempAxisRect->axis(QCPAxis::atLeft));
+    }
+    else if (type == 2) { // HUMIDITY
+        target_graph = plot->addGraph(HumAxisRect->axis(QCPAxis::atBottom), HumAxisRect->axis(QCPAxis::atLeft));
+    }
+    else if (type == 3){ // LIGHT
+        target_graph = plot->addGraph(LightAxisRect->axis(QCPAxis::atBottom), LightAxisRect->axis(QCPAxis::atLeft));
+    }
+    else { // INVALID
+        print("WARNING: Invalid sensor data type recieved!");
+        return;
+    }
+
+    // Extract the data from the input sequence
+    QString id = data[0]; // ID from which the data came from
+    int num_elements = data.count() - 2;
+    QVector<double> x,y;
+    for (int i = 0; i < num_elements; ++i) {
+        x.append(i);
+        y.append(data[i+2].toDouble());
+    }
+
+    // Plot the data
+    target_graph->setName("ID#"+id);
+    target_graph->setData(x,y);
+    target_graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::black), QBrush(Qt::white), 3));
+    int i = id.toInt();
+    target_graph->setPen(QPen(QColor((255+i*100)%255, (255+i*200)%255, (255+i*300)%255), 2));
+    target_graph->rescaleAxes();
+
+    if (!existingLegendIDs.contains(i)){ // legend for id not yet set
+        legend->addItem(new QCPPlottableLegendItem(legend, target_graph));
+        existingLegendIDs.append(i);
+    }
+
+    // Rescale and replot
+    plot->rescaleAxes();
+    plot->replot();
+}
+
 void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
 {
     static QString str;
     char ch;
     while (port.getChar(&ch))
     {
+        //qDebug() << ch;
         str.append(ch);
-        if (ch == '\n')     // End of line, start decoding
+        //msg.append(ch);
+        if (ch == '<'){
+            str.clear();
+        }
+        else if (ch == '>') {
+            str.remove(">");
+
+            QStringList data = str.split(":");
+            if (data[1] == "route"){
+                data.removeFirst();
+                data.removeFirst();
+                create_graph(data); // create visualization of route which also registers the ID's as valid targets
+            }
+            else if (data[1] == "sensor_data"){ // ID : SENSOR_DATA : TYPE : DATA
+                int type = data[2].toInt();
+                data.removeAt(2);
+                plot(type, data);
+            }
+            else if (data[1] == "th") {
+                print("Thresholds from Zolertia™ Re-Mote ID" + data[0] + ":\n"
+                        + "T_Min:" + data[2] + " | T_Max:" + data[3]
+                        + " | H_Min:" + data[4] + " | H_Max:" + data[5]
+                        + " | L_Min:" + data[6] + " | L_Max:" + data[7] + "\n");
+            }
+
+            str.clear();
+        }
+        else if (ch == '\n')     // End of line, start decoding
         {
-            str.remove("\n", Qt::CaseSensitive);
             print(str);
             this->repaint();    // Update content of window immediately
             str.clear();
@@ -231,6 +331,8 @@ void MainWindow::on_pushButton_CreateRoute_clicked() // test button for graph
 
 void MainWindow::on_pushButton_Explore_clicked()
 {
+    send2port("0:init:"); // Initialize network exploration on mote
+
     // create networkgraph
     mScene = new QGraphicsScene();
     ui->graphicsView_Networkgraph->setScene( mScene );
@@ -255,8 +357,9 @@ void MainWindow::on_pushButton_Explore_clicked()
         alpha.insert(i, i / double(n_max) * 2 * pi);
     }
 
+    // Disable the button for 8000ms -> also blocks the updated graph color so it doesn't mistrigger if e.g. 1:2:3 comes before 1:2 in exploration phase
     ui->pushButton_Explore->setEnabled(false);
-    QTimer::singleShot(3000, this, SLOT(enableButton())); // first entry is time in ms
+    QTimer::singleShot(8000, this, SLOT(enableButton())); // first entry is time in ms
 }
 
 void MainWindow::enableButton() // enable the explore network button
@@ -284,106 +387,69 @@ void MainWindow::on_pushButton_SetMax_clicked()
     else{print("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
 
-void MainWindow::on_pushButton_creategraph_clicked()
+void MainWindow::on_pushButton_GetSensorData_clicked()
 {
+    existingLegendIDs.clear();
     QCustomPlot* plot = ui->customPlot;
     plot->plotLayout()->clear();
     plot->clearItems();
     plot->clearGraphs();
     plot->plotLayout()->simplify();
 
-    QVector<double> x(61),y(61);
-    for (int i = 0; i < 61; ++i) {
-        x[i] = i/50.0 - 1;
-        y[i] = 4*x[i]*x[i];
-    }
-
-    QVector<double> x2(101),y2(101);
-    for (int i = 0; i < 101; ++i) {
-        x2[i] = i/50.0 - 1;
-        y2[i] = x2[i]*x2[i];
-    }
-
-    QVector<double> x3(200),y3(200);
-    for (int i = 0; i < 200; ++i) {
-        x3[i] = 0.1*i - 10;
-        y3[i] = x3[i]*x3[i]*3/i;
-    }
-
-    QCPAxisRect *TempAxisRect = new QCPAxisRect(plot);
+    TempAxisRect = new QCPAxisRect(plot);
     plot->plotLayout()->addElement(0, 0, TempAxisRect);
-
-    QCPAxisRect *HumAxisRect = new QCPAxisRect(plot);
+    HumAxisRect = new QCPAxisRect(plot);
     plot->plotLayout()->addElement(1, 0, HumAxisRect);
-
-    QCPAxisRect *LightAxisRect = new QCPAxisRect(plot);
+    LightAxisRect = new QCPAxisRect(plot);
     plot->plotLayout()->addElement(2, 0, LightAxisRect);
 
-    QCPLegend *Legend = new QCPLegend;
-    plot->axisRect()->insetLayout()->addElement(Legend, Qt::AlignTop|Qt::AlignRight);
+    // Add graphs to name the key and value axis
+    QCPGraph *TempGraph = plot->addGraph(TempAxisRect->axis(QCPAxis::atBottom), TempAxisRect->axis(QCPAxis::atLeft));
+    QCPGraph *HumGraph = plot->addGraph(HumAxisRect->axis(QCPAxis::atBottom), HumAxisRect->axis(QCPAxis::atLeft));
+    QCPGraph *LightGraph = plot->addGraph(LightAxisRect->axis(QCPAxis::atBottom), LightAxisRect->axis(QCPAxis::atLeft));
+    // Name the key and value axis
+    TempGraph->keyAxis()->setLabel("Sample");
+    TempGraph->valueAxis()->setLabel("Temp in mC");
+    HumGraph->keyAxis()->setLabel("Sample");
+    HumGraph->valueAxis()->setLabel("Humidity in %");
+    LightGraph->keyAxis()->setLabel("Sample");
+    LightGraph->valueAxis()->setLabel("Light in Lumen");
 
+    // Add the legend at the top right position
+    legend = new QCPLegend;
+    plot->axisRect()->insetLayout()->addElement(legend, Qt::AlignTop|Qt::AlignRight);
+
+    // Set margins for all (3) figures
     for (int i = 0; i < 3; ++i) {
         plot->axisRect(i)->setAutoMargins(QCP::msLeft | QCP::msTop | QCP::msBottom);
         plot->axisRect(i)->setMargins(QMargins(0,0,100,0));
     }
+    // Settings for custom legend
     plot->axisRect(0)->insetLayout()->setInsetPlacement(0, QCPLayoutInset::ipFree);
     plot->axisRect(0)->insetLayout()->setInsetRect(0, QRectF(1,0,0,0));
-
     plot->setAutoAddPlottableToLegend(false);
 
+    // Fetch mote ID selection from listWidget
     int listCount = ui->listWidget_Tab2->selectedItems().count();
-    QVector<QCPGraph *> TempGraphVector;
-    QVector<QCPGraph *> HumGraphVector;
-    QVector<QCPGraph *> LightGraphVector;
     QList<QListWidgetItem *> ids = ui->listWidget_Tab2->selectedItems();
 
-
-
+    // Iterate through all list items and request the data @GUI mote
     for (int i = 0; i < listCount; i++) {
         // get sensor data from mote id: i
-        QString id = (*ids[i]).text().split("ID")[1];
-        print("ID#"+id+"\n");
-
-        QCPGraph *TempGraph = plot->addGraph(TempAxisRect->axis(QCPAxis::atBottom), TempAxisRect->axis(QCPAxis::atLeft));
-        QCPGraph *HumGraph = plot->addGraph(HumAxisRect->axis(QCPAxis::atBottom), HumAxisRect->axis(QCPAxis::atLeft));
-        QCPGraph *LightGraph = plot->addGraph(LightAxisRect->axis(QCPAxis::atBottom), LightAxisRect->axis(QCPAxis::atLeft));
-
-        // TempGraph->setData(node_data[i][0],node_data[i][1]);
-
-        QVector<double> x(61),y(61);
-        for (int j = 0; j < 61; ++j) {
-            x[j] = j/50.0 - 1;
-            y[j] = i*4*x[j]*x[j];
+        QString id;
+        if ((*ids[i]).text().contains("GUI")){
+            id = "0"; // GUI TARGET ID
         }
-        TempGraph->setName("ID#"+id);
-        TempGraph->setData(x,y);
-        TempGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::black), QBrush(Qt::white), 3));
-        TempGraph->setPen(QPen(QColor((255+i*100)%255, (255+i*200)%255, (255+i*300)%255), 2));
-        TempGraph->keyAxis()->setLabel("Time");
-        TempGraph->valueAxis()->setLabel("Temp in °C");
-        TempGraph->rescaleAxes();
-        TempGraphVector.append(TempGraph);
-        Legend->addItem(new QCPPlottableLegendItem(Legend, TempGraphVector[i])); //is enough if done for first graph only (shared legend)
+        else{
+            id = (*ids[i]).text().split("ID")[1];
+        }
 
-        HumGraph->setName("H - ID#"+id);
-        HumGraph->setData(x2,y2);
-        HumGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::black), QBrush(Qt::white), 3));
-        HumGraph->setPen(QPen(QColor(120, 120, 120), 2));
-        HumGraph->keyAxis()->setLabel("Time");
-        HumGraph->valueAxis()->setLabel("Humidity in %");
-        HumGraph->rescaleAxes();
-        HumGraphVector.append(HumGraph);
-
-        LightGraph->setName("L - ID#"+id);
-        LightGraph->setData(x3,y3);
-        LightGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(Qt::green), QBrush(Qt::red), 3));
-        LightGraph->setPen(QPen(QColor(120, 255, 120), 2));
-        LightGraph->keyAxis()->setLabel("Time");
-        LightGraph->valueAxis()->setLabel("Light in Lumen");
-        LightGraph->rescaleAxes();
-        LightGraphVector.append(LightGraph);
+        send2port(id + ":get_data:1");
+        send2port(id + ":get_data:2");
+        send2port(id + ":get_data:3");
     }
 
+    // Set the plots to grid mode
     QList<QCPAxis*> allAxes;
     allAxes << TempAxisRect->axes() << HumAxisRect->axes() << LightAxisRect->axes();
     foreach (QCPAxis *axis, allAxes)
@@ -392,12 +458,44 @@ void MainWindow::on_pushButton_creategraph_clicked()
         axis->grid()->setLayer("grid");
     }
 
+    // Apply the configuration changes by replotting
     plot->replot();
+}
+
+void MainWindow::on_pushButton_GetRoutingTable_clicked()
+{
+    QList<QListWidgetItem *> selection = ui->listWidget_Tab2->selectedItems();
+    if ((selection.count() > 0) && (port.isOpen())){
+        for (int i = 0; i < selection.count(); ++i) {
+            QListWidgetItem listItem = *selection.at(i);
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
+            QString cmd = id + ":rt";
+            send2port(cmd);
+        }
+    }
+    else {
+        print("No target motes selected OR no port connection!\n");
+    }
 }
 
 void MainWindow::on_pushButton_Refresh_Tab2_clicked()
 {
     ui->listWidget_Tab2->clear();
+
+    if (port.isOpen()){
+        QString message = "Zolertia™ GUI Re-Mote";
+        QListWidgetItem *listItem = new QListWidgetItem(
+                    QIcon("/home/andreas/Documents/University/Wireless "
+                          "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab2);
+        ui->listWidget_Tab2->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
+    }
+
     for (int i = 0; i < n_max; ++i) {
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
             QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
@@ -422,9 +520,18 @@ void MainWindow::on_pushButton_UnselectAll_Tab2_clicked()
     }
 }
 
-void MainWindow::on_pushButton_Refresh_clicked()
+void MainWindow::on_pushButton_Refresh_clicked() // Tab 3
 {
     ui->listWidget->clear();
+
+    if (port.isOpen()){
+        QString message = "Zolertia™ GUI Re-Mote";
+        QListWidgetItem *listItem = new QListWidgetItem(
+                    QIcon("/home/andreas/Documents/University/Wireless "
+                          "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget);
+        ui->listWidget->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
+    }
+
     for (int i = 0; i < n_max; ++i) {
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
             QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
@@ -491,13 +598,15 @@ void MainWindow::on_pushButton_SendTemp_clicked()
 
         for (int i = 0; i < selection.count(); ++i) {
             QListWidgetItem listItem = *selection.at(i);
-            QStringList stringList = listItem.text().split("ID");
-            QString id = stringList[1];
-            QString cmd = id + ":temp:" + QString::number(minTemp) + ":" + QString::number(maxTemp);
-            QByteArray byteArray = cmd.toLocal8Bit();
-            byteArray.append('\n');
-            port.write(byteArray);
-            qDebug() << "port.write" << byteArray;
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
+            QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp) + ":-1:-1:-1:-1";
+            send2port(cmd);
         }
     }
     else {
@@ -514,13 +623,15 @@ void MainWindow::on_pushButton_SendHum_clicked()
 
         for (int i = 0; i < selection.count(); ++i) {
             QListWidgetItem listItem = *selection.at(i);
-            QStringList stringList = listItem.text().split("ID");
-            QString id = stringList[1];
-            QString cmd = id + ":hum:" + QString::number(minHum) + ":" + QString::number(maxHum);
-            QByteArray byteArray = cmd.toLocal8Bit();
-            byteArray.append('\n');
-            port.write(byteArray);
-            qDebug() << "port.write" << byteArray;
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
+            QString cmd = id + ":set_th:-1:-1:" + QString::number(minHum) + ":" + QString::number(maxHum) + ":-1:-1";
+            send2port(cmd);
         }
     }
     else {
@@ -537,9 +648,14 @@ void MainWindow::on_pushButton_SendLight_clicked()
 
         for (int i = 0; i < selection.count(); ++i) {
             QListWidgetItem listItem = *selection.at(i);
-            QStringList stringList = listItem.text().split("ID");
-            QString id = stringList[1];
-            QString cmd = id + ":light:" + QString::number(minLight) + ":" + QString::number(maxLight);
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
+            QString cmd = id + ":set_th:-1:-1:-1:-1:" + QString::number(minLight) + ":" + QString::number(maxLight);
             send2port(cmd);
         }
     }
@@ -561,15 +677,40 @@ void MainWindow::on_pushButton_SendAll_clicked()
 
         for (int i = 0; i < selection.count(); ++i) {
             QListWidgetItem listItem = *selection.at(i);
-            QStringList stringList = listItem.text().split("ID");
-            QString id = stringList[1];
-            QString cmd = id + ":all:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
+            QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
                     + ":" + QString::number(minHum) + ":" + QString::number(maxHum)
                     + ":" + QString::number(minLight) + ":" + QString::number(maxLight);
-            QByteArray byteArray = cmd.toLocal8Bit();
-            byteArray.append('\n');
-            port.write(byteArray);
-            qDebug() << "port.write" << byteArray;
+            send2port(cmd);
+        }
+    }
+    else {
+        print("No target motes selected OR no port connection!\n");
+    }
+}
+
+void MainWindow::on_pushButton_GetAll_clicked()
+{
+    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
+    if ((selection.count() > 0) && (port.isOpen())){
+        for (int i = 0; i < selection.count(); ++i) {
+            QListWidgetItem listItem = *selection.at(i);
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
+
+            QString cmd = id + ":get_th";
+            send2port(cmd);
         }
     }
     else {
@@ -595,3 +736,5 @@ void MainWindow::on_pushButton_Clear_clicked()
 {
     ui->textEdit_Status->clear();
 }
+
+

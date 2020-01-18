@@ -36,6 +36,7 @@ private:
     void create_graph(QStringList list);
     void send2port(QString msg);
     void print(QString msg);
+    void plot(int type, QStringList data);
 
 private slots:
     void receive();
@@ -48,7 +49,6 @@ private slots:
     void on_pushButton_ZoomIn_clicked();
     void on_pushButton_ZoomOut_clicked();
     void on_pushButton_SetMax_clicked();
-    void on_pushButton_creategraph_clicked();
     void on_pushButton_Refresh_Tab2_clicked();
     void on_pushButton_SelectAll_Tab2_clicked();
     void on_pushButton_UnselectAll_Tab2_clicked();
@@ -66,6 +66,9 @@ private slots:
     void on_pushButton_UnselectAll_clicked();
     void on_pushButton_Center_clicked();
     void on_pushButton_Clear_clicked();
+    void on_pushButton_GetSensorData_clicked();
+    void on_pushButton_GetRoutingTable_clicked();
+    void on_pushButton_GetAll_clicked();
 };
 
 #endif // MAINWINDOW_H
