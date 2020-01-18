@@ -550,8 +550,122 @@ amount of motes</string>
          <property name="sizeConstraint">
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
-         <item row="15" column="5">
-          <widget class="QLCDNumber" name="lcdNumber_MaxLight">
+         <item row="8" column="0" colspan="2">
+          <widget class="QPushButton" name="pushButton_SetTemp">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Set Temperature Thresholds</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="4" colspan="2">
+          <widget class="QPushButton" name="pushButton_UnselectAll">
+           <property name="text">
+            <string>Unselect All</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2" colspan="2">
+          <widget class="QPushButton" name="pushButton_SelectAll">
+           <property name="text">
+            <string>Select All</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0" colspan="6">
+          <widget class="QLabel" name="label_Step2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+             <weight>75</weight>
+             <italic>false</italic>
+             <bold>true</bold>
+             <underline>false</underline>
+            </font>
+           </property>
+           <property name="text">
+            <string>Step 2: Set the desired thresholds.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="4">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_MinLight">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="decimals">
+            <number>0</number>
+           </property>
+           <property name="maximum">
+            <double>50000.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>100.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="3">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_MaxHum">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximum">
+            <double>50000.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>80.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="16" column="2">
+          <widget class="QLCDNumber" name="lcdNumber_MinHum">
            <property name="minimumSize">
             <size>
              <width>50</width>
@@ -569,27 +683,8 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="9" column="5">
-          <widget class="QDoubleSpinBox" name="doubleSpinBox_MaxLight">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximum">
-            <double>5000.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="5">
-          <widget class="QLabel" name="label_8">
+         <item row="18" column="0" colspan="2">
+          <widget class="QPushButton" name="pushButton_SendTemp">
            <property name="minimumSize">
             <size>
              <width>50</width>
@@ -603,9 +698,117 @@ amount of motes</string>
             </size>
            </property>
            <property name="text">
-            <string>Max</string>
+            <string>Send Temperature Thresholds</string>
            </property>
           </widget>
+         </item>
+         <item row="8" column="2" colspan="2">
+          <widget class="QPushButton" name="pushButton_SetHum">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Set Humidity Thresholds</string>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="4">
+          <widget class="QLabel" name="label_7">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Min: [Lumen]</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0" colspan="6">
+          <widget class="QPushButton" name="pushButton_SetAll">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Set All Thesholds</string>
+           </property>
+          </widget>
+         </item>
+         <item row="16" column="0">
+          <widget class="QLCDNumber" name="lcdNumber_MinTemp">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="segmentStyle">
+            <enum>QLCDNumber::Flat</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="0" colspan="6">
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>50</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="5" column="0" colspan="6">
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>50</height>
+            </size>
+           </property>
+          </spacer>
          </item>
          <item row="0" column="0" colspan="6">
           <widget class="QLabel" name="label_Step1">
@@ -641,232 +844,7 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Min</string>
-           </property>
-          </widget>
-         </item>
-         <item row="15" column="1">
-          <widget class="QLCDNumber" name="lcdNumber_MaxTemp">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="segmentStyle">
-            <enum>QLCDNumber::Flat</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="17" column="0" colspan="6">
-          <widget class="QPushButton" name="pushButton_SendAll">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Send All Thresholds</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0" colspan="6">
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Expanding</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>50</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="2" column="0" colspan="6">
-          <widget class="QListWidget" name="listWidget">
-           <property name="selectionMode">
-            <enum>QAbstractItemView::MultiSelection</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="0">
-          <widget class="QDoubleSpinBox" name="doubleSpinBox_MinTemp">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="value">
-            <double>18.500000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="2">
-          <widget class="QLabel" name="label_5">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Min</string>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="0" colspan="6">
-          <spacer name="verticalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Expanding</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>50</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="8" column="1">
-          <widget class="QLabel" name="label_4">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Max</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="2" colspan="2">
-          <widget class="QPushButton" name="pushButton_SetHum">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Set Humidity Thresholds</string>
-           </property>
-          </widget>
-         </item>
-         <item row="15" column="2">
-          <widget class="QLCDNumber" name="lcdNumber_MinHum">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="segmentStyle">
-            <enum>QLCDNumber::Flat</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0" colspan="6">
-          <widget class="QLabel" name="label_Step2">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>13</pointsize>
-             <weight>75</weight>
-             <italic>false</italic>
-             <bold>true</bold>
-             <underline>false</underline>
-            </font>
-           </property>
-           <property name="text">
-            <string>Step 2: Set the desired thresholds.</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="3">
+         <item row="9" column="3">
           <widget class="QLabel" name="label_6">
            <property name="minimumSize">
             <size>
@@ -881,12 +859,12 @@ amount of motes</string>
             </size>
            </property>
            <property name="text">
-            <string>Max</string>
+            <string>Max: [%]</string>
            </property>
           </widget>
          </item>
-         <item row="16" column="0" colspan="2">
-          <widget class="QPushButton" name="pushButton_SendTemp">
+         <item row="9" column="5">
+          <widget class="QLabel" name="label_8">
            <property name="minimumSize">
             <size>
              <width>50</width>
@@ -900,12 +878,12 @@ amount of motes</string>
             </size>
            </property>
            <property name="text">
-            <string>Send Temperature Thresholds</string>
+            <string>Max: [Lumen]</string>
            </property>
           </widget>
          </item>
-         <item row="9" column="4">
-          <widget class="QDoubleSpinBox" name="doubleSpinBox_MinLight">
+         <item row="10" column="5">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_MaxLight">
            <property name="minimumSize">
             <size>
              <width>50</width>
@@ -917,55 +895,20 @@ amount of motes</string>
              <width>16777215</width>
              <height>25</height>
             </size>
+           </property>
+           <property name="decimals">
+            <number>0</number>
            </property>
            <property name="maximum">
-            <double>5000.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="15" column="3">
-          <widget class="QLCDNumber" name="lcdNumber_MaxHum">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="segmentStyle">
-            <enum>QLCDNumber::Flat</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="3">
-          <widget class="QDoubleSpinBox" name="doubleSpinBox_MaxHum">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximum">
-            <double>100.000000000000000</double>
+            <double>50000.000000000000000</double>
            </property>
            <property name="value">
-            <double>60.000000000000000</double>
+            <double>2000.000000000000000</double>
            </property>
           </widget>
          </item>
-         <item row="15" column="4">
-          <widget class="QLCDNumber" name="lcdNumber_MinLight">
+         <item row="3" column="0" colspan="2">
+          <widget class="QPushButton" name="pushButton_Refresh">
            <property name="minimumSize">
             <size>
              <width>50</width>
@@ -978,12 +921,12 @@ amount of motes</string>
              <height>25</height>
             </size>
            </property>
-           <property name="segmentStyle">
-            <enum>QLCDNumber::Flat</enum>
+           <property name="text">
+            <string>Refresh Device List</string>
            </property>
           </widget>
          </item>
-         <item row="16" column="2" colspan="2">
+         <item row="18" column="2" colspan="2">
           <widget class="QPushButton" name="pushButton_SendHum">
            <property name="minimumSize">
             <size>
@@ -1002,7 +945,114 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="4" colspan="2">
+         <item row="10" column="0">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_MinTemp">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="decimals">
+            <number>0</number>
+           </property>
+           <property name="maximum">
+            <double>50000.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>18000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="16" column="4">
+          <widget class="QLCDNumber" name="lcdNumber_MinLight">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="segmentStyle">
+            <enum>QLCDNumber::Flat</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="2">
+          <widget class="QLabel" name="label_5">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Min: [%]</string>
+           </property>
+          </widget>
+         </item>
+         <item row="16" column="3">
+          <widget class="QLCDNumber" name="lcdNumber_MaxHum">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="segmentStyle">
+            <enum>QLCDNumber::Flat</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="1">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_MaxTemp">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="decimals">
+            <number>0</number>
+           </property>
+           <property name="maximum">
+            <double>50000.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>25000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="4" colspan="2">
           <widget class="QPushButton" name="pushButton_SetLight">
            <property name="minimumSize">
             <size>
@@ -1021,67 +1071,14 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="8" column="4">
-          <widget class="QLabel" name="label_7">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Min</string>
+         <item row="2" column="0" colspan="6">
+          <widget class="QListWidget" name="listWidget">
+           <property name="selectionMode">
+            <enum>QAbstractItemView::MultiSelection</enum>
            </property>
           </widget>
          </item>
-         <item row="6" column="0" colspan="6">
-          <widget class="QPushButton" name="pushButton_SetAll">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Set All Thesholds</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="2">
-          <widget class="QDoubleSpinBox" name="doubleSpinBox_MinHum">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximum">
-            <double>100.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>40.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="16" column="4" colspan="2">
+         <item row="18" column="4" colspan="2">
           <widget class="QPushButton" name="pushButton_SendLight">
            <property name="minimumSize">
             <size>
@@ -1100,7 +1097,105 @@ amount of motes</string>
            </property>
           </widget>
          </item>
-         <item row="11" column="0" colspan="6">
+         <item row="16" column="1">
+          <widget class="QLCDNumber" name="lcdNumber_MaxTemp">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="segmentStyle">
+            <enum>QLCDNumber::Flat</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="2">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_MinHum">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximum">
+            <double>50000.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>30.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="1">
+          <widget class="QLabel" name="label_4">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Max: [mC]</string>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Min: [mC]</string>
+           </property>
+          </widget>
+         </item>
+         <item row="16" column="5">
+          <widget class="QLCDNumber" name="lcdNumber_MaxLight">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="segmentStyle">
+            <enum>QLCDNumber::Flat</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="0" colspan="6">
           <widget class="QLabel" name="label_Step3">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1130,31 +1225,12 @@ amount of motes</string>
             </font>
            </property>
            <property name="text">
-            <string>Step 3: Check the values and send them to the specified target.</string>
+            <string>Step 3: Check the values and send them to the specified target (if desired get all thresholds).</string>
            </property>
           </widget>
          </item>
-         <item row="15" column="0">
-          <widget class="QLCDNumber" name="lcdNumber_MinTemp">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="segmentStyle">
-            <enum>QLCDNumber::Flat</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0" colspan="2">
-          <widget class="QPushButton" name="pushButton_SetTemp">
+         <item row="19" column="0" colspan="3">
+          <widget class="QPushButton" name="pushButton_SendAll">
            <property name="minimumSize">
             <size>
              <width>50</width>
@@ -1168,59 +1244,14 @@ amount of motes</string>
             </size>
            </property>
            <property name="text">
-            <string>Set Temperature Thresholds</string>
+            <string>Send All Thresholds</string>
            </property>
           </widget>
          </item>
-         <item row="9" column="1">
-          <widget class="QDoubleSpinBox" name="doubleSpinBox_MaxTemp">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="value">
-            <double>22.500000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" colspan="2">
-          <widget class="QPushButton" name="pushButton_Refresh">
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>25</height>
-            </size>
-           </property>
+         <item row="19" column="3" colspan="3">
+          <widget class="QPushButton" name="pushButton_GetAll">
            <property name="text">
-            <string>Refresh Device List</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2" colspan="2">
-          <widget class="QPushButton" name="pushButton_SelectAll">
-           <property name="text">
-            <string>Select All</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="4" colspan="2">
-          <widget class="QPushButton" name="pushButton_UnselectAll">
-           <property name="text">
-            <string>Unselect All</string>
+            <string>Get All Thresholds</string>
            </property>
           </widget>
          </item>

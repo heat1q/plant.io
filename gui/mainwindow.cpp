@@ -239,7 +239,6 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
         }
         else if (ch == '>') {
             str.remove(">");
-            print(str+"\n");
 
             QStringList data = str.split(":");
             if (data[1] == "route"){
@@ -253,7 +252,10 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
                 plot(type, data);
             }
             else if (data[1] == "th") {
-                print("pls fix me :(");
+                print("Thresholds from Zolertia™ Re-Mote ID" + data[0] + ":\n"
+                        + "T_Min:" + data[2] + " | T_Max:" + data[3]
+                        + " | H_Min:" + data[4] + " | H_Max:" + data[5]
+                        + " | L_Min:" + data[6] + " | L_Max:" + data[7] + "\n");
             }
 
             str.clear();
@@ -462,33 +464,37 @@ void MainWindow::on_pushButton_GetSensorData_clicked()
 
 void MainWindow::on_pushButton_GetRoutingTable_clicked()
 {
-    // Fetch mote ID selection from listWidget
-    int listCount = ui->listWidget_Tab2->selectedItems().count();
-    QList<QListWidgetItem *> ids = ui->listWidget_Tab2->selectedItems();
-
-    // Iterate through all list items and request the data @GUI mote
-    for (int i = 0; i < listCount; i++) {
-        // get sensor data from mote id: i
-        QString id;
-        if ((*ids[i]).text().contains("GUI")){
-            id = "0"; // GUI TARGET ID
+    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
+    if ((selection.count() > 0) && (port.isOpen())){
+        for (int i = 0; i < selection.count(); ++i) {
+            QListWidgetItem listItem = *selection.at(i);
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
+            QString cmd = id + ":rt";
+            send2port(cmd);
         }
-        else{
-            id = (*ids[i]).text().split("ID")[1];
-        }
-
-        send2port(id + ":rt");
+    }
+    else {
+        print("No target motes selected OR no port connection!\n");
     }
 }
 
 void MainWindow::on_pushButton_Refresh_Tab2_clicked()
 {
     ui->listWidget_Tab2->clear();
-    QString message = "Zolertia™ GUI Re-Mote";
-    QListWidgetItem *listItem = new QListWidgetItem(
-                QIcon("/home/andreas/Documents/University/Wireless "
-                      "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab2);
-    ui->listWidget_Tab2->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
+
+    if (port.isOpen()){
+        QString message = "Zolertia™ GUI Re-Mote";
+        QListWidgetItem *listItem = new QListWidgetItem(
+                    QIcon("/home/andreas/Documents/University/Wireless "
+                          "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab2);
+        ui->listWidget_Tab2->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
+    }
 
     for (int i = 0; i < n_max; ++i) {
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
@@ -517,11 +523,14 @@ void MainWindow::on_pushButton_UnselectAll_Tab2_clicked()
 void MainWindow::on_pushButton_Refresh_clicked() // Tab 3
 {
     ui->listWidget->clear();
-    QString message = "Zolertia™ GUI Re-Mote";
-    QListWidgetItem *listItem = new QListWidgetItem(
-                QIcon("/home/andreas/Documents/University/Wireless "
-                      "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab2);
-    ui->listWidget_Tab2->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
+
+    if (port.isOpen()){
+        QString message = "Zolertia™ GUI Re-Mote";
+        QListWidgetItem *listItem = new QListWidgetItem(
+                    QIcon("/home/andreas/Documents/University/Wireless "
+                          "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget);
+        ui->listWidget->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
+    }
 
     for (int i = 0; i < n_max; ++i) {
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
@@ -589,8 +598,13 @@ void MainWindow::on_pushButton_SendTemp_clicked()
 
         for (int i = 0; i < selection.count(); ++i) {
             QListWidgetItem listItem = *selection.at(i);
-            QStringList stringList = listItem.text().split("ID");
-            QString id = stringList[1];
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
             QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp) + ":-1:-1:-1:-1";
             send2port(cmd);
         }
@@ -609,8 +623,13 @@ void MainWindow::on_pushButton_SendHum_clicked()
 
         for (int i = 0; i < selection.count(); ++i) {
             QListWidgetItem listItem = *selection.at(i);
-            QStringList stringList = listItem.text().split("ID");
-            QString id = stringList[1];
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
             QString cmd = id + ":set_th:-1:-1:" + QString::number(minHum) + ":" + QString::number(maxHum) + ":-1:-1";
             send2port(cmd);
         }
@@ -629,8 +648,13 @@ void MainWindow::on_pushButton_SendLight_clicked()
 
         for (int i = 0; i < selection.count(); ++i) {
             QListWidgetItem listItem = *selection.at(i);
-            QStringList stringList = listItem.text().split("ID");
-            QString id = stringList[1];
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
             QString cmd = id + ":set_th:-1:-1:-1:-1:" + QString::number(minLight) + ":" + QString::number(maxLight);
             send2port(cmd);
         }
@@ -653,11 +677,39 @@ void MainWindow::on_pushButton_SendAll_clicked()
 
         for (int i = 0; i < selection.count(); ++i) {
             QListWidgetItem listItem = *selection.at(i);
-            QStringList stringList = listItem.text().split("ID");
-            QString id = stringList[1];
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
             QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
                     + ":" + QString::number(minHum) + ":" + QString::number(maxHum)
                     + ":" + QString::number(minLight) + ":" + QString::number(maxLight);
+            send2port(cmd);
+        }
+    }
+    else {
+        print("No target motes selected OR no port connection!\n");
+    }
+}
+
+void MainWindow::on_pushButton_GetAll_clicked()
+{
+    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
+    if ((selection.count() > 0) && (port.isOpen())){
+        for (int i = 0; i < selection.count(); ++i) {
+            QListWidgetItem listItem = *selection.at(i);
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
+
+            QString cmd = id + ":get_th";
             send2port(cmd);
         }
     }
@@ -684,3 +736,5 @@ void MainWindow::on_pushButton_Clear_clicked()
 {
     ui->textEdit_Status->clear();
 }
+
+
