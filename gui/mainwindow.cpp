@@ -48,6 +48,7 @@ static int n_max = 15;
 static double node_pos [n_limit][3]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos // [3,:] # of outgoing edges
 static double curr_pos [2];
 static QVector<double> alpha;
+static QVector<int> ack_queue;
 
 void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
 {
@@ -132,7 +133,6 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
             mScene->addLine(x1,x2,y1,y2,blackPen); // add edge
         }
 
-
         curr_pos[0] = node_pos[target_id][0]; // Update current x position
         curr_pos[1] = node_pos[target_id][1]; // Update current y position
 
@@ -152,6 +152,9 @@ void MainWindow::reset_graph() // Reset the graph
 
     // reset alpha
     alpha.clear();
+
+    // clear ack_queue
+    ack_queue.clear();
 }
 
 void MainWindow::send2port(QString input) // Send message to port
@@ -245,8 +248,7 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
             if (data[1] == "ack"){
                 QString id = data[0];
                 print("Received ACK from Mote: " + id);
-                //ui->pushButton_Explore->setEnabled(true); // Prevent blocking
-                //on_pushButton_Explore_clicked();
+                ack_queue.removeAll(id.toInt());
             }
             else if (data[1] == "route"){
                 data.removeFirst();
@@ -394,10 +396,19 @@ void MainWindow::on_pushButton_SetMax_clicked()
     else{print("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
 
+static QListWidget* re_listWidget;
+static QString re_requestType;
+static int num_retransmissions;
+const static int ack_timer = 5000;
+
 void MainWindow::send2selection(QListWidget* listWidget, QString requestType)
 {
+    ack_queue.clear();
+    num_retransmissions = 1;
+
     QList<QListWidgetItem *> selection = listWidget->selectedItems();
     if ((selection.count() > 0) && (port.isOpen())){
+
         for (int i = 0; i < selection.count(); ++i) {
             QListWidgetItem listItem = *selection.at(i);
             QString id;
@@ -406,6 +417,11 @@ void MainWindow::send2selection(QListWidget* listWidget, QString requestType)
             }
             else {
                 id = listItem.text().split("ID")[1];
+            }
+
+            // Add relevant id's to acknowledgement queue
+            if (id != "0"){ // non GUI node id
+                ack_queue.append(id.toInt());
             }
 
             // REQUEST TYPES
@@ -453,9 +469,80 @@ void MainWindow::send2selection(QListWidget* listWidget, QString requestType)
                 send2port(id + ":get_data:3");
             }
         }
+        // Verify all acknowledgements after a certain period of time and retransmit the one that havent received an ACK yet
+        re_listWidget = listWidget;
+        re_requestType = requestType;
+        QTimer::singleShot(ack_timer, this, SLOT(resend2selection())); // first entry is time in ms
     }
     else {
         print("No target motes selected OR no port connection!\n");
+    }
+}
+
+void MainWindow::resend2selection()
+{
+    if (ack_queue.count() > 0){ // there are still unfulfilled requests
+        if (num_retransmissions > 2){
+            print("One or more routes are unresponsive. Initiating re-exploration of network!\n");
+            on_pushButton_Explore_clicked();
+            return;
+        }
+
+        // Verify all acknowledgements after a certain period of time and retransmit the one that havent received an ACK yet
+        QTimer::singleShot(ack_timer, this, SLOT(resend2selection())); // first entry is time in ms
+        num_retransmissions += 1;
+
+        for (int i = 0; i < ack_queue.count(); ++i) { // Retransmit all unfinished requests
+            QString id = QString::number(ack_queue[i]);
+            qDebug() << id;
+            // REQUEST TYPES
+            if (re_requestType == "Get routing table"){
+                QString cmd = id + ":rt";
+                send2port(cmd);
+            }
+            else if (re_requestType == "Send temperature threshold") {
+                double minTemp = ui->lcdNumber_MinTemp->value();
+                double maxTemp = ui->lcdNumber_MaxTemp->value();
+                QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp) + ":-1:-1:-1:-1";
+                send2port(cmd);
+            }
+            else if (re_requestType == "Send humidity threshold") {
+                double minHum = ui->lcdNumber_MinHum->value();
+                double maxHum = ui->lcdNumber_MaxHum->value();
+                QString cmd = id + ":set_th:-1:-1:" + QString::number(minHum) + ":" + QString::number(maxHum) + ":-1:-1";
+                send2port(cmd);
+            }
+            else if (re_requestType == "Send light threshold") {
+                double minLight = ui->lcdNumber_MinLight->value();
+                double maxLight = ui->lcdNumber_MaxLight->value();
+                QString cmd = id + ":set_th:-1:-1:-1:-1:" + QString::number(minLight) + ":" + QString::number(maxLight);
+                send2port(cmd);
+            }
+            else if (re_requestType == "Send all thresholds") {
+                double minTemp = ui->lcdNumber_MinTemp->value();
+                double maxTemp = ui->lcdNumber_MaxTemp->value();
+                double minHum = ui->lcdNumber_MinHum->value();
+                double maxHum = ui->lcdNumber_MaxHum->value();
+                double minLight = ui->lcdNumber_MinLight->value();
+                double maxLight = ui->lcdNumber_MaxLight->value();
+                QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
+                        + ":" + QString::number(minHum) + ":" + QString::number(maxHum)
+                        + ":" + QString::number(minLight) + ":" + QString::number(maxLight);
+                send2port(cmd);
+            }
+            else if (re_requestType == "Get all thresholds") {
+                QString cmd = id + ":get_th";
+                send2port(cmd);
+            }
+            else if (re_requestType == "Get sensor data") {
+                send2port(id + ":get_data:1");
+                send2port(id + ":get_data:2");
+                send2port(id + ":get_data:3");
+            }
+        }
+    }
+    else {
+        print("All acknowledgements received!\n");
     }
 }
 

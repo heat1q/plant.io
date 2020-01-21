@@ -40,6 +40,7 @@ private:
     void send2selection(QListWidget* listWidget, QString requestType);
 
 private slots:
+    void resend2selection();
     void receive();
     void enableButton();
     void on_pushButton_Close_clicked();
