@@ -85,7 +85,6 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
         if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)){ // Target node already exists
             //qDebug() << "Target node" << target_id << "already exists";
         }
-
         else{ // target node doesn't exist
             // calculate new node position
             if (i==InputList.size()-1){ // first ring
@@ -234,7 +233,6 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
     char ch;
     while (port.getChar(&ch))
     {
-        //qDebug() << ch;
         str.append(ch);
         //msg.append(ch);
         if (ch == '<'){
@@ -242,7 +240,6 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
         }
         else if (ch == '>') {
             str.remove(">");
-
             QStringList data = str.split(":");
 
             if (data[1] == "ack"){
@@ -494,7 +491,7 @@ void MainWindow::resend2selection()
 
         for (int i = 0; i < ack_queue.count(); ++i) { // Retransmit all unfinished requests
             QString id = QString::number(ack_queue[i]);
-            qDebug() << id;
+
             // REQUEST TYPES
             if (re_requestType == "Get routing table"){
                 QString cmd = id + ":rt";
