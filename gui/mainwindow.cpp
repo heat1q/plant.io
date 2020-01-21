@@ -419,7 +419,7 @@ void MainWindow::send2selection(QListWidget* listWidget, QString requestType)
                 QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp) + ":-1:-1:-1:-1";
                 send2port(cmd);
             }
-            else if (requestType == "Send temperature threshold") {
+            else if (requestType == "Send humidity threshold") {
                 double minHum = ui->lcdNumber_MinHum->value();
                 double maxHum = ui->lcdNumber_MaxHum->value();
                 QString cmd = id + ":set_th:-1:-1:" + QString::number(minHum) + ":" + QString::number(maxHum) + ":-1:-1";
@@ -554,14 +554,14 @@ void MainWindow::on_pushButton_UnselectAll_Tab2_clicked()
 
 void MainWindow::on_pushButton_Refresh_clicked() // Tab 3
 {
-    ui->listWidget->clear();
+    ui->listWidget_Tab3->clear();
 
     if (port.isOpen()){
         QString message = "Zolertia™ GUI Re-Mote";
         QListWidgetItem *listItem = new QListWidgetItem(
                     QIcon("/home/andreas/Documents/University/Wireless "
-                          "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget);
-        ui->listWidget->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
+                          "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab3);
+        ui->listWidget_Tab3->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
     }
 
     for (int i = 0; i < n_max; ++i) {
@@ -569,22 +569,22 @@ void MainWindow::on_pushButton_Refresh_clicked() // Tab 3
             QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
             QListWidgetItem *listItem = new QListWidgetItem(
                         QIcon("/home/andreas/Documents/University/Wireless "
-                              "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget);
-            ui->listWidget->addItem(listItem);
+                              "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab3);
+            ui->listWidget_Tab3->addItem(listItem);
         }
     }
 }
 
 void MainWindow::on_pushButton_SelectAll_clicked()
 {
-    ui->listWidget->selectAll();
+    ui->listWidget_Tab3->selectAll();
 }
 
 void MainWindow::on_pushButton_UnselectAll_clicked()
 {
-    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
+    QList<QListWidgetItem *> selection = ui->listWidget_Tab3->selectedItems();
     for (int i = 0; i < selection.count(); i++) {
-        ui->listWidget->setItemSelected(selection[i], false);
+        ui->listWidget_Tab3->setItemSelected(selection[i], false);
     }
 }
 
@@ -628,27 +628,27 @@ void MainWindow::on_pushButton_GetRoutingTable_clicked()
 // Send threshold values
 void MainWindow::on_pushButton_SendTemp_clicked()
 {
-    send2selection(ui->listWidget, "Send temperature threshold");
+    send2selection(ui->listWidget_Tab3, "Send temperature threshold");
 }
 
 void MainWindow::on_pushButton_SendHum_clicked()
 {
-    send2selection(ui->listWidget, "Send humidity threshold");
+    send2selection(ui->listWidget_Tab3, "Send humidity threshold");
 }
 
 void MainWindow::on_pushButton_SendLight_clicked()
 {
-    send2selection(ui->listWidget, "Send light threshold");
+    send2selection(ui->listWidget_Tab3, "Send light threshold");
 }
 
 void MainWindow::on_pushButton_SendAll_clicked()
 {
-    send2selection(ui->listWidget, "Send all thresholds");
+    send2selection(ui->listWidget_Tab3, "Send all thresholds");
 }
 
 void MainWindow::on_pushButton_GetAll_clicked()
 {
-    send2selection(ui->listWidget, "Get all thresholds");
+    send2selection(ui->listWidget_Tab3, "Get all thresholds");
 }
 
 void MainWindow::on_pushButton_Debug_clicked()
