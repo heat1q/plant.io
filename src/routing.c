@@ -138,10 +138,10 @@ void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
                 if (best_route_index >= 0) // if not gui node
                 {
                     // Send an ACK 
-                    create_packet(4, &linkaddr_node_addr.u8[1], 1, get_packet_src(packet), packet->data_len, NULL, 0);
+                    create_packet(4, &linkaddr_node_addr.u8[1], 1, get_packet_src(packet), packet->src_len, NULL, 0);
                     linkaddr_t next_hop;
                     next_hop.u8[0] = 0;
-                    next_hop.u8[1] = get_packet_src(packet)[packet->data_len - 1];
+                    next_hop.u8[1] = get_packet_src(packet)[packet->src_len - 1];
                     unicast_send(&plantio_unicast, &next_hop);
                 }
             }
