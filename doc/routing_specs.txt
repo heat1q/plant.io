@@ -43,6 +43,7 @@ Output String (from mote)                                                       
 <$src_id:th:$temp_low:$temp_high:$hum_low:$hum_high:$light_low:$light_high>         get thresholds of node with id $src_id
 <$src_id:sensor_data:$type:$i_1:...:$i_max>                                        get sensors data of node with id $src_id with datapoint $i_1 to $i_max and $type = {1: temp, 2: hum, 3: light}
 <$src_id:rt:$data>                                                                  get routing table of node with id $src_id with $data formatted equivalent to file structure
+<$src_id:ack>                                                                       ACK of existing route between GUI node and src node
 
 #### GUI TO NODE SERIAL COMMUNICATION
 Input String (from GUI)                                                             Description
@@ -62,6 +63,24 @@ know at least one path to any (and all) regular nodes.
 
 #### NETWORK DISCOVERY
 A network discovery is required to build the network and is initialized by the GUI node broadcasting a packet with its id in
-the src array. All nodes then perform controlled flooding, i.e. each node only forwards unkown packets to avoid loops. In
-particular, the if a new incoming packet already has the id of the processing node in the src array, the packet will not be
-forwarded. 
+the src array. All nodes then perform controlled flooding, i.e. each node only forwards unkown packets to avoid loops and 
+append their id to the src array. Inparticular, the if a new incoming packet already has the id of the processing node in 
+the src array, the packet will not be forwarded.
+Once a node receives a broadcast network discovery packet it appends the src array of the packet (i.e. the route to the gui)
+to the routing table and starts a timeout, which triggers the routing algorithm after expiring. The timer is reset when new
+network discovery packets arrive, in order to consider as many routes as possible for the routing algorithm. The routing 
+algorithm chooses the best/optimal route by minimizing over the number of hops. We save the index of the best route in the
+routing table. The respective nodes now send their best route in form of an RREQ Reply packet (type 1) with the optimal 
+route as path to the gui. The gui now knows how to reach the node through the optimal route (given in the src array of the 
+packet) and saves it to the routing table.
+Each network discovery is identified by a timestamp, which is known by all nodes in the network. If the network discovery is
+restarted or initialized by another node, the new timestamp will differ from the one cached in the memory and thus the nodes
+clear their routing table, recognizing that the network has changed.
+
+
+#### PACKET FORWARDING
+
+#### INTEGRATION OF MOTES
+
+#### TIMEOUT CHECKS AND ACK
+
