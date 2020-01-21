@@ -37,6 +37,7 @@ private:
     void send2port(QString msg);
     void print(QString msg);
     void plot(int type, QStringList data);
+    void send2selection(QListWidget* listWidget, QString requestType);
 
 private slots:
     void receive();
