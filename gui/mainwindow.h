@@ -53,7 +53,6 @@ private slots:
     void on_pushButton_Refresh_Tab2_clicked();
     void on_pushButton_SelectAll_Tab2_clicked();
     void on_pushButton_UnselectAll_Tab2_clicked();
-    void on_pushButton_Refresh_clicked();
     void on_pushButton_SetTemp_clicked();
     void on_pushButton_SetHum_clicked();
     void on_pushButton_SetLight_clicked();
@@ -63,8 +62,9 @@ private slots:
     void on_pushButton_SendHum_clicked();
     void on_pushButton_SendLight_clicked();
     void on_pushButton_SendAll_clicked();
-    void on_pushButton_SelectAll_clicked();
-    void on_pushButton_UnselectAll_clicked();
+    void on_pushButton_Refresh_Tab3_clicked();
+    void on_pushButton_SelectAll_Tab3_clicked();
+    void on_pushButton_UnselectAll_Tab3_clicked();
     void on_pushButton_Center_clicked();
     void on_pushButton_Clear_clicked();
     void on_pushButton_GetSensorData_clicked();

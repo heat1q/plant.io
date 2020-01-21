@@ -552,7 +552,7 @@ void MainWindow::on_pushButton_UnselectAll_Tab2_clicked()
     }
 }
 
-void MainWindow::on_pushButton_Refresh_clicked() // Tab 3
+void MainWindow::on_pushButton_Refresh_Tab3_clicked() // Tab 3
 {
     ui->listWidget_Tab3->clear();
 
@@ -575,12 +575,12 @@ void MainWindow::on_pushButton_Refresh_clicked() // Tab 3
     }
 }
 
-void MainWindow::on_pushButton_SelectAll_clicked()
+void MainWindow::on_pushButton_SelectAll_Tab3_clicked()
 {
     ui->listWidget_Tab3->selectAll();
 }
 
-void MainWindow::on_pushButton_UnselectAll_clicked()
+void MainWindow::on_pushButton_UnselectAll_Tab3_clicked()
 {
     QList<QListWidgetItem *> selection = ui->listWidget_Tab3->selectedItems();
     for (int i = 0; i < selection.count(); i++) {

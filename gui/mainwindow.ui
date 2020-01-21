@@ -570,14 +570,14 @@ amount of motes</string>
           </widget>
          </item>
          <item row="3" column="4" colspan="2">
-          <widget class="QPushButton" name="pushButton_UnselectAll">
+          <widget class="QPushButton" name="pushButton_UnselectAll_Tab3">
            <property name="text">
             <string>Unselect All</string>
            </property>
           </widget>
          </item>
          <item row="3" column="2" colspan="2">
-          <widget class="QPushButton" name="pushButton_SelectAll">
+          <widget class="QPushButton" name="pushButton_SelectAll_Tab3">
            <property name="text">
             <string>Select All</string>
            </property>
@@ -655,6 +655,9 @@ amount of motes</string>
              <width>16777215</width>
              <height>25</height>
             </size>
+           </property>
+           <property name="decimals">
+            <number>0</number>
            </property>
            <property name="maximum">
             <double>50000.000000000000000</double>
@@ -908,7 +911,7 @@ amount of motes</string>
           </widget>
          </item>
          <item row="3" column="0" colspan="2">
-          <widget class="QPushButton" name="pushButton_Refresh">
+          <widget class="QPushButton" name="pushButton_Refresh_Tab3">
            <property name="minimumSize">
             <size>
              <width>50</width>
@@ -1129,6 +1132,9 @@ amount of motes</string>
              <width>16777215</width>
              <height>25</height>
             </size>
+           </property>
+           <property name="decimals">
+            <number>0</number>
            </property>
            <property name="maximum">
             <double>50000.000000000000000</double>
