@@ -127,6 +127,24 @@ void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from)
             {
                 receive_route(packet);
             }
+            else if (packet->type == 4) // ACK
+            {
+                printf("<%u:ack>\r\n", get_packet_src(packet)[0]);
+            }
+            else if (packet->type >= 10) // data packet
+            {
+                process_data_packet(packet);
+
+                if (best_route_index >= 0) // if not gui node
+                {
+                    // Send an ACK 
+                    create_packet(4, &linkaddr_node_addr.u8[1], 1, get_packet_src(packet), packet->data_len, NULL, 0);
+                    linkaddr_t next_hop;
+                    next_hop.u8[0] = 0;
+                    next_hop.u8[1] = get_packet_src(packet)[packet->data_len - 1];
+                    unicast_send(&plantio_unicast, &next_hop);
+                }
+            }
             else if (packet->type >= 10) // data packet
             {
                 process_data_packet(packet);
