@@ -50,6 +50,19 @@ static double curr_pos [2];
 static QVector<double> alpha;
 static QVector<int> ack_queue;
 
+// retransmissions / ACKs
+static QListWidget* re_listWidget;
+static QString re_requestType;
+static int num_retransmissions;
+const static int ack_timer = n_max * 500; // waiting time until ACK check in ms
+
+// outside function for plot() to access the graphs
+static QCPAxisRect *TempAxisRect;
+static QCPAxisRect *HumAxisRect;
+static QCPAxisRect *LightAxisRect;
+static QCPLegend *legend;
+static QVector<int> existingLegendIDs;
+
 void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
 {
     // Paint edges and nodes
@@ -172,13 +185,6 @@ void MainWindow::print(QString msg) // Print a message in GUI console
     ui->textEdit_Status->insertPlainText (msg);
     ui->textEdit_Status->moveCursor (QTextCursor::End);
 }
-
-// outside function for plot() to access the graphs
-static QCPAxisRect *TempAxisRect;
-static QCPAxisRect *HumAxisRect;
-static QCPAxisRect *LightAxisRect;
-static QCPLegend *legend;
-static QVector<int> existingLegendIDs;
 
 void MainWindow::plot(int type, QStringList data) // ID : SENSOR_DATA : TYPE : DATA
 {
@@ -392,11 +398,6 @@ void MainWindow::on_pushButton_SetMax_clicked()
     }
     else{print("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
-
-static QListWidget* re_listWidget;
-static QString re_requestType;
-static int num_retransmissions;
-const static int ack_timer = 5000;
 
 void MainWindow::send2selection(QListWidget* listWidget, QString requestType)
 {
