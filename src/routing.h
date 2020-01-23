@@ -176,3 +176,10 @@ void send_best_route(const uint8_t dest);
  * @param packet Instance of packet struct
  */
 void receive_route(const plantio_packet_t *packet);
+
+/**
+ * @brief Sends an ACK Packet with the given route.
+ * 
+ * @param route Path to the destination node
+ */
+void send_ack(const uint8_t *route, const uint8_t len);
