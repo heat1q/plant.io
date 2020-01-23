@@ -58,23 +58,8 @@ void parse_serial_input(char *input)
     // continue with correct format
     if (strcmp(task, "led") == 0)
     {
-        uint8_t led_id;
-        if (strcmp(args, "blue") == 0)
-        {
-            led_id = LEDS_BLUE;
-        }
-        else if (strcmp(args, "green") == 0)
-        {
-            led_id = LEDS_GREEN;
-        }
-        else if (strcmp(args, "red") == 0)
-        {
-            led_id = LEDS_RED;
-        }
-        else
-        {
-            led_id = LEDS_ALL;
-        }
+        //RED: 1, GREEN: 2, BLUE: 4
+        uint8_t led_id = (uint8_t) atoi(args);
 
         if (id == linkaddr_node_addr.u8[1] || id == 0)
         {

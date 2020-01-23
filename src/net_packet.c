@@ -155,6 +155,7 @@ void process_data_packet(const plantio_packet_t *packet)
     }
     else if (packet->type == 17) // reply for rt
     {
+        printf("<%u:ack>\r\n", get_packet_src(packet)[0]);
         printf("opt |  i  | Hops | Routes for Device %u\r\n", *get_packet_src(packet));
         printf("----+-----+------+------------------------\r\n");
         if (packet->data_len)

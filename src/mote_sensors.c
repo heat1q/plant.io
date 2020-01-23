@@ -9,7 +9,9 @@
 #include "clock.h"
 
 #define TEMP_READ_INTERVAL CLOCK_SECOND * 3
+
 static struct etimer sensor_data_read_timer;
+static uint8_t led_status;
 
 //Prozesse
 PROCESS(p_sensors, "");
@@ -60,19 +62,26 @@ PROCESS_THREAD(p_sensors, ev, data)
 
             if (light < l_low || light > l_high)
             {
+                leds_off(LEDS_ALL);
                 leds_on(LEDS_RED);
+                led_status = 1;
             }
             else if (temp < t_low || temp > t_high)
             {
+                leds_off(LEDS_ALL);
                 leds_on(LEDS_RED);
+                led_status = 1;
             }
             else if (hum < h_low || hum > h_high)
             {
+                leds_off(LEDS_ALL);
                 leds_on(LEDS_RED);
+                led_status = 1;
             }
-            else // alles fit im schritt!
+            else if (led_status)// alles fit im schritt!
             {
-                leds_off(LEDS_RED);
+                leds_off(LEDS_ALL);
+                led_status = 0;
             }
 
             etimer_set(&sensor_data_read_timer, TEMP_READ_INTERVAL);
@@ -90,7 +99,7 @@ void init_sensor_data()
         int fd = cfs_open(FILE_SENSORS, CFS_WRITE + CFS_APPEND);
         if (fd != -1)
         {
-            int32_t init_thresholds[6] = {0,50000,0,100,0,50000};
+            int32_t init_thresholds[6] = {0, INT32_MAX, 0, INT32_MAX, 0, INT32_MAX}; 
             uint16_t init_sensordata[4 * MAX_NUM_OF_VALUES] = {0};
 
             cfs_write(fd, init_thresholds, sizeof(int32_t) * 6);
