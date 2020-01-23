@@ -186,7 +186,7 @@ void MainWindow::print(QString msg) // Print a message in GUI console
     ui->textEdit_Status->moveCursor (QTextCursor::End);
 }
 
-void MainWindow::plot(int type, QStringList data) // ID : SENSOR_DATA : TYPE : DATA
+void MainWindow::plot(int type, QStringList data, QString id) // ID : SENSOR_DATA : TYPE : DATA
 {
     QCustomPlot* plot = ui->customPlot;
     QCPGraph* target_graph;
@@ -207,7 +207,6 @@ void MainWindow::plot(int type, QStringList data) // ID : SENSOR_DATA : TYPE : D
     }
 
     // Extract the data from the input sequence
-    QString id = data[0]; // ID from which the data came from
     int num_elements = data.count() - 2;
     QVector<double> x,y;
     for (int i = 0; i < num_elements; ++i) {
@@ -248,20 +247,27 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
             str.remove(">");
             QStringList data = str.split(":");
 
-            if (data[1] == "ack"){
-                QString id = data[0];
-                print("Received ACK from Mote: " + id);
-                ack_queue.removeAll(id.toInt());
-            }
-            else if (data[1] == "route"){
+            // ACK
+            QString id = data[0];
+            print("Received ACK / DATA from Mote: " + id);
+            ack_queue.removeAll(id.toInt());
+
+            if (data[1] == "route"){
                 data.removeFirst();
                 data.removeFirst();
                 create_graph(data); // create visualization of route which also registers the ID's as valid targets
             }
             else if (data[1] == "sensor_data"){ // ID : SENSOR_DATA : TYPE : DATA
-                int type = data[2].toInt();
-                data.removeAt(2);
-                plot(type, data);
+                data.removeAt(0);
+                data.removeAt(0);
+                int count = data.count();
+                for (int i = 0; i < 3; ++i) {
+                    QStringList currData;
+                    for (int j = i*count/3; j < (i+1)*count/3; ++j) {
+                        currData.append(data[j]);
+                    }
+                    plot(i+1, currData, id);
+                }
             }
             else if (data[1] == "th") {
                 print("Thresholds from Zolertia™ Re-Mote ID" + data[0] + ":\n"
@@ -462,9 +468,7 @@ void MainWindow::send2selection(QListWidget* listWidget, QString requestType)
                 send2port(cmd);
             }
             else if (requestType == "Get sensor data") {
-                send2port(id + ":get_data:1");
-                send2port(id + ":get_data:2");
-                send2port(id + ":get_data:3");
+                send2port(id + ":get_data:");
             }
         }
         // Verify all acknowledgements after a certain period of time and retransmit the one that havent received an ACK yet
@@ -533,9 +537,7 @@ void MainWindow::resend2selection()
                 send2port(cmd);
             }
             else if (re_requestType == "Get sensor data") {
-                send2port(id + ":get_data:1");
-                send2port(id + ":get_data:2");
-                send2port(id + ":get_data:3");
+                send2port(id + ":get_data:");
             }
         }
     }

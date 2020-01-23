@@ -36,7 +36,7 @@ private:
     void create_graph(QStringList list);
     void send2port(QString msg);
     void print(QString msg);
-    void plot(int type, QStringList data);
+    void plot(int type, QStringList data, QString id);
     void send2selection(QListWidget* listWidget, QString requestType);
 
 private slots:
