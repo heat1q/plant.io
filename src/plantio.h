@@ -10,6 +10,8 @@
  */
 #pragma once
 
+#define PACKETBUF_CONF_SIZE 256
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

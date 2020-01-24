@@ -48,6 +48,20 @@ static int n_max = 15;
 static double node_pos [n_limit][3]; // Node_ID: y-axis // [1,:] xpos // [2,:] ypos // [3,:] # of outgoing edges
 static double curr_pos [2];
 static QVector<double> alpha;
+static QVector<int> ack_queue;
+
+// retransmissions / ACKs
+static QListWidget* re_listWidget;
+static QString re_requestType;
+static int num_retransmissions;
+const static int ack_timer = n_max * 500; // waiting time until ACK check in ms
+
+// outside function for plot() to access the graphs
+static QCPAxisRect *TempAxisRect;
+static QCPAxisRect *HumAxisRect;
+static QCPAxisRect *LightAxisRect;
+static QCPLegend *legend;
+static QVector<int> existingLegendIDs;
 
 void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
 {
@@ -84,7 +98,6 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
         if ((abs(node_pos[target_id][0]) > 0) || (abs(node_pos[target_id][1]) > 0)){ // Target node already exists
             //qDebug() << "Target node" << target_id << "already exists";
         }
-
         else{ // target node doesn't exist
             // calculate new node position
             if (i==InputList.size()-1){ // first ring
@@ -132,7 +145,6 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
             mScene->addLine(x1,x2,y1,y2,blackPen); // add edge
         }
 
-
         curr_pos[0] = node_pos[target_id][0]; // Update current x position
         curr_pos[1] = node_pos[target_id][1]; // Update current y position
 
@@ -152,6 +164,9 @@ void MainWindow::reset_graph() // Reset the graph
 
     // reset alpha
     alpha.clear();
+
+    // clear ack_queue
+    ack_queue.clear();
 }
 
 void MainWindow::send2port(QString input) // Send message to port
@@ -171,14 +186,7 @@ void MainWindow::print(QString msg) // Print a message in GUI console
     ui->textEdit_Status->moveCursor (QTextCursor::End);
 }
 
-// outside function for plot() to access the graphs
-static QCPAxisRect *TempAxisRect;
-static QCPAxisRect *HumAxisRect;
-static QCPAxisRect *LightAxisRect;
-static QCPLegend *legend;
-static QVector<int> existingLegendIDs;
-
-void MainWindow::plot(int type, QStringList data) // ID : SENSOR_DATA : TYPE : DATA
+void MainWindow::plot(int type, QStringList data, QString id) // ID : SENSOR_DATA : TYPE : DATA
 {
     QCustomPlot* plot = ui->customPlot;
     QCPGraph* target_graph;
@@ -199,7 +207,6 @@ void MainWindow::plot(int type, QStringList data) // ID : SENSOR_DATA : TYPE : D
     }
 
     // Extract the data from the input sequence
-    QString id = data[0]; // ID from which the data came from
     int num_elements = data.count() - 2;
     QVector<double> x,y;
     for (int i = 0; i < num_elements; ++i) {
@@ -231,7 +238,6 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
     char ch;
     while (port.getChar(&ch))
     {
-        //qDebug() << ch;
         str.append(ch);
         //msg.append(ch);
         if (ch == '<'){
@@ -239,17 +245,29 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
         }
         else if (ch == '>') {
             str.remove(">");
-
             QStringList data = str.split(":");
+
+            // ACK
+            QString id = data[0];
+            print("Received ACK / DATA from Mote: " + id);
+            ack_queue.removeAll(id.toInt());
+
             if (data[1] == "route"){
                 data.removeFirst();
                 data.removeFirst();
                 create_graph(data); // create visualization of route which also registers the ID's as valid targets
             }
             else if (data[1] == "sensor_data"){ // ID : SENSOR_DATA : TYPE : DATA
-                int type = data[2].toInt();
-                data.removeAt(2);
-                plot(type, data);
+                data.removeAt(0);
+                data.removeAt(0);
+                int count = data.count();
+                for (int i = 0; i < 3; ++i) {
+                    QStringList currData;
+                    for (int j = i*count/3; j < (i+1)*count/3; ++j) {
+                        currData.append(data[j]);
+                    }
+                    plot(i+1, currData, id);
+                }
             }
             else if (data[1] == "th") {
                 print("Thresholds from Zolertia™ Re-Mote ID" + data[0] + ":\n"
@@ -387,6 +405,147 @@ void MainWindow::on_pushButton_SetMax_clicked()
     else{print("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
 
+void MainWindow::send2selection(QListWidget* listWidget, QString requestType)
+{
+    ack_queue.clear();
+    num_retransmissions = 1;
+
+    QList<QListWidgetItem *> selection = listWidget->selectedItems();
+    if ((selection.count() > 0) && (port.isOpen())){
+
+        for (int i = 0; i < selection.count(); ++i) {
+            QListWidgetItem listItem = *selection.at(i);
+            QString id;
+            if (listItem.text().contains("GUI")){
+                id = "0"; // GUI TARGET ID
+            }
+            else {
+                id = listItem.text().split("ID")[1];
+            }
+
+            // Add relevant id's to acknowledgement queue
+            if (id != "0"){ // non GUI node id
+                ack_queue.append(id.toInt());
+            }
+
+            // REQUEST TYPES
+            if (requestType == "Get routing table"){
+                QString cmd = id + ":rt";
+                send2port(cmd);
+            }
+            else if (requestType == "Send temperature threshold") {
+                double minTemp = ui->lcdNumber_MinTemp->value();
+                double maxTemp = ui->lcdNumber_MaxTemp->value();
+                QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp) + ":-1:-1:-1:-1";
+                send2port(cmd);
+            }
+            else if (requestType == "Send humidity threshold") {
+                double minHum = ui->lcdNumber_MinHum->value();
+                double maxHum = ui->lcdNumber_MaxHum->value();
+                QString cmd = id + ":set_th:-1:-1:" + QString::number(minHum) + ":" + QString::number(maxHum) + ":-1:-1";
+                send2port(cmd);
+            }
+            else if (requestType == "Send light threshold") {
+                double minLight = ui->lcdNumber_MinLight->value();
+                double maxLight = ui->lcdNumber_MaxLight->value();
+                QString cmd = id + ":set_th:-1:-1:-1:-1:" + QString::number(minLight) + ":" + QString::number(maxLight);
+                send2port(cmd);
+            }
+            else if (requestType == "Send all thresholds") {
+                double minTemp = ui->lcdNumber_MinTemp->value();
+                double maxTemp = ui->lcdNumber_MaxTemp->value();
+                double minHum = ui->lcdNumber_MinHum->value();
+                double maxHum = ui->lcdNumber_MaxHum->value();
+                double minLight = ui->lcdNumber_MinLight->value();
+                double maxLight = ui->lcdNumber_MaxLight->value();
+                QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
+                        + ":" + QString::number(minHum) + ":" + QString::number(maxHum)
+                        + ":" + QString::number(minLight) + ":" + QString::number(maxLight);
+                send2port(cmd);
+            }
+            else if (requestType == "Get all thresholds") {
+                QString cmd = id + ":get_th";
+                send2port(cmd);
+            }
+            else if (requestType == "Get sensor data") {
+                send2port(id + ":get_data:");
+            }
+        }
+        // Verify all acknowledgements after a certain period of time and retransmit the one that havent received an ACK yet
+        re_listWidget = listWidget;
+        re_requestType = requestType;
+        QTimer::singleShot(ack_timer, this, SLOT(resend2selection())); // first entry is time in ms
+    }
+    else {
+        print("No target motes selected OR no port connection!\n");
+    }
+}
+
+void MainWindow::resend2selection()
+{
+    if (ack_queue.count() > 0){ // there are still unfulfilled requests
+        if (num_retransmissions > 2){
+            print("One or more routes are unresponsive. Initiating re-exploration of network!\n");
+            on_pushButton_Explore_clicked();
+            return;
+        }
+
+        // Verify all acknowledgements after a certain period of time and retransmit the one that havent received an ACK yet
+        QTimer::singleShot(ack_timer, this, SLOT(resend2selection())); // first entry is time in ms
+        num_retransmissions += 1;
+
+        for (int i = 0; i < ack_queue.count(); ++i) { // Retransmit all unfinished requests
+            QString id = QString::number(ack_queue[i]);
+
+            // REQUEST TYPES
+            if (re_requestType == "Get routing table"){
+                QString cmd = id + ":rt";
+                send2port(cmd);
+            }
+            else if (re_requestType == "Send temperature threshold") {
+                double minTemp = ui->lcdNumber_MinTemp->value();
+                double maxTemp = ui->lcdNumber_MaxTemp->value();
+                QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp) + ":-1:-1:-1:-1";
+                send2port(cmd);
+            }
+            else if (re_requestType == "Send humidity threshold") {
+                double minHum = ui->lcdNumber_MinHum->value();
+                double maxHum = ui->lcdNumber_MaxHum->value();
+                QString cmd = id + ":set_th:-1:-1:" + QString::number(minHum) + ":" + QString::number(maxHum) + ":-1:-1";
+                send2port(cmd);
+            }
+            else if (re_requestType == "Send light threshold") {
+                double minLight = ui->lcdNumber_MinLight->value();
+                double maxLight = ui->lcdNumber_MaxLight->value();
+                QString cmd = id + ":set_th:-1:-1:-1:-1:" + QString::number(minLight) + ":" + QString::number(maxLight);
+                send2port(cmd);
+            }
+            else if (re_requestType == "Send all thresholds") {
+                double minTemp = ui->lcdNumber_MinTemp->value();
+                double maxTemp = ui->lcdNumber_MaxTemp->value();
+                double minHum = ui->lcdNumber_MinHum->value();
+                double maxHum = ui->lcdNumber_MaxHum->value();
+                double minLight = ui->lcdNumber_MinLight->value();
+                double maxLight = ui->lcdNumber_MaxLight->value();
+                QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
+                        + ":" + QString::number(minHum) + ":" + QString::number(maxHum)
+                        + ":" + QString::number(minLight) + ":" + QString::number(maxLight);
+                send2port(cmd);
+            }
+            else if (re_requestType == "Get all thresholds") {
+                QString cmd = id + ":get_th";
+                send2port(cmd);
+            }
+            else if (re_requestType == "Get sensor data") {
+                send2port(id + ":get_data:");
+            }
+        }
+    }
+    else {
+        print("All acknowledgements received!\n");
+    }
+}
+
 void MainWindow::on_pushButton_GetSensorData_clicked()
 {
     existingLegendIDs.clear();
@@ -429,25 +588,7 @@ void MainWindow::on_pushButton_GetSensorData_clicked()
     plot->axisRect(0)->insetLayout()->setInsetRect(0, QRectF(1,0,0,0));
     plot->setAutoAddPlottableToLegend(false);
 
-    // Fetch mote ID selection from listWidget
-    int listCount = ui->listWidget_Tab2->selectedItems().count();
-    QList<QListWidgetItem *> ids = ui->listWidget_Tab2->selectedItems();
-
-    // Iterate through all list items and request the data @GUI mote
-    for (int i = 0; i < listCount; i++) {
-        // get sensor data from mote id: i
-        QString id;
-        if ((*ids[i]).text().contains("GUI")){
-            id = "0"; // GUI TARGET ID
-        }
-        else{
-            id = (*ids[i]).text().split("ID")[1];
-        }
-
-        send2port(id + ":get_data:1");
-        send2port(id + ":get_data:2");
-        send2port(id + ":get_data:3");
-    }
+    send2selection(ui->listWidget_Tab2, "Get sensor data");
 
     // Set the plots to grid mode
     QList<QCPAxis*> allAxes;
@@ -460,28 +601,6 @@ void MainWindow::on_pushButton_GetSensorData_clicked()
 
     // Apply the configuration changes by replotting
     plot->replot();
-}
-
-void MainWindow::on_pushButton_GetRoutingTable_clicked()
-{
-    QList<QListWidgetItem *> selection = ui->listWidget_Tab2->selectedItems();
-    if ((selection.count() > 0) && (port.isOpen())){
-        for (int i = 0; i < selection.count(); ++i) {
-            QListWidgetItem listItem = *selection.at(i);
-            QString id;
-            if (listItem.text().contains("GUI")){
-                id = "0"; // GUI TARGET ID
-            }
-            else {
-                id = listItem.text().split("ID")[1];
-            }
-            QString cmd = id + ":rt";
-            send2port(cmd);
-        }
-    }
-    else {
-        print("No target motes selected OR no port connection!\n");
-    }
 }
 
 void MainWindow::on_pushButton_Refresh_Tab2_clicked()
@@ -520,16 +639,16 @@ void MainWindow::on_pushButton_UnselectAll_Tab2_clicked()
     }
 }
 
-void MainWindow::on_pushButton_Refresh_clicked() // Tab 3
+void MainWindow::on_pushButton_Refresh_Tab3_clicked() // Tab 3
 {
-    ui->listWidget->clear();
+    ui->listWidget_Tab3->clear();
 
     if (port.isOpen()){
         QString message = "Zolertia™ GUI Re-Mote";
         QListWidgetItem *listItem = new QListWidgetItem(
                     QIcon("/home/andreas/Documents/University/Wireless "
-                          "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget);
-        ui->listWidget->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
+                          "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab3);
+        ui->listWidget_Tab3->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
     }
 
     for (int i = 0; i < n_max; ++i) {
@@ -537,22 +656,22 @@ void MainWindow::on_pushButton_Refresh_clicked() // Tab 3
             QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
             QListWidgetItem *listItem = new QListWidgetItem(
                         QIcon("/home/andreas/Documents/University/Wireless "
-                              "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget);
-            ui->listWidget->addItem(listItem);
+                              "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab3);
+            ui->listWidget_Tab3->addItem(listItem);
         }
     }
 }
 
-void MainWindow::on_pushButton_SelectAll_clicked()
+void MainWindow::on_pushButton_SelectAll_Tab3_clicked()
 {
-    ui->listWidget->selectAll();
+    ui->listWidget_Tab3->selectAll();
 }
 
-void MainWindow::on_pushButton_UnselectAll_clicked()
+void MainWindow::on_pushButton_UnselectAll_Tab3_clicked()
 {
-    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
+    QList<QListWidgetItem *> selection = ui->listWidget_Tab3->selectedItems();
     for (int i = 0; i < selection.count(); i++) {
-        ui->listWidget->setItemSelected(selection[i], false);
+        ui->listWidget_Tab3->setItemSelected(selection[i], false);
     }
 }
 
@@ -588,134 +707,35 @@ void MainWindow::on_pushButton_SetAll_clicked()
     on_pushButton_SetLight_clicked();
 }
 
+void MainWindow::on_pushButton_GetRoutingTable_clicked()
+{
+    send2selection(ui->listWidget_Tab2, "Get routing table");
+}
+
 // Send threshold values
 void MainWindow::on_pushButton_SendTemp_clicked()
 {
-    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
-    if ((selection.count() > 0) && (port.isOpen())){
-        double minTemp = ui->lcdNumber_MinTemp->value();
-        double maxTemp = ui->lcdNumber_MaxTemp->value();
-
-        for (int i = 0; i < selection.count(); ++i) {
-            QListWidgetItem listItem = *selection.at(i);
-            QString id;
-            if (listItem.text().contains("GUI")){
-                id = "0"; // GUI TARGET ID
-            }
-            else {
-                id = listItem.text().split("ID")[1];
-            }
-            QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp) + ":-1:-1:-1:-1";
-            send2port(cmd);
-        }
-    }
-    else {
-        print("No target motes selected OR no port connection!\n");
-    }
+    send2selection(ui->listWidget_Tab3, "Send temperature threshold");
 }
 
 void MainWindow::on_pushButton_SendHum_clicked()
 {
-    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
-    if ((selection.count() > 0) && (port.isOpen())){
-        double minHum = ui->lcdNumber_MinHum->value();
-        double maxHum = ui->lcdNumber_MaxHum->value();
-
-        for (int i = 0; i < selection.count(); ++i) {
-            QListWidgetItem listItem = *selection.at(i);
-            QString id;
-            if (listItem.text().contains("GUI")){
-                id = "0"; // GUI TARGET ID
-            }
-            else {
-                id = listItem.text().split("ID")[1];
-            }
-            QString cmd = id + ":set_th:-1:-1:" + QString::number(minHum) + ":" + QString::number(maxHum) + ":-1:-1";
-            send2port(cmd);
-        }
-    }
-    else {
-        print("No target motes selected OR no port connection!\n");
-    }
+    send2selection(ui->listWidget_Tab3, "Send humidity threshold");
 }
 
 void MainWindow::on_pushButton_SendLight_clicked()
 {
-    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
-    if ((selection.count() > 0) && (port.isOpen())){
-        double minLight = ui->lcdNumber_MinLight->value();
-        double maxLight = ui->lcdNumber_MaxLight->value();
-
-        for (int i = 0; i < selection.count(); ++i) {
-            QListWidgetItem listItem = *selection.at(i);
-            QString id;
-            if (listItem.text().contains("GUI")){
-                id = "0"; // GUI TARGET ID
-            }
-            else {
-                id = listItem.text().split("ID")[1];
-            }
-            QString cmd = id + ":set_th:-1:-1:-1:-1:" + QString::number(minLight) + ":" + QString::number(maxLight);
-            send2port(cmd);
-        }
-    }
-    else {
-        print("No target motes selected OR no port connection!\n");
-    }
+    send2selection(ui->listWidget_Tab3, "Send light threshold");
 }
 
 void MainWindow::on_pushButton_SendAll_clicked()
 {
-    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
-    if ((selection.count() > 0) && (port.isOpen())){
-        double minTemp = ui->lcdNumber_MinTemp->value();
-        double maxTemp = ui->lcdNumber_MaxTemp->value();
-        double minHum = ui->lcdNumber_MinHum->value();
-        double maxHum = ui->lcdNumber_MaxHum->value();
-        double minLight = ui->lcdNumber_MinLight->value();
-        double maxLight = ui->lcdNumber_MaxLight->value();
-
-        for (int i = 0; i < selection.count(); ++i) {
-            QListWidgetItem listItem = *selection.at(i);
-            QString id;
-            if (listItem.text().contains("GUI")){
-                id = "0"; // GUI TARGET ID
-            }
-            else {
-                id = listItem.text().split("ID")[1];
-            }
-            QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
-                    + ":" + QString::number(minHum) + ":" + QString::number(maxHum)
-                    + ":" + QString::number(minLight) + ":" + QString::number(maxLight);
-            send2port(cmd);
-        }
-    }
-    else {
-        print("No target motes selected OR no port connection!\n");
-    }
+    send2selection(ui->listWidget_Tab3, "Send all thresholds");
 }
 
 void MainWindow::on_pushButton_GetAll_clicked()
 {
-    QList<QListWidgetItem *> selection = ui->listWidget->selectedItems();
-    if ((selection.count() > 0) && (port.isOpen())){
-        for (int i = 0; i < selection.count(); ++i) {
-            QListWidgetItem listItem = *selection.at(i);
-            QString id;
-            if (listItem.text().contains("GUI")){
-                id = "0"; // GUI TARGET ID
-            }
-            else {
-                id = listItem.text().split("ID")[1];
-            }
-
-            QString cmd = id + ":get_th";
-            send2port(cmd);
-        }
-    }
-    else {
-        print("No target motes selected OR no port connection!\n");
-    }
+    send2selection(ui->listWidget_Tab3, "Get all thresholds");
 }
 
 void MainWindow::on_pushButton_Debug_clicked()

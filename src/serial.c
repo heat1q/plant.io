@@ -58,23 +58,8 @@ void parse_serial_input(char *input)
     // continue with correct format
     if (strcmp(task, "led") == 0)
     {
-        uint8_t led_id;
-        if (strcmp(args, "blue") == 0)
-        {
-            led_id = LEDS_BLUE;
-        }
-        else if (strcmp(args, "green") == 0)
-        {
-            led_id = LEDS_GREEN;
-        }
-        else if (strcmp(args, "red") == 0)
-        {
-            led_id = LEDS_RED;
-        }
-        else
-        {
-            led_id = LEDS_ALL;
-        }
+        //RED: 1, GREEN: 2, BLUE: 4
+        uint8_t led_id = (uint8_t) atoi(args);
 
         if (id == linkaddr_node_addr.u8[1] || id == 0)
         {
@@ -125,19 +110,21 @@ void parse_serial_input(char *input)
     }
     else if (strcmp(task ,"get_data") == 0)
     {
-        uint8_t data_id = (uint8_t) atoi(args); // 1 for temp, 2 for hum, 3 for light
         if (id == linkaddr_node_addr.u8[1] || id == 0)
         {
-            printf("<%u:sensor_data:%u", linkaddr_node_addr.u8[1], data_id);
-            for (uint16_t i = 0; i < MAX_NUM_OF_VALUES; ++i)
+            printf("<%u:sensor_data", linkaddr_node_addr.u8[1]);
+            for (uint8_t k = 0; k < 3; ++k) // id for temp, hum, light
             {
-                printf(":%u", fetch_sensor_data(i * 4 + data_id));
+                for (uint16_t i = 0; i < MAX_NUM_OF_VALUES; ++i)
+                {
+                    printf(":%u", fetch_sensor_data(i * 4 + k + 1));
+                }
             }
             printf(">\r\n");
         }
         else // send to the right node
         {
-            init_data_packet(14, id, &data_id, 1, -1);
+            init_data_packet(14, id, NULL, 0, -1);
         }
     }
 }

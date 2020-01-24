@@ -76,10 +76,12 @@ void process_data_packet(const plantio_packet_t *packet)
     if (packet->type == 10)
     {
         leds_toggle(*get_packet_data(packet));
+        send_ack(get_packet_src(packet), packet->src_len);
     }
     else if (packet->type == 11) // setting thresholds
     {
         write_thresholds((char*) get_packet_data(packet));
+        send_ack(get_packet_src(packet), packet->src_len);
     }
     else if (packet->type == 12) // request thresholds
     {
@@ -94,26 +96,26 @@ void process_data_packet(const plantio_packet_t *packet)
     }
     else if (packet->type == 14) // request sensor data
     {
-        uint8_t data_id = *get_packet_data(packet);
         // pack the data into byte array
-        uint8_t data[sizeof(uint16_t) * MAX_NUM_OF_VALUES + 1];
+        uint16_t data[MAX_NUM_OF_VALUES * 3];
         for (uint16_t i = 0; i < MAX_NUM_OF_VALUES; ++i)
         {
-            data[2*i] = (uint8_t) (fetch_sensor_data(i*4 + data_id) >> 8);
-            data[2*i+1] = (uint8_t) fetch_sensor_data(i*4 + data_id);
+            for (uint8_t k = 0; k < 3; ++k) // id for temp, hum, light
+            {
+                data[i + k * MAX_NUM_OF_VALUES] = fetch_sensor_data(i * 4 + k + 1);
+            }
         }
-        data[sizeof(uint16_t) * MAX_NUM_OF_VALUES] = data_id; // append the id for temp, hum, light
 
-        init_data_packet(15, *get_packet_src(packet), data, sizeof(uint16_t) * MAX_NUM_OF_VALUES + 1, get_best_route_index());
+        init_data_packet(15, *get_packet_src(packet), (uint8_t *)data, sizeof(uint16_t) * 3 * MAX_NUM_OF_VALUES, get_best_route_index());
     }
     else if (packet->type == 15) // reply for request sensor data
     {
-        uint16_t data;
-        printf("<%u:sensor_data:%u", *get_packet_src(packet), get_packet_data(packet)[sizeof(uint16_t) * MAX_NUM_OF_VALUES]);
-        for (uint16_t i = 0; i < MAX_NUM_OF_VALUES; ++i)
+        uint16_t data[MAX_NUM_OF_VALUES * 3];
+        memcpy(data, get_packet_data(packet), sizeof(uint16_t) * MAX_NUM_OF_VALUES * 3); // data is uint8_t array
+        printf("<%u:sensor_data", *get_packet_src(packet));
+        for (uint16_t i = 0; i < 3 * MAX_NUM_OF_VALUES; ++i)
         {
-            data = (((uint16_t)get_packet_data(packet)[2*i]) << 8) | get_packet_data(packet)[2*i+1];
-            printf(":%u", data);
+            printf(":%u", data[i]);
         }
         printf(">\r\n");
     }
@@ -153,6 +155,7 @@ void process_data_packet(const plantio_packet_t *packet)
     }
     else if (packet->type == 17) // reply for rt
     {
+        printf("<%u:ack>\r\n", get_packet_src(packet)[0]);
         printf("opt |  i  | Hops | Routes for Device %u\r\n", *get_packet_src(packet));
         printf("----+-----+------+------------------------\r\n");
         if (packet->data_len)
