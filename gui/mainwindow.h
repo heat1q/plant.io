@@ -54,10 +54,6 @@ private slots:
     void on_pushButton_Refresh_Tab2_clicked();
     void on_pushButton_SelectAll_Tab2_clicked();
     void on_pushButton_UnselectAll_Tab2_clicked();
-    void on_pushButton_SetTemp_clicked();
-    void on_pushButton_SetHum_clicked();
-    void on_pushButton_SetLight_clicked();
-    void on_pushButton_SetAll_clicked();
     void on_pushButton_Debug_clicked();
     void on_pushButton_SendTemp_clicked();
     void on_pushButton_SendHum_clicked();
@@ -71,6 +67,7 @@ private slots:
     void on_pushButton_GetSensorData_clicked();
     void on_pushButton_GetRoutingTable_clicked();
     void on_pushButton_GetAll_clicked();
+    void on_pushButton_LED_clicked();
 };
 
 #endif // MAINWINDOW_H
