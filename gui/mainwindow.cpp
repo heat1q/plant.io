@@ -340,13 +340,6 @@ void MainWindow::on_pushButton_Reload_clicked()
     }
 }
 
-void MainWindow::on_pushButton_CreateRoute_clicked() // test button for graph
-{
-    QString Input = ui->plainTextEdit_Create->toPlainText();
-    QStringList InputList = Input.split(":");
-    MainWindow::create_graph(InputList);
-}
-
 void MainWindow::on_pushButton_Explore_clicked()
 {
     send2port("0:init:"); // Initialize network exploration on mote
@@ -355,17 +348,11 @@ void MainWindow::on_pushButton_Explore_clicked()
     mScene = new QGraphicsScene();
     ui->graphicsView_Networkgraph->setScene( mScene );
 
-    // disable notification text
-    //ui->label_networkgraph->setVisible(0);
-
     // create root node
     QBrush redBrush(Qt::red);
     QPen blackPen(Qt::black);
     blackPen.setWidth(2);
     mScene->addEllipse(-10,-10,20,20,blackPen,redBrush);
-
-    // enable node creation button
-    ui->pushButton_CreateRoute->setEnabled(true);
 
     // reset graph
     reset_graph();
@@ -732,12 +719,6 @@ void MainWindow::on_pushButton_SendAll_clicked()
 void MainWindow::on_pushButton_GetAll_clicked()
 {
     send2selection(ui->listWidget_Tab3, "Get all thresholds");
-}
-
-void MainWindow::on_pushButton_Debug_clicked()
-{
-    QString cmd = ui->plainTextEdit_Debug->toPlainText();
-    send2port(cmd);
 }
 
 void MainWindow::on_pushButton_Center_clicked()
