@@ -19,19 +19,6 @@
 #include "plantio.h"
 #include "net_packet.h"
 
-struct
-{
-    uint16_t num_routes;
-    uint16_t num_hops[];
-} typedef routing_hops_t;
-
-struct
-{
-    uint16_t num_routes;
-    uint16_t route[];
-} typedef routing_t;
-
-
 // Forward declaration of processes
 struct process p_conn; // Process that manages the Broadcast and Unicast Connections
 struct process p_init_reply_timer;
@@ -42,21 +29,23 @@ struct unicast_conn plantio_unicast; // Creates an instance of a unicast connect
 /**
  * @brief Callback function for Broadcast.
  * 
- * @param broadcast 
- * @param from 
+ * @param broadcast Broadcast Connection
+ * @param from Node ID of packet source
  */
 void broadcast_receive(struct broadcast_conn *broadcast, const linkaddr_t *from);
 
 /**
  * @brief Callback function for Unicast.
  * 
- * @param unicast 
- * @param from 
+ * @param unicast Unicast Connection
+ * @param from Node ID of packet source
  */
 void unicast_receive(struct unicast_conn *unicast, const linkaddr_t *from);
 
 /**
  * @brief Starts the network discovery algorithm.
+ * 
+ * @details Floods the network with a network discory packet.
  * 
  */
 void init_network(void);
@@ -64,13 +53,16 @@ void init_network(void);
 /**
  * @brief Forwards the network discovery packet & updates the routing tables.
  * 
+ * @details Packets with current Node ID in the source as well as transmissions
+ * below PLANTIO_MIN_RSSI threshold will be dropped.
+ * 
  * @param packet Pointer to instance of plantio_packet_t
  */
 void forward_discover(const plantio_packet_t* packet);
 
 /**
- * @brief Finds the optimal route given the current routing metric by applying
- * the Shortest Path Tree (SPT) algorithm.
+ * @brief Finds the optimal route in the routing table by minimizing the 
+ * number of hops.
  */
 void find_best_route(void);
 
@@ -87,7 +79,7 @@ void print_routing_table(void);
 void clear_routing_table(void);
 
 /**
- * @brief Write a route to the routing table on Flash memory.
+ * @brief Write a route to the routing table on the flash memory.
  * 
  * @param route Array of Node IDs
  * @param length Length of the array, i.e. the number of hops of the route
@@ -99,7 +91,7 @@ void write_routing_table(const uint8_t *route, const uint8_t length);
  * 
  * @return const uint16_t Number of routes
  */
-const uint16_t get_num_routes();
+const uint16_t get_num_routes(void);
 
 /**
  * @brief Get the index of the optimal route in the routing table.
@@ -107,7 +99,7 @@ const uint16_t get_num_routes();
  * 
  * @return const int16_t Index of route in the routing table
  */
-const int16_t get_best_route_index();
+const int16_t get_best_route_index(void);
 
 /**
  * @brief Get the number of hops for a route with given index in the routing table.
@@ -127,8 +119,7 @@ const uint8_t get_num_hops(const uint16_t index);
 void get_route(uint8_t *route, const uint16_t num_hops, const uint16_t index);
 
 /**
- * @brief Selects the optimal route to GUI node given the routing metric
- * and transmits it to the GUI node.
+ * @brief Selects the optimal route to the GUI node and transmits it to the GUI node.
  * 
  */
 void init_rreq_reply(const uint16_t index);
@@ -178,7 +169,7 @@ void send_best_route(const uint8_t dest);
 void receive_route(const plantio_packet_t *packet);
 
 /**
- * @brief Sends an ACK Packet with the given route.
+ * @brief Sends an ACK Packet via the given route.
  * 
  * @param route Path to the destination node
  */

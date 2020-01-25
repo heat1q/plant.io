@@ -38,7 +38,9 @@ PROCESS_THREAD(p_serial, ev, data)
  */
 void parse_serial_input(char *input)
 {
+#ifdef PLANTIO_DEBUG
     printf("Serial Input Received :: %s \r\n", input);
+#endif
     //format ID:TASK:ARGS
 
     char *tmp = strtok(input, ":");

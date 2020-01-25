@@ -44,7 +44,7 @@ PROCESS_THREAD(p_sensors, ev, data)
         else if (ev == PROCESS_EVENT_TIMER)
         {
             // Read ADC values. Data is in the 12 MSBs
-            light = get_light_sensor_value(1.2, 0.0, adc_zoul.value(ZOUL_SENSORS_ADC1) >> 4); // Light Sensor
+            light = get_light_sensor_value(adc_zoul.value(ZOUL_SENSORS_ADC1) >> 4); // Light Sensor
             hum = adc_zoul.value(ZOUL_SENSORS_ADC3) >> 4;       // Humidity Sensor
             temp = cc2538_temp_sensor.value(CC2538_SENSORS_VALUE_TYPE_CONVERTED);
 
@@ -90,7 +90,7 @@ PROCESS_THREAD(p_sensors, ev, data)
     PROCESS_END();
 }
 
-void init_sensor_data()
+void init_sensor_data(void)
 {
     // set default thresholds if necessary
     // probably needs fix: needs new way to figure out when to initialize or if already initialized??!! check if again
@@ -182,12 +182,12 @@ void on_button_pressed(void)
     }*/
 }
 
-void clear_sensor_data()
+void clear_sensor_data(void)
 {
     cfs_remove(FILE_SENSORS);
 }
 
-void print_sensor_data()
+void print_sensor_data(void)
 {
     printf("Thresholds: \r\n");
     printf("          | -%7li | -%7li | -%7li \r\n", get_threshold(TEMP_LOW), get_threshold(HUM_LOW), get_threshold(LIGHT_LOW));
@@ -265,9 +265,9 @@ const int32_t get_threshold(enum thresh id)
     return threshold;
 }
 
-const uint16_t get_light_sensor_value(float m, float b, uint16_t adc_input)
+const uint16_t get_light_sensor_value(uint16_t adc_input)
 {
     double SensorValue = adc_input / 4.096; //Read voltage from the phidget interface
-    double lum = m * SensorValue + b; //Convert the voltage in lux with the provided formula
+    double lum = 1.2 * SensorValue + 0.0; //Convert the voltage in lux with the provided formula
     return lum > 1000.0 ? 1000.0 : lum; //Return the value of the light with maximum value equal to 1000
 }

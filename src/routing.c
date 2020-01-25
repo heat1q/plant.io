@@ -259,7 +259,7 @@ void find_best_route(void)
     }
 }
 
-const int16_t get_best_route_index()
+const int16_t get_best_route_index(void)
 {
     return best_route_index;
 }
@@ -376,7 +376,7 @@ void write_routing_table(const uint8_t *route, const uint8_t length)
     }
 }
 
-const uint16_t get_num_routes()
+const uint16_t get_num_routes(void)
 {
     uint16_t num_routes = 0;
     int f_routing = cfs_open(FILE_ROUTING, CFS_READ);
