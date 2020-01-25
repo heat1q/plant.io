@@ -1,5 +1,9 @@
 #include "mainwindow.h"
 
+/**
+ * @brief Main Window setup function. Scans usb ports for motes on startup.
+ * Paints textEdit background black and text color white for an authentic console experience.
+ */
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -63,6 +67,11 @@ static QCPAxisRect *LightAxisRect;
 static QCPLegend *legend;
 static QVector<int> existingLegendIDs;
 
+/**
+ * @brief Function for creating visualization of the sensor network topology.
+ * Every time a route is received this function is called to plot the route.
+ * @param InputList The optimal route from the respective mote to the gui
+ */
 void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
 {
     // Paint edges and nodes
@@ -155,6 +164,9 @@ void MainWindow::create_graph(QStringList InputList) // Add a route to the graph
     on_pushButton_Center_clicked();
 }
 
+/**
+ * @brief Reset all arrays associated with the topology visualization graph.
+ */
 void MainWindow::reset_graph() // Reset the graph
 {
     // reset all values in node_pos
@@ -169,6 +181,10 @@ void MainWindow::reset_graph() // Reset the graph
     ack_queue.clear();
 }
 
+/**
+ * @brief Send serial commands to the connected mote.
+ * @param input The command that should be sent over serial communication.
+ */
 void MainWindow::send2port(QString input) // Send message to port
 {
     QByteArray byteArray = input.toLocal8Bit();
@@ -179,6 +195,10 @@ void MainWindow::send2port(QString input) // Send message to port
     }
 }
 
+/**
+ * @brief Helper function for outputting messages to the console.
+ * @param msg Message to be printed.
+ */
 void MainWindow::print(QString msg) // Print a message in GUI console
 {
     ui->textEdit_Status->moveCursor (QTextCursor::End);
@@ -186,6 +206,12 @@ void MainWindow::print(QString msg) // Print a message in GUI console
     ui->textEdit_Status->moveCursor (QTextCursor::End);
 }
 
+/**
+ * @brief Function for plotting received sensor data.
+ * @param type Type of sensor data: 1 = Temperature, 2 = Humidity, 3 = Light
+ * @param data Sensor data to be plotted
+ * @param id Associated mote id
+ */
 void MainWindow::plot(int type, QStringList data, QString id) // ID : SENSOR_DATA : TYPE : DATA
 {
     QCustomPlot* plot = ui->customPlot;
@@ -232,6 +258,12 @@ void MainWindow::plot(int type, QStringList data, QString id) // ID : SENSOR_DAT
     plot->replot();
 }
 
+/**
+ * @brief Function for handling serial messages from the mote.
+ * LT/GT operators <> denote important data and are simultaneously used as acknowledgements.
+ * Requests from gui that natively don't solicit reply messages return an explicit ACK packet with the <> format.
+ * This gives us consistant and reliable acknowledgements.
+ */
 void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this, SLOT(receive()));
 {
     static QString str;
@@ -287,6 +319,9 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
     }
 }
 
+/**
+ * @brief Opening the selected USB port.
+ */
 void MainWindow::on_pushButton_Open_clicked()
 {
     port.setQueryMode(QextSerialPort::EventDriven);
@@ -312,6 +347,9 @@ void MainWindow::on_pushButton_Open_clicked()
     ui->comboBox_Interface->setEnabled(false);
 }
 
+/**
+ * @brief Closing the currently open USB port.
+ */
 void MainWindow::on_pushButton_Close_clicked()
 {
     if (port.isOpen())port.close();
@@ -320,6 +358,9 @@ void MainWindow::on_pushButton_Close_clicked()
     ui->comboBox_Interface->setEnabled(true);
 }
 
+/**
+ * @brief Function for reloading/refreshing the available ports.
+ */
 void MainWindow::on_pushButton_Reload_clicked()
 {
     // Get all available COM Ports and store them in a QList.
@@ -340,6 +381,9 @@ void MainWindow::on_pushButton_Reload_clicked()
     }
 }
 
+/**
+ * @brief Initialize the network exploration.
+ */
 void MainWindow::on_pushButton_Explore_clicked()
 {
     send2port("0:init:"); // Initialize network exploration on mote
@@ -367,21 +411,35 @@ void MainWindow::on_pushButton_Explore_clicked()
     QTimer::singleShot(8000, this, SLOT(enableButton())); // first entry is time in ms
 }
 
+/**
+ * @brief Function for enabling the exploration pushButton after a timeout.
+ * Gets called in on_pushButton_Explore_clicked().
+ */
 void MainWindow::enableButton() // enable the explore network button
 {
     ui->pushButton_Explore->setEnabled(true);
 }
 
+/**
+ * @brief Zoom in the netowork graph.
+ */
 void MainWindow::on_pushButton_ZoomIn_clicked()
 {
     ui->graphicsView_Networkgraph->scale(1.2,1.2);
 }
 
+/**
+ * @brief Zoom out the network graph.
+ */
 void MainWindow::on_pushButton_ZoomOut_clicked()
 {
     ui->graphicsView_Networkgraph->scale(0.8,0.8);
 }
 
+/**
+ * @brief Set the maximum amount of motes in the network.
+ * This helps scaling the ACK timeout and network visualization.
+ */
 void MainWindow::on_pushButton_SetMax_clicked()
 {
     int Input = qRound(ui->doubleSpinBox_SetMax->value());
@@ -391,6 +449,11 @@ void MainWindow::on_pushButton_SetMax_clicked()
     else{print("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
 
+/**
+ * @brief Function for sending a certain serial request to all selected motes from the corresponding listWidget.
+ * @param listWidget The listWidget where the id selection is extracted from
+ * @param requestType The type of serial communication request that should be sent to all selected motes
+ */
 void MainWindow::send2selection(QListWidget* listWidget, QString requestType)
 {
     ack_queue.clear();
@@ -482,6 +545,11 @@ void MainWindow::send2selection(QListWidget* listWidget, QString requestType)
     }
 }
 
+/**
+ * @brief Function for handling the retransmissions of unacknowledged requests.
+ * After three tries this function recognizes that one or more routes have become invalid and thus
+ * a new network exploration is triggered.
+ */
 void MainWindow::resend2selection()
 {
     if (ack_queue.count() > 0){ // there are still unfulfilled requests
@@ -560,6 +628,9 @@ void MainWindow::resend2selection()
     }
 }
 
+/**
+ * @brief Function for initializing the sensor plots and requesting the sensor data from the selection.
+ */
 void MainWindow::on_pushButton_GetSensorData_clicked()
 {
     existingLegendIDs.clear();
@@ -617,6 +688,9 @@ void MainWindow::on_pushButton_GetSensorData_clicked()
     plot->replot();
 }
 
+/**
+ * @brief Refreshes the listWidget items on tab 2.
+ */
 void MainWindow::on_pushButton_Refresh_Tab2_clicked()
 {
     ui->listWidget_Tab2->clear();
@@ -638,11 +712,17 @@ void MainWindow::on_pushButton_Refresh_Tab2_clicked()
     }
 }
 
+/**
+ * @brief Selects all listWidget items on tab 2.
+ */
 void MainWindow::on_pushButton_SelectAll_Tab2_clicked()
 {
     ui->listWidget_Tab2->selectAll();
 }
 
+/**
+ * @brief Unselects all listWidget items on tab 2.
+ */
 void MainWindow::on_pushButton_UnselectAll_Tab2_clicked()
 {
     QList<QListWidgetItem *> selection = ui->listWidget_Tab2->selectedItems();
@@ -651,7 +731,10 @@ void MainWindow::on_pushButton_UnselectAll_Tab2_clicked()
     }
 }
 
-void MainWindow::on_pushButton_Refresh_Tab3_clicked() // Tab 3
+/**
+ * @brief Refreshes the listWidget items on tab 3.
+ */
+void MainWindow::on_pushButton_Refresh_Tab3_clicked()
 {
     ui->listWidget_Tab3->clear();
 
@@ -672,11 +755,17 @@ void MainWindow::on_pushButton_Refresh_Tab3_clicked() // Tab 3
     }
 }
 
+/**
+ * @brief Selects all listWidget items on tab 3.
+ */
 void MainWindow::on_pushButton_SelectAll_Tab3_clicked()
 {
     ui->listWidget_Tab3->selectAll();
 }
 
+/**
+ * @brief Unselects all listWidget items on tab 3.
+ */
 void MainWindow::on_pushButton_UnselectAll_Tab3_clicked()
 {
     QList<QListWidgetItem *> selection = ui->listWidget_Tab3->selectedItems();
@@ -685,49 +774,76 @@ void MainWindow::on_pushButton_UnselectAll_Tab3_clicked()
     }
 }
 
+/**
+ * @brief Get routing tables.
+ */
 void MainWindow::on_pushButton_GetRoutingTable_clicked()
 {
     send2selection(ui->listWidget_Tab2, "Get routing table");
 }
 
-// Send threshold values
+/**
+ * @brief Configure temperature thresholds.
+ */
 void MainWindow::on_pushButton_SendTemp_clicked()
 {
     send2selection(ui->listWidget_Tab3, "Send temperature threshold");
 }
 
+/**
+ * @brief Configure humidity thresholds.
+ */
 void MainWindow::on_pushButton_SendHum_clicked()
 {
     send2selection(ui->listWidget_Tab3, "Send humidity threshold");
 }
 
+/**
+ * @brief Configure light thresholds.
+ */
 void MainWindow::on_pushButton_SendLight_clicked()
 {
     send2selection(ui->listWidget_Tab3, "Send light threshold");
 }
 
+/**
+ * @brief Configure all thresholds.
+ */
 void MainWindow::on_pushButton_SendAll_clicked()
 {
     send2selection(ui->listWidget_Tab3, "Send all thresholds");
 }
 
+/**
+ * @brief Fetch all thresholds.
+ */
 void MainWindow::on_pushButton_GetAll_clicked()
 {
     send2selection(ui->listWidget_Tab3, "Get all thresholds");
 }
 
+/**
+ * @brief Center and rescale the network topology graph with a small border for improved aesthetics.
+ */
 void MainWindow::on_pushButton_Center_clicked()
 {
     QRectF bounds = mScene->itemsBoundingRect();
-    //bounds.setWidth(bounds.width()*0.9);         // to tighten-up margins
-    //bounds.setHeight(bounds.height()*0.9);       // same as above
+    bounds.setWidth(bounds.width()*0.95);         // to tighten-up margins
+    bounds.setHeight(bounds.height()*0.95);       // same as above
     ui->graphicsView_Networkgraph->fitInView(bounds,Qt::KeepAspectRatio);
 }
 
+/**
+ * @brief Clear console.
+ */
 void MainWindow::on_pushButton_Clear_clicked()
 {
     ui->textEdit_Status->clear();
 }
+
+/**
+ * @brief Set LED colors.
+ */
 void MainWindow::on_pushButton_LED_clicked()
 {
     send2selection(ui->listWidget_Tab3, "Set LED color");
