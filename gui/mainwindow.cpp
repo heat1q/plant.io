@@ -514,6 +514,7 @@ void MainWindow::resend2selection()
 
         for (int i = 0; i < ack_queue.count(); ++i) { // Retransmit all unfinished requests
             QString id = QString::number(ack_queue[i]);
+            print("Retransmitting to mote " + id +"...\n");
 
             // REQUEST TYPES
             if (re_requestType == "Get routing table"){
