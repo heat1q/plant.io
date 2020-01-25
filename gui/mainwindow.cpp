@@ -384,10 +384,9 @@ void MainWindow::on_pushButton_ZoomOut_clicked()
 
 void MainWindow::on_pushButton_SetMax_clicked()
 {
-    QString Input = ui->plainTextEdit_SetMax->toPlainText();
-    if(Input.toInt()<n_limit){
-        n_max = Input.toInt();
-        on_pushButton_Explore_clicked();
+    int Input = qRound(ui->doubleSpinBox_SetMax->value());
+    if(Input<n_limit){
+        n_max = Input;
     }
     else{print("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
@@ -625,8 +624,7 @@ void MainWindow::on_pushButton_Refresh_Tab2_clicked()
     if (port.isOpen()){
         QString message = "Zolertia™ GUI Re-Mote";
         QListWidgetItem *listItem = new QListWidgetItem(
-                    QIcon("/home/andreas/Documents/University/Wireless "
-                          "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab2);
+                    QIcon(QCoreApplication::applicationDirPath() + "/../gui/resource/remote.png"), message, ui->listWidget_Tab2);
         ui->listWidget_Tab2->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
     }
 
@@ -634,8 +632,7 @@ void MainWindow::on_pushButton_Refresh_Tab2_clicked()
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
             QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
             QListWidgetItem *listItem = new QListWidgetItem(
-                        QIcon("/home/andreas/Documents/University/Wireless "
-                              "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab2);
+                        QIcon(QCoreApplication::applicationDirPath() + "/../gui/resource/remote.png"), message, ui->listWidget_Tab2);
             ui->listWidget_Tab2->addItem(listItem);
         }
     }
@@ -661,8 +658,7 @@ void MainWindow::on_pushButton_Refresh_Tab3_clicked() // Tab 3
     if (port.isOpen()){
         QString message = "Zolertia™ GUI Re-Mote";
         QListWidgetItem *listItem = new QListWidgetItem(
-                    QIcon("/home/andreas/Documents/University/Wireless "
-                          "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab3);
+                    QIcon(QCoreApplication::applicationDirPath() + "/../gui/resource/remote.png"), message, ui->listWidget_Tab3);
         ui->listWidget_Tab3->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
     }
 
@@ -670,8 +666,7 @@ void MainWindow::on_pushButton_Refresh_Tab3_clicked() // Tab 3
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
             QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
             QListWidgetItem *listItem = new QListWidgetItem(
-                        QIcon("/home/andreas/Documents/University/Wireless "
-                              "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab3);
+                        QIcon(QCoreApplication::applicationDirPath() + "/../gui/resource/remote.png"), message, ui->listWidget_Tab3);
             ui->listWidget_Tab3->addItem(listItem);
         }
     }
