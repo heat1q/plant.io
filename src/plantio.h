@@ -21,8 +21,25 @@
 #include <dev/serial-line.h>
 #include <lib/mmem.h>
 
+/**
+ * @brief Defines the RSSI threshold.
+ * 
+ * @details Broadcast packets below this thresholds are dropped.
+ * 
+ */
 #define PLANTIO_MIN_RSSI -60
+
+/**
+ * @brief Defines the default timeout in seconds before a node transmits
+ * its best route to the GUI.
+ * 
+ */
 #define PLANTIO_RREP_TIMEOUT 3
+
+/**
+ * @brief Defines the maximum number of sensors data values to be stored.
+ * 
+ */
 #define MAX_NUM_OF_VALUES 10
 
 // structure: 6 * [int32_t] THRESH | LEN * [uint16_t] DATA
