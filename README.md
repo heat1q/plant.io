@@ -18,3 +18,5 @@ $ pip install pyserial --user
 ```
 $ cd src && ./build
 ```
+### Documentation
+Open `doc/html/index.html` in your Browser.
