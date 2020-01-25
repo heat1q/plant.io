@@ -340,13 +340,6 @@ void MainWindow::on_pushButton_Reload_clicked()
     }
 }
 
-void MainWindow::on_pushButton_CreateRoute_clicked() // test button for graph
-{
-    QString Input = ui->plainTextEdit_Create->toPlainText();
-    QStringList InputList = Input.split(":");
-    MainWindow::create_graph(InputList);
-}
-
 void MainWindow::on_pushButton_Explore_clicked()
 {
     send2port("0:init:"); // Initialize network exploration on mote
@@ -355,17 +348,11 @@ void MainWindow::on_pushButton_Explore_clicked()
     mScene = new QGraphicsScene();
     ui->graphicsView_Networkgraph->setScene( mScene );
 
-    // disable notification text
-    //ui->label_networkgraph->setVisible(0);
-
     // create root node
     QBrush redBrush(Qt::red);
     QPen blackPen(Qt::black);
     blackPen.setWidth(2);
     mScene->addEllipse(-10,-10,20,20,blackPen,redBrush);
-
-    // enable node creation button
-    ui->pushButton_CreateRoute->setEnabled(true);
 
     // reset graph
     reset_graph();
@@ -397,10 +384,9 @@ void MainWindow::on_pushButton_ZoomOut_clicked()
 
 void MainWindow::on_pushButton_SetMax_clicked()
 {
-    QString Input = ui->plainTextEdit_SetMax->toPlainText();
-    if(Input.toInt()<n_limit){
-        n_max = Input.toInt();
-        on_pushButton_Explore_clicked();
+    int Input = qRound(ui->doubleSpinBox_SetMax->value());
+    if(Input<n_limit){
+        n_max = Input;
     }
     else{print("Please choose a value below " + QString::number(n_limit) + ".\n");}
 }
@@ -434,30 +420,30 @@ void MainWindow::send2selection(QListWidget* listWidget, QString requestType)
                 send2port(cmd);
             }
             else if (requestType == "Send temperature threshold") {
-                double minTemp = ui->lcdNumber_MinTemp->value();
-                double maxTemp = ui->lcdNumber_MaxTemp->value();
+                double minTemp = ui->doubleSpinBox_MinTemp->value();
+                double maxTemp = ui->doubleSpinBox_MaxTemp->value();
                 QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp) + ":-1:-1:-1:-1";
                 send2port(cmd);
             }
             else if (requestType == "Send humidity threshold") {
-                double minHum = ui->lcdNumber_MinHum->value();
-                double maxHum = ui->lcdNumber_MaxHum->value();
+                double minHum = ui->doubleSpinBox_MinHum->value();
+                double maxHum = ui->doubleSpinBox_MaxHum->value();
                 QString cmd = id + ":set_th:-1:-1:" + QString::number(minHum) + ":" + QString::number(maxHum) + ":-1:-1";
                 send2port(cmd);
             }
             else if (requestType == "Send light threshold") {
-                double minLight = ui->lcdNumber_MinLight->value();
-                double maxLight = ui->lcdNumber_MaxLight->value();
+                double minLight = ui->doubleSpinBox_MinLight->value();
+                double maxLight = ui->doubleSpinBox_MaxLight->value();
                 QString cmd = id + ":set_th:-1:-1:-1:-1:" + QString::number(minLight) + ":" + QString::number(maxLight);
                 send2port(cmd);
             }
             else if (requestType == "Send all thresholds") {
-                double minTemp = ui->lcdNumber_MinTemp->value();
-                double maxTemp = ui->lcdNumber_MaxTemp->value();
-                double minHum = ui->lcdNumber_MinHum->value();
-                double maxHum = ui->lcdNumber_MaxHum->value();
-                double minLight = ui->lcdNumber_MinLight->value();
-                double maxLight = ui->lcdNumber_MaxLight->value();
+                double minTemp = ui->doubleSpinBox_MinTemp->value();
+                double maxTemp = ui->doubleSpinBox_MaxTemp->value();
+                double minHum = ui->doubleSpinBox_MinHum->value();
+                double maxHum = ui->doubleSpinBox_MaxHum->value();
+                double minLight = ui->doubleSpinBox_MinLight->value();
+                double maxLight = ui->doubleSpinBox_MaxLight->value();
                 QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
                         + ":" + QString::number(minHum) + ":" + QString::number(maxHum)
                         + ":" + QString::number(minLight) + ":" + QString::number(maxLight);
@@ -470,11 +456,26 @@ void MainWindow::send2selection(QListWidget* listWidget, QString requestType)
             else if (requestType == "Get sensor data") {
                 send2port(id + ":get_data:");
             }
+            else if (requestType == "Set LED color") {
+                int LED_colorValue = 0;
+                if (ui->checkBox_R->isChecked()){
+                    LED_colorValue += 1;
+                }
+                if (ui->checkBox_G->isChecked()){
+                    LED_colorValue += 2;
+                }
+                if (ui->checkBox_B->isChecked()){
+                    LED_colorValue += 4;
+                }
+                send2port(id + ":led:" + QString::number(LED_colorValue));
+            }
         }
         // Verify all acknowledgements after a certain period of time and retransmit the one that havent received an ACK yet
         re_listWidget = listWidget;
         re_requestType = requestType;
-        QTimer::singleShot(ack_timer, this, SLOT(resend2selection())); // first entry is time in ms
+        if (ack_queue.count() != 0){
+            QTimer::singleShot(ack_timer, this, SLOT(resend2selection())); // first entry is time in ms
+        }
     }
     else {
         print("No target motes selected OR no port connection!\n");
@@ -503,30 +504,30 @@ void MainWindow::resend2selection()
                 send2port(cmd);
             }
             else if (re_requestType == "Send temperature threshold") {
-                double minTemp = ui->lcdNumber_MinTemp->value();
-                double maxTemp = ui->lcdNumber_MaxTemp->value();
+                double minTemp = ui->doubleSpinBox_MinTemp->value();
+                double maxTemp = ui->doubleSpinBox_MaxTemp->value();
                 QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp) + ":-1:-1:-1:-1";
                 send2port(cmd);
             }
             else if (re_requestType == "Send humidity threshold") {
-                double minHum = ui->lcdNumber_MinHum->value();
-                double maxHum = ui->lcdNumber_MaxHum->value();
+                double minHum = ui->doubleSpinBox_MinHum->value();
+                double maxHum = ui->doubleSpinBox_MaxHum->value();
                 QString cmd = id + ":set_th:-1:-1:" + QString::number(minHum) + ":" + QString::number(maxHum) + ":-1:-1";
                 send2port(cmd);
             }
             else if (re_requestType == "Send light threshold") {
-                double minLight = ui->lcdNumber_MinLight->value();
-                double maxLight = ui->lcdNumber_MaxLight->value();
+                double minLight = ui->doubleSpinBox_MinLight->value();
+                double maxLight = ui->doubleSpinBox_MaxLight->value();
                 QString cmd = id + ":set_th:-1:-1:-1:-1:" + QString::number(minLight) + ":" + QString::number(maxLight);
                 send2port(cmd);
             }
             else if (re_requestType == "Send all thresholds") {
-                double minTemp = ui->lcdNumber_MinTemp->value();
-                double maxTemp = ui->lcdNumber_MaxTemp->value();
-                double minHum = ui->lcdNumber_MinHum->value();
-                double maxHum = ui->lcdNumber_MaxHum->value();
-                double minLight = ui->lcdNumber_MinLight->value();
-                double maxLight = ui->lcdNumber_MaxLight->value();
+                double minTemp = ui->doubleSpinBox_MinTemp->value();
+                double maxTemp = ui->doubleSpinBox_MaxTemp->value();
+                double minHum = ui->doubleSpinBox_MinHum->value();
+                double maxHum = ui->doubleSpinBox_MaxHum->value();
+                double minLight = ui->doubleSpinBox_MinLight->value();
+                double maxLight = ui->doubleSpinBox_MaxLight->value();
                 QString cmd = id + ":set_th:" + QString::number(minTemp) + ":" + QString::number(maxTemp)
                         + ":" + QString::number(minHum) + ":" + QString::number(maxHum)
                         + ":" + QString::number(minLight) + ":" + QString::number(maxLight);
@@ -538,6 +539,19 @@ void MainWindow::resend2selection()
             }
             else if (re_requestType == "Get sensor data") {
                 send2port(id + ":get_data:");
+            }
+            else if (re_requestType == "Set LED color") {
+                int LED_colorValue = 0;
+                if (ui->checkBox_R->isChecked()){
+                    LED_colorValue += 1;
+                }
+                if (ui->checkBox_G->isChecked()){
+                    LED_colorValue += 2;
+                }
+                if (ui->checkBox_B->isChecked()){
+                    LED_colorValue += 4;
+                }
+                send2port(id + ":led:" + QString::number(LED_colorValue));
             }
         }
     }
@@ -610,8 +624,7 @@ void MainWindow::on_pushButton_Refresh_Tab2_clicked()
     if (port.isOpen()){
         QString message = "Zolertia™ GUI Re-Mote";
         QListWidgetItem *listItem = new QListWidgetItem(
-                    QIcon("/home/andreas/Documents/University/Wireless "
-                          "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab2);
+                    QIcon(QCoreApplication::applicationDirPath() + "/../gui/resource/remote.png"), message, ui->listWidget_Tab2);
         ui->listWidget_Tab2->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
     }
 
@@ -619,8 +632,7 @@ void MainWindow::on_pushButton_Refresh_Tab2_clicked()
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
             QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
             QListWidgetItem *listItem = new QListWidgetItem(
-                        QIcon("/home/andreas/Documents/University/Wireless "
-                              "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab2);
+                        QIcon(QCoreApplication::applicationDirPath() + "/../gui/resource/remote.png"), message, ui->listWidget_Tab2);
             ui->listWidget_Tab2->addItem(listItem);
         }
     }
@@ -646,8 +658,7 @@ void MainWindow::on_pushButton_Refresh_Tab3_clicked() // Tab 3
     if (port.isOpen()){
         QString message = "Zolertia™ GUI Re-Mote";
         QListWidgetItem *listItem = new QListWidgetItem(
-                    QIcon("/home/andreas/Documents/University/Wireless "
-                          "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab3);
+                    QIcon(QCoreApplication::applicationDirPath() + "/../gui/resource/remote.png"), message, ui->listWidget_Tab3);
         ui->listWidget_Tab3->addItem(listItem); // ADD GUI MOTE OPTION MANUALLY
     }
 
@@ -655,8 +666,7 @@ void MainWindow::on_pushButton_Refresh_Tab3_clicked() // Tab 3
         if ((int(node_pos[i][0])!=0)||(int(node_pos[i][1])!=0)){
             QString message = "Zolertia™ Re-Mote ID" + QString::number(i);
             QListWidgetItem *listItem = new QListWidgetItem(
-                        QIcon("/home/andreas/Documents/University/Wireless "
-                              "Sensor Networks/plant.io/gui/resource/remote.png"), message, ui->listWidget_Tab3);
+                        QIcon(QCoreApplication::applicationDirPath() + "/../gui/resource/remote.png"), message, ui->listWidget_Tab3);
             ui->listWidget_Tab3->addItem(listItem);
         }
     }
@@ -673,38 +683,6 @@ void MainWindow::on_pushButton_UnselectAll_Tab3_clicked()
     for (int i = 0; i < selection.count(); i++) {
         ui->listWidget_Tab3->setItemSelected(selection[i], false);
     }
-}
-
-// Set threshold values
-void MainWindow::on_pushButton_SetTemp_clicked()
-{
-    double minTemp = ui->doubleSpinBox_MinTemp->value();
-    ui->lcdNumber_MinTemp->display(minTemp);
-    double maxTemp = ui->doubleSpinBox_MaxTemp->value();
-    ui->lcdNumber_MaxTemp->display(maxTemp);
-}
-
-void MainWindow::on_pushButton_SetHum_clicked()
-{
-    double minHum = ui->doubleSpinBox_MinHum->value();
-    ui->lcdNumber_MinHum->display(minHum);
-    double maxHum = ui->doubleSpinBox_MaxHum->value();
-    ui->lcdNumber_MaxHum->display(maxHum);
-}
-
-void MainWindow::on_pushButton_SetLight_clicked()
-{
-    double minLight = ui->doubleSpinBox_MinLight->value();
-    ui->lcdNumber_MinLight->display(minLight);
-    double maxLight = ui->doubleSpinBox_MaxLight->value();
-    ui->lcdNumber_MaxLight->display(maxLight);
-}
-
-void MainWindow::on_pushButton_SetAll_clicked()
-{
-    on_pushButton_SetTemp_clicked();
-    on_pushButton_SetHum_clicked();
-    on_pushButton_SetLight_clicked();
 }
 
 void MainWindow::on_pushButton_GetRoutingTable_clicked()
@@ -738,12 +716,6 @@ void MainWindow::on_pushButton_GetAll_clicked()
     send2selection(ui->listWidget_Tab3, "Get all thresholds");
 }
 
-void MainWindow::on_pushButton_Debug_clicked()
-{
-    QString cmd = ui->plainTextEdit_Debug->toPlainText();
-    send2port(cmd);
-}
-
 void MainWindow::on_pushButton_Center_clicked()
 {
     QRectF bounds = mScene->itemsBoundingRect();
@@ -756,5 +728,7 @@ void MainWindow::on_pushButton_Clear_clicked()
 {
     ui->textEdit_Status->clear();
 }
-
-
+void MainWindow::on_pushButton_LED_clicked()
+{
+    send2selection(ui->listWidget_Tab3, "Set LED color");
+}
