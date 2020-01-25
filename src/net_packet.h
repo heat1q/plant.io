@@ -13,7 +13,9 @@
 #include "plantio.h"
 
 /**
- * @brief General packet declaration. The packets are defined by a
+ * @brief General packet declaration. 
+ * 
+ * @details The packets are defined by a
  * specific type, e.g. RREQ packet, ACK, etc... The source of the 
  * packet is given by an array of Node ID. The destination, i.e.
  * the path, is defined by an array. A data pointer is given to 
@@ -42,6 +44,8 @@ struct __attribute__((__packed__)) //disable padding
  * 
  * 3 ==> [Unicast] Reply with the best route to new integrated node 
  * 
+ * 4 ==> [Unicast] ACK packet
+ * 
  * >=10 ==> [Unicast] General Data 
  * 
  * @param type Type of packet
@@ -50,7 +54,7 @@ struct __attribute__((__packed__)) //disable padding
  * @param dest Array of destination addresses, i.e. node ids
  * @param dest_len Length of array
  * @param data Array of payload as char array
- * @param data_size Length of dat
+ * @param data_len Length of data
  * @return int Number of Bytes copied into the buffer
  */
 int create_packet(const uint8_t type, const uint8_t *src, uint8_t src_len, const uint8_t *dest, uint8_t dest_len, const uint8_t *data, uint8_t data_len);

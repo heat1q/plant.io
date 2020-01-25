@@ -29,6 +29,10 @@
 #define FILE_SENSORS "fsensors"
 #define FILE_ROUTING "frouting"
 
+/**
+ * @brief Defines IDs for different Thresholds.
+ * 
+ */
 enum thresh {
     TEMP_LOW,
     TEMP_HIGH,
@@ -38,9 +42,10 @@ enum thresh {
     LIGHT_HIGH
 };
 
-
 /**
  * @brief Macro for allocating dynamic memory.
+ * 
+ * @details Uses the contiki managed memory library.
  * 
  * @param managed_memory Managed memory struct instance name
  * @param T Datatype to be allocated
