@@ -1,0 +1,143 @@
+\hypertarget{net__packet_8h}{}\section{src/net\+\_\+packet.h File Reference}
+\label{net__packet_8h}\index{src/net\+\_\+packet.\+h@{src/net\+\_\+packet.\+h}}
+{\ttfamily \#include \char`\"{}plantio.\+h\char`\"{}}\newline
+Include dependency graph for net\+\_\+packet.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{net__packet_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{net__packet_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{net__packet_8h_ad09246453a4dabd919c7541484046a87}{\+\_\+\+\_\+attribute\+\_\+\+\_\+} ((\+\_\+\+\_\+packed\+\_\+\+\_\+))
+\begin{DoxyCompactList}\small\item\em General packet declaration. \end{DoxyCompactList}\item 
+int \hyperlink{net__packet_8h_a5fd67a775b8716b6b7b72b61674b5bbd}{create\+\_\+packet} (const uint8\+\_\+t type, const uint8\+\_\+t $\ast$src, uint8\+\_\+t src\+\_\+len, const uint8\+\_\+t $\ast$dest, uint8\+\_\+t dest\+\_\+len, const uint8\+\_\+t $\ast$data, uint8\+\_\+t data\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Create a packet object and dynamically allocates memory given by the size of the data. \end{DoxyCompactList}\item 
+void \hyperlink{net__packet_8h_a18a89d38116621e0446c8873ee8dc2bb}{print\+\_\+packet} (const plantio\+\_\+packet\+\_\+t $\ast$packet)
+\begin{DoxyCompactList}\small\item\em Prints packet information. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{net__packet_8h_a45c6c1870fed33abf147e85fb1537981}\label{net__packet_8h_a45c6c1870fed33abf147e85fb1537981}} 
+const uint8\+\_\+t $\ast$ {\bfseries get\+\_\+packet\+\_\+src} (const plantio\+\_\+packet\+\_\+t $\ast$packet)
+\item 
+\mbox{\Hypertarget{net__packet_8h_a4bac7cbdf4f3042d87b7c883d64c8afd}\label{net__packet_8h_a4bac7cbdf4f3042d87b7c883d64c8afd}} 
+const uint8\+\_\+t $\ast$ {\bfseries get\+\_\+packet\+\_\+dest} (const plantio\+\_\+packet\+\_\+t $\ast$packet)
+\item 
+\mbox{\Hypertarget{net__packet_8h_a8b2fa6d28227cfb32996c3c974e2bf2d}\label{net__packet_8h_a8b2fa6d28227cfb32996c3c974e2bf2d}} 
+const uint8\+\_\+t $\ast$ {\bfseries get\+\_\+packet\+\_\+data} (const plantio\+\_\+packet\+\_\+t $\ast$packet)
+\item 
+void \hyperlink{net__packet_8h_ab587b8f8707a216cd988f658f688cb20}{process\+\_\+data\+\_\+packet} (const plantio\+\_\+packet\+\_\+t $\ast$packet)
+\begin{DoxyCompactList}\small\item\em Processes packets with id $>$= 10. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{net__packet_8h_a8677e0af94ca73f5ab833bdab56267de}\label{net__packet_8h_a8677e0af94ca73f5ab833bdab56267de}} 
+typedef {\bfseries plantio\+\_\+packet\+\_\+t}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Patrick Willner (\href{mailto:patrick.willner@tum.de}{\tt patrick.\+willner@tum.\+de}), Andreas Koliopoulos (\href{mailto:ga96leh@mytum.de}{\tt ga96leh@mytum.\+de}), Alexander Schmaus (\href{mailto:ga96fin@mytum.de}{\tt ga96fin@mytum.\+de}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2019-\/12-\/12
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2019 
+\end{DoxyCopyright}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{net__packet_8h_ad09246453a4dabd919c7541484046a87}\label{net__packet_8h_ad09246453a4dabd919c7541484046a87}} 
+\index{net\+\_\+packet.\+h@{net\+\_\+packet.\+h}!\+\_\+\+\_\+attribute\+\_\+\+\_\+@{\+\_\+\+\_\+attribute\+\_\+\+\_\+}}
+\index{\+\_\+\+\_\+attribute\+\_\+\+\_\+@{\+\_\+\+\_\+attribute\+\_\+\+\_\+}!net\+\_\+packet.\+h@{net\+\_\+packet.\+h}}
+\subsubsection{\texorpdfstring{\+\_\+\+\_\+attribute\+\_\+\+\_\+()}{\_\_attribute\_\_()}}
+{\footnotesize\ttfamily struct \+\_\+\+\_\+attribute\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{(\+\_\+\+\_\+packed\+\_\+\+\_\+)}]{ }\end{DoxyParamCaption})}
+
+
+
+General packet declaration. 
+
+The packets are defined by a specific type, e.\+g. R\+R\+EQ packet, A\+CK, etc... The source of the packet is given by an array of Node ID. The destination, i.\+e. the path, is defined by an array. A data pointer is given to reference the payload. \mbox{\Hypertarget{net__packet_8h_a5fd67a775b8716b6b7b72b61674b5bbd}\label{net__packet_8h_a5fd67a775b8716b6b7b72b61674b5bbd}} 
+\index{net\+\_\+packet.\+h@{net\+\_\+packet.\+h}!create\+\_\+packet@{create\+\_\+packet}}
+\index{create\+\_\+packet@{create\+\_\+packet}!net\+\_\+packet.\+h@{net\+\_\+packet.\+h}}
+\subsubsection{\texorpdfstring{create\+\_\+packet()}{create\_packet()}}
+{\footnotesize\ttfamily int create\+\_\+packet (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t}]{type,  }\item[{const uint8\+\_\+t $\ast$}]{src,  }\item[{uint8\+\_\+t}]{src\+\_\+len,  }\item[{const uint8\+\_\+t $\ast$}]{dest,  }\item[{uint8\+\_\+t}]{dest\+\_\+len,  }\item[{const uint8\+\_\+t $\ast$}]{data,  }\item[{uint8\+\_\+t}]{data\+\_\+len }\end{DoxyParamCaption})}
+
+
+
+Create a packet object and dynamically allocates memory given by the size of the data. 
+
+The following packet types are defined\+: 0 ==$>$ \mbox{[}Broadcast\mbox{]} Network discovery packet
+
+1 ==$>$ \mbox{[}Unicast\mbox{]} Route Request (R\+R\+EQ) Reply packet
+
+2 ==$>$ \mbox{[}Broadcast\mbox{]} Request for the best route of the neighbouring nodes
+
+3 ==$>$ \mbox{[}Unicast\mbox{]} Reply with the best route to new integrated node
+
+4 ==$>$ \mbox{[}Unicast\mbox{]} A\+CK packet
+
+$>$=10 ==$>$ \mbox{[}Unicast\mbox{]} General Data
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & Type of packet \\
+\hline
+{\em src} & Array of source addresses, i.\+e. node ids \\
+\hline
+{\em src\+\_\+len} & Length of array \\
+\hline
+{\em dest} & Array of destination addresses, i.\+e. node ids \\
+\hline
+{\em dest\+\_\+len} & Length of array \\
+\hline
+{\em data} & Array of payload as char array \\
+\hline
+{\em data\+\_\+len} & Length of data \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int Number of Bytes copied into the buffer 
+\end{DoxyReturn}
+\mbox{\Hypertarget{net__packet_8h_a18a89d38116621e0446c8873ee8dc2bb}\label{net__packet_8h_a18a89d38116621e0446c8873ee8dc2bb}} 
+\index{net\+\_\+packet.\+h@{net\+\_\+packet.\+h}!print\+\_\+packet@{print\+\_\+packet}}
+\index{print\+\_\+packet@{print\+\_\+packet}!net\+\_\+packet.\+h@{net\+\_\+packet.\+h}}
+\subsubsection{\texorpdfstring{print\+\_\+packet()}{print\_packet()}}
+{\footnotesize\ttfamily void print\+\_\+packet (\begin{DoxyParamCaption}\item[{const plantio\+\_\+packet\+\_\+t $\ast$}]{packet }\end{DoxyParamCaption})}
+
+
+
+Prints packet information. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em packet} & Instance of packet struct \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{net__packet_8h_ab587b8f8707a216cd988f658f688cb20}\label{net__packet_8h_ab587b8f8707a216cd988f658f688cb20}} 
+\index{net\+\_\+packet.\+h@{net\+\_\+packet.\+h}!process\+\_\+data\+\_\+packet@{process\+\_\+data\+\_\+packet}}
+\index{process\+\_\+data\+\_\+packet@{process\+\_\+data\+\_\+packet}!net\+\_\+packet.\+h@{net\+\_\+packet.\+h}}
+\subsubsection{\texorpdfstring{process\+\_\+data\+\_\+packet()}{process\_data\_packet()}}
+{\footnotesize\ttfamily void process\+\_\+data\+\_\+packet (\begin{DoxyParamCaption}\item[{const plantio\+\_\+packet\+\_\+t $\ast$}]{packet }\end{DoxyParamCaption})}
+
+
+
+Processes packets with id $>$= 10. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em packet} & Instance of packet struct \\
+\hline
+\end{DoxyParams}

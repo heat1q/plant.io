@@ -1,0 +1,134 @@
+\hypertarget{plantio_8h}{}\section{src/plantio.h File Reference}
+\label{plantio_8h}\index{src/plantio.\+h@{src/plantio.\+h}}
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$contiki.\+h$>$}\newline
+{\ttfamily \#include $<$dev/leds.\+h$>$}\newline
+{\ttfamily \#include $<$dev/serial-\/line.\+h$>$}\newline
+{\ttfamily \#include $<$lib/mmem.\+h$>$}\newline
+Include dependency graph for plantio.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{plantio_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{plantio_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{plantio_8h_a6224ffcbd53b35ff382a4ea1b3d613d1}\label{plantio_8h_a6224ffcbd53b35ff382a4ea1b3d613d1}} 
+\#define {\bfseries P\+A\+C\+K\+E\+T\+B\+U\+F\+\_\+\+C\+O\+N\+F\+\_\+\+S\+I\+ZE}~256
+\item 
+\#define \hyperlink{plantio_8h_ad38f3f58cc4e8d2509dec1b398cfed14}{P\+L\+A\+N\+T\+I\+O\+\_\+\+M\+I\+N\+\_\+\+R\+S\+SI}~-\/60
+\begin{DoxyCompactList}\small\item\em Defines the R\+S\+SI threshold. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{plantio_8h_af80fa184adf551500f54b2cfaa9ddd95}\label{plantio_8h_af80fa184adf551500f54b2cfaa9ddd95}} 
+\#define \hyperlink{plantio_8h_af80fa184adf551500f54b2cfaa9ddd95}{P\+L\+A\+N\+T\+I\+O\+\_\+\+R\+R\+E\+P\+\_\+\+T\+I\+M\+E\+O\+UT}~3
+\begin{DoxyCompactList}\small\item\em Defines the default timeout in seconds before a node transmits its best route to the G\+UI. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{plantio_8h_a2e8519190d74767703e56ba914be740e}\label{plantio_8h_a2e8519190d74767703e56ba914be740e}} 
+\#define \hyperlink{plantio_8h_a2e8519190d74767703e56ba914be740e}{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+V\+A\+L\+U\+ES}~10
+\begin{DoxyCompactList}\small\item\em Defines the maximum number of sensors data values to be stored. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{plantio_8h_acf88b2723d705d90dd1008f45db2ee68}\label{plantio_8h_acf88b2723d705d90dd1008f45db2ee68}} 
+\#define {\bfseries F\+I\+L\+E\+\_\+\+S\+E\+N\+S\+O\+RS}~\char`\"{}fsensors\char`\"{}
+\item 
+\mbox{\Hypertarget{plantio_8h_a5f4acbdc64328f4665b7231052802ba4}\label{plantio_8h_a5f4acbdc64328f4665b7231052802ba4}} 
+\#define {\bfseries F\+I\+L\+E\+\_\+\+R\+O\+U\+T\+I\+NG}~\char`\"{}frouting\char`\"{}
+\item 
+\#define \hyperlink{plantio_8h_aeedc188900bf33cd14220d4b4a5fb6f7}{plantio\+\_\+malloc}(managed\+\_\+memory,  T,  varname,  size)
+\begin{DoxyCompactList}\small\item\em Macro for allocating dynamic memory. \end{DoxyCompactList}\item 
+\#define \hyperlink{plantio_8h_ac163b07d4bd02ed21b9b76c310d2a2f2}{plantio\+\_\+free}(managed\+\_\+memory)~mmem\+\_\+free(\&managed\+\_\+memory)
+\begin{DoxyCompactList}\small\item\em Frees the dynamic allocated memory. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{plantio_8h_aedfc9d8254f442cb95c1b5784835ef9b}\label{plantio_8h_aedfc9d8254f442cb95c1b5784835ef9b}} 
+enum \hyperlink{plantio_8h_aedfc9d8254f442cb95c1b5784835ef9b}{thresh} \{ \newline
+{\bfseries T\+E\+M\+P\+\_\+\+L\+OW}, 
+{\bfseries T\+E\+M\+P\+\_\+\+H\+I\+GH}, 
+{\bfseries H\+U\+M\+\_\+\+L\+OW}, 
+{\bfseries H\+U\+M\+\_\+\+H\+I\+GH}, 
+\newline
+{\bfseries L\+I\+G\+H\+T\+\_\+\+L\+OW}, 
+{\bfseries L\+I\+G\+H\+T\+\_\+\+H\+I\+GH}
+ \}\begin{DoxyCompactList}\small\item\em Defines I\+Ds for different Thresholds. \end{DoxyCompactList}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Patrick Willner (\href{mailto:patrick.willner@tum.de}{\tt patrick.\+willner@tum.\+de}), Andreas Koliopoulos (\href{mailto:ga96leh@mytum.de}{\tt ga96leh@mytum.\+de}), Alexander Schmaus (\href{mailto:ga96fin@mytum.de}{\tt ga96fin@mytum.\+de}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2019-\/12-\/14
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2019 
+\end{DoxyCopyright}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{plantio_8h_ac163b07d4bd02ed21b9b76c310d2a2f2}\label{plantio_8h_ac163b07d4bd02ed21b9b76c310d2a2f2}} 
+\index{plantio.\+h@{plantio.\+h}!plantio\+\_\+free@{plantio\+\_\+free}}
+\index{plantio\+\_\+free@{plantio\+\_\+free}!plantio.\+h@{plantio.\+h}}
+\subsubsection{\texorpdfstring{plantio\+\_\+free}{plantio\_free}}
+{\footnotesize\ttfamily \#define plantio\+\_\+free(\begin{DoxyParamCaption}\item[{}]{managed\+\_\+memory }\end{DoxyParamCaption})~mmem\+\_\+free(\&managed\+\_\+memory)}
+
+
+
+Frees the dynamic allocated memory. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em managed\+\_\+memory} & Managed memory struct instance name \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{plantio_8h_aeedc188900bf33cd14220d4b4a5fb6f7}\label{plantio_8h_aeedc188900bf33cd14220d4b4a5fb6f7}} 
+\index{plantio.\+h@{plantio.\+h}!plantio\+\_\+malloc@{plantio\+\_\+malloc}}
+\index{plantio\+\_\+malloc@{plantio\+\_\+malloc}!plantio.\+h@{plantio.\+h}}
+\subsubsection{\texorpdfstring{plantio\+\_\+malloc}{plantio\_malloc}}
+{\footnotesize\ttfamily \#define plantio\+\_\+malloc(\begin{DoxyParamCaption}\item[{}]{managed\+\_\+memory,  }\item[{}]{T,  }\item[{}]{varname,  }\item[{}]{size }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\textcolor{keyword}{struct }mmem managed\_memory;                          \(\backslash\)
+    mmem\_alloc(&managed\_memory, size);                   \(\backslash\)
+    T *varname = (T *)((\textcolor{keyword}{struct} mmem *)(&managed\_memory)->ptr)
+\end{DoxyCode}
+
+
+Macro for allocating dynamic memory. 
+
+Uses the contiki managed memory library.
+
+
+\begin{DoxyParams}{Parameters}
+{\em managed\+\_\+memory} & Managed memory struct instance name \\
+\hline
+{\em T} & Datatype to be allocated \\
+\hline
+{\em varname} & Name of the pointer to T \\
+\hline
+{\em size} & Size of allocated memory \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{plantio_8h_ad38f3f58cc4e8d2509dec1b398cfed14}\label{plantio_8h_ad38f3f58cc4e8d2509dec1b398cfed14}} 
+\index{plantio.\+h@{plantio.\+h}!P\+L\+A\+N\+T\+I\+O\+\_\+\+M\+I\+N\+\_\+\+R\+S\+SI@{P\+L\+A\+N\+T\+I\+O\+\_\+\+M\+I\+N\+\_\+\+R\+S\+SI}}
+\index{P\+L\+A\+N\+T\+I\+O\+\_\+\+M\+I\+N\+\_\+\+R\+S\+SI@{P\+L\+A\+N\+T\+I\+O\+\_\+\+M\+I\+N\+\_\+\+R\+S\+SI}!plantio.\+h@{plantio.\+h}}
+\subsubsection{\texorpdfstring{P\+L\+A\+N\+T\+I\+O\+\_\+\+M\+I\+N\+\_\+\+R\+S\+SI}{PLANTIO\_MIN\_RSSI}}
+{\footnotesize\ttfamily \#define P\+L\+A\+N\+T\+I\+O\+\_\+\+M\+I\+N\+\_\+\+R\+S\+SI~-\/60}
+
+
+
+Defines the R\+S\+SI threshold. 
+
+Broadcast packets below this thresholds are dropped. 

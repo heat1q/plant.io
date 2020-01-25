@@ -12,6 +12,10 @@
 
 #include "plantio.h"
 
+/**
+ * @brief Process for periodically saving sensors data.
+ * 
+ */
 struct process p_sensors;
 
 /**

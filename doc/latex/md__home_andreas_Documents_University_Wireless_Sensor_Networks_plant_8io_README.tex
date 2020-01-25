@@ -1,0 +1,23 @@
+\subsubsection*{Installation and Building for Re-\/motes}
+
+
+\begin{DoxyEnumerate}
+\item Download and extract the \href{https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads}{\tt A\+RM Toolchain} to {\ttfamily $\sim$/.arm}.
+\item Clone the Contiki OS to {\ttfamily $\sim$/.contiki} and install submodules\textbackslash{} 
+\begin{DoxyCode}
+$ git clone https://gitlab.lrz.de/wsnlab/contiki-remote.git ~/.contiki
+$ cd ~/.contiki
+$ git submodule update --init
+\end{DoxyCode}
+
+\item Install Python Serial\textbackslash{} 
+\begin{DoxyCode}
+$ pip install pyserial --user
+\end{DoxyCode}
+
+\item Building the source for Zolertia Re-\/mote and upload it\textbackslash{} 
+\begin{DoxyCode}
+$ ./src/build
+\end{DoxyCode}
+ 
+\end{DoxyEnumerate}

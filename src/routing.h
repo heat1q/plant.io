@@ -19,8 +19,16 @@
 #include "plantio.h"
 #include "net_packet.h"
 
-// Forward declaration of processes
+/**
+ * @brief Broadcast and Unicast Process.
+ * 
+ */
 struct process p_conn; // Process that manages the Broadcast and Unicast Connections
+
+/**
+ * @brief Process for initializing the route reply timer.
+ * 
+ */
 struct process p_init_reply_timer;
 
 struct broadcast_conn plantio_broadcast; // Creates an instance of a broadcast connection.

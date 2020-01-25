@@ -1,0 +1,158 @@
+\hypertarget{mote__sensors_8h}{}\section{src/mote\+\_\+sensors.h File Reference}
+\label{mote__sensors_8h}\index{src/mote\+\_\+sensors.\+h@{src/mote\+\_\+sensors.\+h}}
+{\ttfamily \#include \char`\"{}plantio.\+h\char`\"{}}\newline
+Include dependency graph for mote\+\_\+sensors.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{mote__sensors_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{mote__sensors_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{mote__sensors_8h_ab74d95815434dc77b0763cfe9baa33bd}\label{mote__sensors_8h_ab74d95815434dc77b0763cfe9baa33bd}} 
+void \hyperlink{mote__sensors_8h_ab74d95815434dc77b0763cfe9baa33bd}{on\+\_\+button\+\_\+pressed} (void)
+\begin{DoxyCompactList}\small\item\em Handle a button press event on the device. \end{DoxyCompactList}\item 
+const uint16\+\_\+t \hyperlink{mote__sensors_8h_a08a3f61c155e6217f2efb50c86a3cc3d}{get\+\_\+light\+\_\+sensor\+\_\+value} (uint16\+\_\+t adc\+\_\+input)
+\begin{DoxyCompactList}\small\item\em Calculates the light sensor value in Lm. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mote__sensors_8h_a68cf112f6a9b76c2ac2ff21665d5482f}\label{mote__sensors_8h_a68cf112f6a9b76c2ac2ff21665d5482f}} 
+void \hyperlink{mote__sensors_8h_a68cf112f6a9b76c2ac2ff21665d5482f}{init\+\_\+sensor\+\_\+data} (void)
+\begin{DoxyCompactList}\small\item\em Initializes the Device sensors thresholds. \end{DoxyCompactList}\item 
+void \hyperlink{mote__sensors_8h_a261f3bfff99934d39784c9a0bd5ab1ff}{write\+\_\+sensor\+\_\+data} (const uint16\+\_\+t temp, const uint16\+\_\+t hum, const uint16\+\_\+t light)
+\begin{DoxyCompactList}\small\item\em Writes a tuple of sensor data to flash memory. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mote__sensors_8h_afa19d23bfc6215812436195d62ba8b99}\label{mote__sensors_8h_afa19d23bfc6215812436195d62ba8b99}} 
+void \hyperlink{mote__sensors_8h_afa19d23bfc6215812436195d62ba8b99}{clear\+\_\+sensor\+\_\+data} (void)
+\begin{DoxyCompactList}\small\item\em Clears all sensor data from the flash memory. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mote__sensors_8h_a4bc9bfc0677667a966d7ab73efafa4d1}\label{mote__sensors_8h_a4bc9bfc0677667a966d7ab73efafa4d1}} 
+void \hyperlink{mote__sensors_8h_a4bc9bfc0677667a966d7ab73efafa4d1}{print\+\_\+sensor\+\_\+data} (void)
+\begin{DoxyCompactList}\small\item\em Prints the senors data. \end{DoxyCompactList}\item 
+const uint16\+\_\+t \hyperlink{mote__sensors_8h_a8a4d789068eb286ad36928227cf54904}{fetch\+\_\+sensor\+\_\+data} (const uint16\+\_\+t index)
+\begin{DoxyCompactList}\small\item\em Retrieve Sensor data from the flash memory. \end{DoxyCompactList}\item 
+void \hyperlink{mote__sensors_8h_a055459c78ce7052f76e74a1a0505c47b}{write\+\_\+thresholds} (char $\ast$str)
+\begin{DoxyCompactList}\small\item\em Write the sensors thresholds to the flash memory. \end{DoxyCompactList}\item 
+const int32\+\_\+t \hyperlink{mote__sensors_8h_a9fcd98e47b3747e0862357f869049128}{get\+\_\+threshold} (enum \hyperlink{plantio_8h_aedfc9d8254f442cb95c1b5784835ef9b}{thresh} id)
+\begin{DoxyCompactList}\small\item\em Get sensor threshold value. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{mote__sensors_8h_acd4c513676b015a76fa25f02fed26588}\label{mote__sensors_8h_acd4c513676b015a76fa25f02fed26588}} 
+struct process \hyperlink{mote__sensors_8h_acd4c513676b015a76fa25f02fed26588}{p\+\_\+sensors}
+\begin{DoxyCompactList}\small\item\em Process for periodically saving sensors data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Patrick Willner (\href{mailto:patrick.willner@tum.de}{\tt patrick.\+willner@tum.\+de}), Andreas Koliopoulos (\href{mailto:ga96leh@mytum.de}{\tt ga96leh@mytum.\+de}), Alexander Schmaus (\href{mailto:ga96fin@mytum.de}{\tt ga96fin@mytum.\+de}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2019-\/12-\/12
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2019 
+\end{DoxyCopyright}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{mote__sensors_8h_a8a4d789068eb286ad36928227cf54904}\label{mote__sensors_8h_a8a4d789068eb286ad36928227cf54904}} 
+\index{mote\+\_\+sensors.\+h@{mote\+\_\+sensors.\+h}!fetch\+\_\+sensor\+\_\+data@{fetch\+\_\+sensor\+\_\+data}}
+\index{fetch\+\_\+sensor\+\_\+data@{fetch\+\_\+sensor\+\_\+data}!mote\+\_\+sensors.\+h@{mote\+\_\+sensors.\+h}}
+\subsubsection{\texorpdfstring{fetch\+\_\+sensor\+\_\+data()}{fetch\_sensor\_data()}}
+{\footnotesize\ttfamily const uint16\+\_\+t fetch\+\_\+sensor\+\_\+data (\begin{DoxyParamCaption}\item[{const uint16\+\_\+t}]{index }\end{DoxyParamCaption})}
+
+
+
+Retrieve Sensor data from the flash memory. 
+
+First 6$\ast$4 bytes are thresholds. Next 4$\ast$2 bytes are timestamp, temp, hum, light for maximum number of M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+V\+A\+L\+U\+ES
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index starting from 6$\ast$4 + Index \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+const uint16\+\_\+t Sensors data value 
+\end{DoxyReturn}
+\mbox{\Hypertarget{mote__sensors_8h_a08a3f61c155e6217f2efb50c86a3cc3d}\label{mote__sensors_8h_a08a3f61c155e6217f2efb50c86a3cc3d}} 
+\index{mote\+\_\+sensors.\+h@{mote\+\_\+sensors.\+h}!get\+\_\+light\+\_\+sensor\+\_\+value@{get\+\_\+light\+\_\+sensor\+\_\+value}}
+\index{get\+\_\+light\+\_\+sensor\+\_\+value@{get\+\_\+light\+\_\+sensor\+\_\+value}!mote\+\_\+sensors.\+h@{mote\+\_\+sensors.\+h}}
+\subsubsection{\texorpdfstring{get\+\_\+light\+\_\+sensor\+\_\+value()}{get\_light\_sensor\_value()}}
+{\footnotesize\ttfamily const uint16\+\_\+t get\+\_\+light\+\_\+sensor\+\_\+value (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{adc\+\_\+input }\end{DoxyParamCaption})}
+
+
+
+Calculates the light sensor value in Lm. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em adc\+\_\+input} & Voltage \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+const uint16\+\_\+t 
+\end{DoxyReturn}
+\mbox{\Hypertarget{mote__sensors_8h_a9fcd98e47b3747e0862357f869049128}\label{mote__sensors_8h_a9fcd98e47b3747e0862357f869049128}} 
+\index{mote\+\_\+sensors.\+h@{mote\+\_\+sensors.\+h}!get\+\_\+threshold@{get\+\_\+threshold}}
+\index{get\+\_\+threshold@{get\+\_\+threshold}!mote\+\_\+sensors.\+h@{mote\+\_\+sensors.\+h}}
+\subsubsection{\texorpdfstring{get\+\_\+threshold()}{get\_threshold()}}
+{\footnotesize\ttfamily const int32\+\_\+t get\+\_\+threshold (\begin{DoxyParamCaption}\item[{enum \hyperlink{plantio_8h_aedfc9d8254f442cb95c1b5784835ef9b}{thresh}}]{id }\end{DoxyParamCaption})}
+
+
+
+Get sensor threshold value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & ID to specify which threshold, defined with enum thresh \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+const int32\+\_\+t sensors threshold value 
+\end{DoxyReturn}
+\mbox{\Hypertarget{mote__sensors_8h_a261f3bfff99934d39784c9a0bd5ab1ff}\label{mote__sensors_8h_a261f3bfff99934d39784c9a0bd5ab1ff}} 
+\index{mote\+\_\+sensors.\+h@{mote\+\_\+sensors.\+h}!write\+\_\+sensor\+\_\+data@{write\+\_\+sensor\+\_\+data}}
+\index{write\+\_\+sensor\+\_\+data@{write\+\_\+sensor\+\_\+data}!mote\+\_\+sensors.\+h@{mote\+\_\+sensors.\+h}}
+\subsubsection{\texorpdfstring{write\+\_\+sensor\+\_\+data()}{write\_sensor\_data()}}
+{\footnotesize\ttfamily void write\+\_\+sensor\+\_\+data (\begin{DoxyParamCaption}\item[{const uint16\+\_\+t}]{temp,  }\item[{const uint16\+\_\+t}]{hum,  }\item[{const uint16\+\_\+t}]{light }\end{DoxyParamCaption})}
+
+
+
+Writes a tuple of sensor data to flash memory. 
+
+Appends the data to the file on flash memory and assigns the tuple a unique timestamp. Only keeps the latest M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+V\+A\+L\+U\+ES number of values.
+
+
+\begin{DoxyParams}{Parameters}
+{\em temp} & Temperatur value \\
+\hline
+{\em hum} & Humidity value \\
+\hline
+{\em light} & Light value \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mote__sensors_8h_a055459c78ce7052f76e74a1a0505c47b}\label{mote__sensors_8h_a055459c78ce7052f76e74a1a0505c47b}} 
+\index{mote\+\_\+sensors.\+h@{mote\+\_\+sensors.\+h}!write\+\_\+thresholds@{write\+\_\+thresholds}}
+\index{write\+\_\+thresholds@{write\+\_\+thresholds}!mote\+\_\+sensors.\+h@{mote\+\_\+sensors.\+h}}
+\subsubsection{\texorpdfstring{write\+\_\+thresholds()}{write\_thresholds()}}
+{\footnotesize\ttfamily void write\+\_\+thresholds (\begin{DoxyParamCaption}\item[{char $\ast$}]{str }\end{DoxyParamCaption})}
+
+
+
+Write the sensors thresholds to the flash memory. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & Threshold as string formatted, seperated by \textquotesingle{}\+:\textquotesingle{} \\
+\hline
+\end{DoxyParams}

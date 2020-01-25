@@ -16,5 +16,5 @@ $ pip install pyserial --user
 
 4. Building the source for Zolertia Re-mote and upload it\
 ```
-$ ./src/build
+$ cd src && ./build
 ```

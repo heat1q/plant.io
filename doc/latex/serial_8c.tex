@@ -1,0 +1,59 @@
+\hypertarget{serial_8c}{}\section{src/serial.c File Reference}
+\label{serial_8c}\index{src/serial.\+c@{src/serial.\+c}}
+{\ttfamily \#include \char`\"{}serial.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}routing.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}net\+\_\+packet.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mote\+\_\+sensors.\+h\char`\"{}}\newline
+Include dependency graph for serial.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{serial_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{serial_8c_a48d0042e1d3fa2b807e080b401810e07}\label{serial_8c_a48d0042e1d3fa2b807e080b401810e07}} 
+{\bfseries P\+R\+O\+C\+E\+SS} (\hyperlink{serial_8h_a93743c0ec4d5fa28a2c26aa266e6f136}{p\+\_\+serial}, \char`\"{}Serial Event listener\char`\"{})
+\item 
+\mbox{\Hypertarget{serial_8c_a1487fec39db3c42e0079d83a39355737}\label{serial_8c_a1487fec39db3c42e0079d83a39355737}} 
+{\bfseries P\+R\+O\+C\+E\+S\+S\+\_\+\+T\+H\+R\+E\+AD} (\hyperlink{serial_8h_a93743c0ec4d5fa28a2c26aa266e6f136}{p\+\_\+serial}, ev, data)
+\item 
+void \hyperlink{serial_8c_a48f67010ee11dabaea0feb51f2a6ecd3}{parse\+\_\+serial\+\_\+input} (char $\ast$input)
+\begin{DoxyCompactList}\small\item\em Parse a serial input char array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Patrick Willner (\href{mailto:patrick.willner@tum.de}{\tt patrick.\+willner@tum.\+de}), Andreas Koliopoulos (\href{mailto:ga96leh@mytum.de}{\tt ga96leh@mytum.\+de}), Alexander Schmaus (\href{mailto:ga96fin@mytum.de}{\tt ga96fin@mytum.\+de}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2019-\/12-\/14
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2019 
+\end{DoxyCopyright}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{serial_8c_a48f67010ee11dabaea0feb51f2a6ecd3}\label{serial_8c_a48f67010ee11dabaea0feb51f2a6ecd3}} 
+\index{serial.\+c@{serial.\+c}!parse\+\_\+serial\+\_\+input@{parse\+\_\+serial\+\_\+input}}
+\index{parse\+\_\+serial\+\_\+input@{parse\+\_\+serial\+\_\+input}!serial.\+c@{serial.\+c}}
+\subsubsection{\texorpdfstring{parse\+\_\+serial\+\_\+input()}{parse\_serial\_input()}}
+{\footnotesize\ttfamily void parse\+\_\+serial\+\_\+input (\begin{DoxyParamCaption}\item[{char $\ast$}]{input }\end{DoxyParamCaption})}
+
+
+
+Parse a serial input char array. 
+
+Parse serial input events, received from the G\+UI.
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & \\
+\hline
+\end{DoxyParams}

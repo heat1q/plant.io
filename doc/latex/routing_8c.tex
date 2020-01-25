@@ -1,0 +1,323 @@
+\hypertarget{routing_8c}{}\section{src/routing.c File Reference}
+\label{routing_8c}\index{src/routing.\+c@{src/routing.\+c}}
+{\ttfamily \#include \char`\"{}routing.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}cfs/cfs.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}sys/etimer.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}random.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}clock.\+h\char`\"{}}\newline
+Include dependency graph for routing.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{routing_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{routing_8c_ae2d190e672275a545b4de4c3cd6b32b0}\label{routing_8c_ae2d190e672275a545b4de4c3cd6b32b0}} 
+{\bfseries P\+R\+O\+C\+E\+SS} (\hyperlink{routing_8h_a5a6576fde225bfed1b06f8cf761bcb84}{p\+\_\+conn}, \char`\"{}\char`\"{})
+\item 
+\mbox{\Hypertarget{routing_8c_adf5d30ba729719a7b1ea6d22ab35c9b9}\label{routing_8c_adf5d30ba729719a7b1ea6d22ab35c9b9}} 
+{\bfseries P\+R\+O\+C\+E\+S\+S\+\_\+\+T\+H\+R\+E\+AD} (\hyperlink{routing_8h_a5a6576fde225bfed1b06f8cf761bcb84}{p\+\_\+conn}, ev, data)
+\item 
+\mbox{\Hypertarget{routing_8c_a0bc30dd58e5e0c26ada4b8b94447d132}\label{routing_8c_a0bc30dd58e5e0c26ada4b8b94447d132}} 
+{\bfseries P\+R\+O\+C\+E\+SS} (\hyperlink{routing_8h_a4c12d3f6cf50b4f1de83cb9702365575}{p\+\_\+init\+\_\+reply\+\_\+timer}, \char`\"{}\char`\"{})
+\item 
+\mbox{\Hypertarget{routing_8c_af0605f4fed483775266bc7855e0b2270}\label{routing_8c_af0605f4fed483775266bc7855e0b2270}} 
+{\bfseries P\+R\+O\+C\+E\+S\+S\+\_\+\+T\+H\+R\+E\+AD} (\hyperlink{routing_8h_a4c12d3f6cf50b4f1de83cb9702365575}{p\+\_\+init\+\_\+reply\+\_\+timer}, ev, data)
+\item 
+void \hyperlink{routing_8c_a13eb496f6046eac861006b61d60dc196}{broadcast\+\_\+receive} (struct broadcast\+\_\+conn $\ast$broadcast, const linkaddr\+\_\+t $\ast$from)
+\begin{DoxyCompactList}\small\item\em Callback function for Broadcast. \end{DoxyCompactList}\item 
+void \hyperlink{routing_8c_a8a3474e4cd76194d0eb2ac744eda8c7c}{unicast\+\_\+receive} (struct unicast\+\_\+conn $\ast$unicast, const linkaddr\+\_\+t $\ast$from)
+\begin{DoxyCompactList}\small\item\em Callback function for Unicast. \end{DoxyCompactList}\item 
+void \hyperlink{routing_8c_aa8cb8a8be4c104f1b1405ed682f8e191}{init\+\_\+network} (void)
+\begin{DoxyCompactList}\small\item\em Starts the network discovery algorithm. \end{DoxyCompactList}\item 
+void \hyperlink{routing_8c_a20f9e50ac25cd018884fec58b70b13a5}{forward\+\_\+discover} (const plantio\+\_\+packet\+\_\+t $\ast$packet)
+\begin{DoxyCompactList}\small\item\em Forwards the network discovery packet \& updates the routing tables. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{routing_8c_a52613d7923f35868e7e0dd3e7f2e47dc}\label{routing_8c_a52613d7923f35868e7e0dd3e7f2e47dc}} 
+void \hyperlink{routing_8c_a52613d7923f35868e7e0dd3e7f2e47dc}{find\+\_\+best\+\_\+route} (void)
+\begin{DoxyCompactList}\small\item\em Finds the optimal route in the routing table by minimizing the number of hops. \end{DoxyCompactList}\item 
+const int16\+\_\+t \hyperlink{routing_8c_a605aa3d917cc42b30dd2ed242970a195}{get\+\_\+best\+\_\+route\+\_\+index} (void)
+\begin{DoxyCompactList}\small\item\em Get the index of the optimal route in the routing table. -\/1 if table is empty or the current node is the G\+UI node. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{routing_8c_a033ff0c93dd6d1991c523d4466992332}\label{routing_8c_a033ff0c93dd6d1991c523d4466992332}} 
+void \hyperlink{routing_8c_a033ff0c93dd6d1991c523d4466992332}{print\+\_\+routing\+\_\+table} (void)
+\begin{DoxyCompactList}\small\item\em Prints the routing table. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{routing_8c_a6c7443691d2e4c92e28dc8e13f18fb82}\label{routing_8c_a6c7443691d2e4c92e28dc8e13f18fb82}} 
+void \hyperlink{routing_8c_a6c7443691d2e4c92e28dc8e13f18fb82}{clear\+\_\+routing\+\_\+table} (void)
+\begin{DoxyCompactList}\small\item\em Clears the routing table. \end{DoxyCompactList}\item 
+void \hyperlink{routing_8c_a10c2716d53419a0ec9111c644904c9b9}{write\+\_\+routing\+\_\+table} (const uint8\+\_\+t $\ast$route, const uint8\+\_\+t length)
+\begin{DoxyCompactList}\small\item\em Write a route to the routing table on the flash memory. \end{DoxyCompactList}\item 
+const uint16\+\_\+t \hyperlink{routing_8c_a5b87ed069c6951f8d390154609c487c0}{get\+\_\+num\+\_\+routes} (void)
+\begin{DoxyCompactList}\small\item\em Get the number of entries in the routing table. \end{DoxyCompactList}\item 
+const uint8\+\_\+t \hyperlink{routing_8c_a4b6ac79ba38213a3f4390d5d3a9fb095}{get\+\_\+num\+\_\+hops} (const uint16\+\_\+t index)
+\begin{DoxyCompactList}\small\item\em Get the number of hops for a route with given index in the routing table. \end{DoxyCompactList}\item 
+void \hyperlink{routing_8c_a4530e9af1504c8a4cf003a3ad4abf818}{get\+\_\+route} (uint8\+\_\+t $\ast$route, const uint16\+\_\+t num\+\_\+hops, const uint16\+\_\+t index)
+\begin{DoxyCompactList}\small\item\em Get the route for given index in the routing table. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{routing_8c_ac41726b09440e72c5cc9dee53fc13aec}\label{routing_8c_ac41726b09440e72c5cc9dee53fc13aec}} 
+void \hyperlink{routing_8c_ac41726b09440e72c5cc9dee53fc13aec}{init\+\_\+rreq\+\_\+reply} (const uint16\+\_\+t index)
+\begin{DoxyCompactList}\small\item\em Selects the optimal route to the G\+UI node and transmits it to the G\+UI node. \end{DoxyCompactList}\item 
+void \hyperlink{routing_8c_a3639eb60506758c56bbc601911a71c64}{forward\+\_\+routing} (const plantio\+\_\+packet\+\_\+t $\ast$packet)
+\begin{DoxyCompactList}\small\item\em Updates the Source and Destionation of incoming packets and forwards the packet to the next hop if necessary. \end{DoxyCompactList}\item 
+void \hyperlink{routing_8c_a8724d80f3f41082d62dbaad8f6ebeedf}{init\+\_\+data\+\_\+packet} (const uint8\+\_\+t type, const uint8\+\_\+t dest, const uint8\+\_\+t $\ast$data, const uint8\+\_\+t data\+\_\+len, int index)
+\begin{DoxyCompactList}\small\item\em Sends a data packet (id $>$= 10) to any node in the network. \end{DoxyCompactList}\item 
+void \hyperlink{routing_8c_ab97d23714b07247e89e011908d6fafcc}{add\+\_\+device\+\_\+to\+\_\+network} (void)
+\begin{DoxyCompactList}\small\item\em Add the current node to an existing network. \end{DoxyCompactList}\item 
+void \hyperlink{routing_8c_a2b3ed1fa69f729b9eaeeae3357ed4648}{send\+\_\+best\+\_\+route} (const uint8\+\_\+t dest)
+\begin{DoxyCompactList}\small\item\em Sends the best route of current device to the destination via unicast. \end{DoxyCompactList}\item 
+void \hyperlink{routing_8c_a0a32fd3503c9d77a6bfb62a66f3e47e1}{receive\+\_\+route} (const plantio\+\_\+packet\+\_\+t $\ast$packet)
+\begin{DoxyCompactList}\small\item\em Saves the route in the routing table, starts a timer and schedules an R\+R\+EP to the G\+UI node with the best route. \end{DoxyCompactList}\item 
+void \hyperlink{routing_8c_ac960ae2b0934e5ce84cd3cc822eb69be}{send\+\_\+ack} (const uint8\+\_\+t $\ast$route, const uint8\+\_\+t len)
+\begin{DoxyCompactList}\small\item\em Sends an A\+CK Packet via the given route. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Patrick Willner (\href{mailto:patrick.willner@tum.de}{\tt patrick.\+willner@tum.\+de}), Andreas Koliopoulos (\href{mailto:ga96leh@mytum.de}{\tt ga96leh@mytum.\+de}), Alexander Schmaus (\href{mailto:ga96fin@mytum.de}{\tt ga96fin@mytum.\+de}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2019-\/12-\/12
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2019 
+\end{DoxyCopyright}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{routing_8c_ab97d23714b07247e89e011908d6fafcc}\label{routing_8c_ab97d23714b07247e89e011908d6fafcc}} 
+\index{routing.\+c@{routing.\+c}!add\+\_\+device\+\_\+to\+\_\+network@{add\+\_\+device\+\_\+to\+\_\+network}}
+\index{add\+\_\+device\+\_\+to\+\_\+network@{add\+\_\+device\+\_\+to\+\_\+network}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{add\+\_\+device\+\_\+to\+\_\+network()}{add\_device\_to\_network()}}
+{\footnotesize\ttfamily void add\+\_\+device\+\_\+to\+\_\+network (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Add the current node to an existing network. 
+
+Starts a broadcast to neighbouring nodes which then reply with their best route to the G\+UI node. \mbox{\Hypertarget{routing_8c_a13eb496f6046eac861006b61d60dc196}\label{routing_8c_a13eb496f6046eac861006b61d60dc196}} 
+\index{routing.\+c@{routing.\+c}!broadcast\+\_\+receive@{broadcast\+\_\+receive}}
+\index{broadcast\+\_\+receive@{broadcast\+\_\+receive}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{broadcast\+\_\+receive()}{broadcast\_receive()}}
+{\footnotesize\ttfamily void broadcast\+\_\+receive (\begin{DoxyParamCaption}\item[{struct broadcast\+\_\+conn $\ast$}]{broadcast,  }\item[{const linkaddr\+\_\+t $\ast$}]{from }\end{DoxyParamCaption})}
+
+
+
+Callback function for Broadcast. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em broadcast} & Broadcast Connection \\
+\hline
+{\em from} & Node ID of packet source \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{routing_8c_a20f9e50ac25cd018884fec58b70b13a5}\label{routing_8c_a20f9e50ac25cd018884fec58b70b13a5}} 
+\index{routing.\+c@{routing.\+c}!forward\+\_\+discover@{forward\+\_\+discover}}
+\index{forward\+\_\+discover@{forward\+\_\+discover}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{forward\+\_\+discover()}{forward\_discover()}}
+{\footnotesize\ttfamily void forward\+\_\+discover (\begin{DoxyParamCaption}\item[{const plantio\+\_\+packet\+\_\+t $\ast$}]{packet }\end{DoxyParamCaption})}
+
+
+
+Forwards the network discovery packet \& updates the routing tables. 
+
+Packets with current Node ID in the source as well as transmissions below P\+L\+A\+N\+T\+I\+O\+\_\+\+M\+I\+N\+\_\+\+R\+S\+SI threshold will be dropped.
+
+
+\begin{DoxyParams}{Parameters}
+{\em packet} & Pointer to instance of plantio\+\_\+packet\+\_\+t \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{routing_8c_a3639eb60506758c56bbc601911a71c64}\label{routing_8c_a3639eb60506758c56bbc601911a71c64}} 
+\index{routing.\+c@{routing.\+c}!forward\+\_\+routing@{forward\+\_\+routing}}
+\index{forward\+\_\+routing@{forward\+\_\+routing}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{forward\+\_\+routing()}{forward\_routing()}}
+{\footnotesize\ttfamily void forward\+\_\+routing (\begin{DoxyParamCaption}\item[{const plantio\+\_\+packet\+\_\+t $\ast$}]{packet }\end{DoxyParamCaption})}
+
+
+
+Updates the Source and Destionation of incoming packets and forwards the packet to the next hop if necessary. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em packet} & Instance of packet struct \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{routing_8c_a605aa3d917cc42b30dd2ed242970a195}\label{routing_8c_a605aa3d917cc42b30dd2ed242970a195}} 
+\index{routing.\+c@{routing.\+c}!get\+\_\+best\+\_\+route\+\_\+index@{get\+\_\+best\+\_\+route\+\_\+index}}
+\index{get\+\_\+best\+\_\+route\+\_\+index@{get\+\_\+best\+\_\+route\+\_\+index}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{get\+\_\+best\+\_\+route\+\_\+index()}{get\_best\_route\_index()}}
+{\footnotesize\ttfamily const int16\+\_\+t get\+\_\+best\+\_\+route\+\_\+index (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the index of the optimal route in the routing table. -\/1 if table is empty or the current node is the G\+UI node. 
+
+\begin{DoxyReturn}{Returns}
+const int16\+\_\+t Index of route in the routing table 
+\end{DoxyReturn}
+\mbox{\Hypertarget{routing_8c_a4b6ac79ba38213a3f4390d5d3a9fb095}\label{routing_8c_a4b6ac79ba38213a3f4390d5d3a9fb095}} 
+\index{routing.\+c@{routing.\+c}!get\+\_\+num\+\_\+hops@{get\+\_\+num\+\_\+hops}}
+\index{get\+\_\+num\+\_\+hops@{get\+\_\+num\+\_\+hops}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{get\+\_\+num\+\_\+hops()}{get\_num\_hops()}}
+{\footnotesize\ttfamily const uint8\+\_\+t get\+\_\+num\+\_\+hops (\begin{DoxyParamCaption}\item[{const uint16\+\_\+t}]{index }\end{DoxyParamCaption})}
+
+
+
+Get the number of hops for a route with given index in the routing table. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of route in table \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+const uint16\+\_\+t Number of hops 
+\end{DoxyReturn}
+\mbox{\Hypertarget{routing_8c_a5b87ed069c6951f8d390154609c487c0}\label{routing_8c_a5b87ed069c6951f8d390154609c487c0}} 
+\index{routing.\+c@{routing.\+c}!get\+\_\+num\+\_\+routes@{get\+\_\+num\+\_\+routes}}
+\index{get\+\_\+num\+\_\+routes@{get\+\_\+num\+\_\+routes}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{get\+\_\+num\+\_\+routes()}{get\_num\_routes()}}
+{\footnotesize\ttfamily const uint16\+\_\+t get\+\_\+num\+\_\+routes (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the number of entries in the routing table. 
+
+\begin{DoxyReturn}{Returns}
+const uint16\+\_\+t Number of routes 
+\end{DoxyReturn}
+\mbox{\Hypertarget{routing_8c_a4530e9af1504c8a4cf003a3ad4abf818}\label{routing_8c_a4530e9af1504c8a4cf003a3ad4abf818}} 
+\index{routing.\+c@{routing.\+c}!get\+\_\+route@{get\+\_\+route}}
+\index{get\+\_\+route@{get\+\_\+route}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{get\+\_\+route()}{get\_route()}}
+{\footnotesize\ttfamily void get\+\_\+route (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{route,  }\item[{const uint16\+\_\+t}]{num\+\_\+hops,  }\item[{const uint16\+\_\+t}]{index }\end{DoxyParamCaption})}
+
+
+
+Get the route for given index in the routing table. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em route} & Pointer to the allocated memory for the route \\
+\hline
+{\em num\+\_\+hops} & Number of hops \\
+\hline
+{\em index} & Index of route in table \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{routing_8c_a8724d80f3f41082d62dbaad8f6ebeedf}\label{routing_8c_a8724d80f3f41082d62dbaad8f6ebeedf}} 
+\index{routing.\+c@{routing.\+c}!init\+\_\+data\+\_\+packet@{init\+\_\+data\+\_\+packet}}
+\index{init\+\_\+data\+\_\+packet@{init\+\_\+data\+\_\+packet}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{init\+\_\+data\+\_\+packet()}{init\_data\_packet()}}
+{\footnotesize\ttfamily void init\+\_\+data\+\_\+packet (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t}]{type,  }\item[{const uint8\+\_\+t}]{dest,  }\item[{const uint8\+\_\+t $\ast$}]{data,  }\item[{const uint8\+\_\+t}]{data\+\_\+len,  }\item[{int}]{index }\end{DoxyParamCaption})}
+
+
+
+Sends a data packet (id $>$= 10) to any node in the network. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & Type of packet \\
+\hline
+{\em dest} & Destination node id \\
+\hline
+{\em data} & Pointer to byte array data \\
+\hline
+{\em data\+\_\+len} & Data length \\
+\hline
+{\em index} & Index of route in table, set to -\/1 if not known \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{routing_8c_aa8cb8a8be4c104f1b1405ed682f8e191}\label{routing_8c_aa8cb8a8be4c104f1b1405ed682f8e191}} 
+\index{routing.\+c@{routing.\+c}!init\+\_\+network@{init\+\_\+network}}
+\index{init\+\_\+network@{init\+\_\+network}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{init\+\_\+network()}{init\_network()}}
+{\footnotesize\ttfamily void init\+\_\+network (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Starts the network discovery algorithm. 
+
+Floods the network with a network discory packet. \mbox{\Hypertarget{routing_8c_a0a32fd3503c9d77a6bfb62a66f3e47e1}\label{routing_8c_a0a32fd3503c9d77a6bfb62a66f3e47e1}} 
+\index{routing.\+c@{routing.\+c}!receive\+\_\+route@{receive\+\_\+route}}
+\index{receive\+\_\+route@{receive\+\_\+route}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{receive\+\_\+route()}{receive\_route()}}
+{\footnotesize\ttfamily void receive\+\_\+route (\begin{DoxyParamCaption}\item[{const plantio\+\_\+packet\+\_\+t $\ast$}]{packet }\end{DoxyParamCaption})}
+
+
+
+Saves the route in the routing table, starts a timer and schedules an R\+R\+EP to the G\+UI node with the best route. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em packet} & Instance of packet struct \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{routing_8c_ac960ae2b0934e5ce84cd3cc822eb69be}\label{routing_8c_ac960ae2b0934e5ce84cd3cc822eb69be}} 
+\index{routing.\+c@{routing.\+c}!send\+\_\+ack@{send\+\_\+ack}}
+\index{send\+\_\+ack@{send\+\_\+ack}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{send\+\_\+ack()}{send\_ack()}}
+{\footnotesize\ttfamily void send\+\_\+ack (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t $\ast$}]{route,  }\item[{const uint8\+\_\+t}]{len }\end{DoxyParamCaption})}
+
+
+
+Sends an A\+CK Packet via the given route. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em route} & Path to the destination node \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{routing_8c_a2b3ed1fa69f729b9eaeeae3357ed4648}\label{routing_8c_a2b3ed1fa69f729b9eaeeae3357ed4648}} 
+\index{routing.\+c@{routing.\+c}!send\+\_\+best\+\_\+route@{send\+\_\+best\+\_\+route}}
+\index{send\+\_\+best\+\_\+route@{send\+\_\+best\+\_\+route}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{send\+\_\+best\+\_\+route()}{send\_best\_route()}}
+{\footnotesize\ttfamily void send\+\_\+best\+\_\+route (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t}]{dest }\end{DoxyParamCaption})}
+
+
+
+Sends the best route of current device to the destination via unicast. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & Node id of destination \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{routing_8c_a8a3474e4cd76194d0eb2ac744eda8c7c}\label{routing_8c_a8a3474e4cd76194d0eb2ac744eda8c7c}} 
+\index{routing.\+c@{routing.\+c}!unicast\+\_\+receive@{unicast\+\_\+receive}}
+\index{unicast\+\_\+receive@{unicast\+\_\+receive}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{unicast\+\_\+receive()}{unicast\_receive()}}
+{\footnotesize\ttfamily void unicast\+\_\+receive (\begin{DoxyParamCaption}\item[{struct unicast\+\_\+conn $\ast$}]{unicast,  }\item[{const linkaddr\+\_\+t $\ast$}]{from }\end{DoxyParamCaption})}
+
+
+
+Callback function for Unicast. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em unicast} & Unicast Connection \\
+\hline
+{\em from} & Node ID of packet source \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{routing_8c_a10c2716d53419a0ec9111c644904c9b9}\label{routing_8c_a10c2716d53419a0ec9111c644904c9b9}} 
+\index{routing.\+c@{routing.\+c}!write\+\_\+routing\+\_\+table@{write\+\_\+routing\+\_\+table}}
+\index{write\+\_\+routing\+\_\+table@{write\+\_\+routing\+\_\+table}!routing.\+c@{routing.\+c}}
+\subsubsection{\texorpdfstring{write\+\_\+routing\+\_\+table()}{write\_routing\_table()}}
+{\footnotesize\ttfamily void write\+\_\+routing\+\_\+table (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t $\ast$}]{route,  }\item[{const uint8\+\_\+t}]{length }\end{DoxyParamCaption})}
+
+
+
+Write a route to the routing table on the flash memory. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em route} & Array of Node I\+Ds \\
+\hline
+{\em length} & Length of the array, i.\+e. the number of hops of the route \\
+\hline
+\end{DoxyParams}

@@ -1,0 +1,257 @@
+\hypertarget{classMainWindow}{}\section{Main\+Window Class Reference}
+\label{classMainWindow}\index{Main\+Window@{Main\+Window}}
+
+
+The \hyperlink{classMainWindow}{Main\+Window} class.  
+
+
+
+
+{\ttfamily \#include $<$mainwindow.\+h$>$}
+
+
+
+Inheritance diagram for Main\+Window\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=160pt]{classMainWindow__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Main\+Window\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=160pt]{classMainWindow__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMainWindow_a996c5a2b6f77944776856f08ec30858d}\label{classMainWindow_a996c5a2b6f77944776856f08ec30858d}} 
+\hyperlink{classMainWindow_a996c5a2b6f77944776856f08ec30858d}{Main\+Window} (Q\+Widget $\ast$parent=nullptr)
+\begin{DoxyCompactList}\small\item\em Main Window setup function. Scans usb ports for motes on startup. Paints text\+Edit background black and text color white for an authentic console experience. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Slots}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMainWindow_a0ed54c0c9e6d0206e716402ade3994ee}\label{classMainWindow_a0ed54c0c9e6d0206e716402ade3994ee}} 
+void \hyperlink{classMainWindow_a0ed54c0c9e6d0206e716402ade3994ee}{resend2selection} ()
+\begin{DoxyCompactList}\small\item\em Function for handling the retransmissions of unacknowledged requests. After three tries this function recognizes that one or more routes have become invalid and thus a new network exploration is triggered. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_aa4a61b706dc1ac7eafed167da9fb6cc3}\label{classMainWindow_aa4a61b706dc1ac7eafed167da9fb6cc3}} 
+void \hyperlink{classMainWindow_aa4a61b706dc1ac7eafed167da9fb6cc3}{receive} ()
+\begin{DoxyCompactList}\small\item\em Function for handling serial messages from the mote. L\+T/\+GT operators $<$$>$ denote important data and are simultaneously used as acknowledgements. Requests from gui that natively don\textquotesingle{}t solicit reply messages return an explicit A\+CK packet with the $<$$>$ format. This gives us consistant and reliable acknowledgements. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_aaaaabf5c6516ffee58d65f5fdf786c44}\label{classMainWindow_aaaaabf5c6516ffee58d65f5fdf786c44}} 
+void \hyperlink{classMainWindow_aaaaabf5c6516ffee58d65f5fdf786c44}{enable\+Button} ()
+\begin{DoxyCompactList}\small\item\em Function for enabling the exploration push\+Button after a timeout. Gets called in \hyperlink{classMainWindow_a6de134a18b08532696095fad75d8b9e3}{on\+\_\+push\+Button\+\_\+\+Explore\+\_\+clicked()}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a716f3b40c6e743d44cfcf9252b2a1934}\label{classMainWindow_a716f3b40c6e743d44cfcf9252b2a1934}} 
+void \hyperlink{classMainWindow_a716f3b40c6e743d44cfcf9252b2a1934}{on\+\_\+push\+Button\+\_\+\+Open\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Opening the selected U\+SB port. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a7646bc6193d4ab29f4871e7ddb7d320a}\label{classMainWindow_a7646bc6193d4ab29f4871e7ddb7d320a}} 
+void \hyperlink{classMainWindow_a7646bc6193d4ab29f4871e7ddb7d320a}{on\+\_\+push\+Button\+\_\+\+Close\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Closing the currently open U\+SB port. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_ab246b4bb1b03c40cf1282e968486aae5}\label{classMainWindow_ab246b4bb1b03c40cf1282e968486aae5}} 
+void \hyperlink{classMainWindow_ab246b4bb1b03c40cf1282e968486aae5}{on\+\_\+push\+Button\+\_\+\+Reload\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Function for reloading/refreshing the available ports. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a6de134a18b08532696095fad75d8b9e3}\label{classMainWindow_a6de134a18b08532696095fad75d8b9e3}} 
+void \hyperlink{classMainWindow_a6de134a18b08532696095fad75d8b9e3}{on\+\_\+push\+Button\+\_\+\+Explore\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Initialize the network exploration. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a30b56d6ecaaabe106f51dc385d64e38b}\label{classMainWindow_a30b56d6ecaaabe106f51dc385d64e38b}} 
+void \hyperlink{classMainWindow_a30b56d6ecaaabe106f51dc385d64e38b}{on\+\_\+push\+Button\+\_\+\+Zoom\+In\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Zoom in the netowork graph. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a803d415d83e648d1c040d4474a978f28}\label{classMainWindow_a803d415d83e648d1c040d4474a978f28}} 
+void \hyperlink{classMainWindow_a803d415d83e648d1c040d4474a978f28}{on\+\_\+push\+Button\+\_\+\+Zoom\+Out\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Zoom out the network graph. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_ab391669c647ea75c64e2e1258323d286}\label{classMainWindow_ab391669c647ea75c64e2e1258323d286}} 
+void \hyperlink{classMainWindow_ab391669c647ea75c64e2e1258323d286}{on\+\_\+push\+Button\+\_\+\+Set\+Max\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Set the maximum amount of motes in the network. This helps scaling the A\+CK timeout and network visualization. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a362f1eff4b76dfa1761db912e99e7083}\label{classMainWindow_a362f1eff4b76dfa1761db912e99e7083}} 
+void \hyperlink{classMainWindow_a362f1eff4b76dfa1761db912e99e7083}{on\+\_\+push\+Button\+\_\+\+Refresh\+\_\+\+Tab2\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Refreshes the list\+Widget items on tab 2. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_aa391a38cfddba913c5a3a3a96e7dc00f}\label{classMainWindow_aa391a38cfddba913c5a3a3a96e7dc00f}} 
+void \hyperlink{classMainWindow_aa391a38cfddba913c5a3a3a96e7dc00f}{on\+\_\+push\+Button\+\_\+\+Select\+All\+\_\+\+Tab2\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Selects all list\+Widget items on tab 2. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a96ce66930f135a8788b1b77d22e404e6}\label{classMainWindow_a96ce66930f135a8788b1b77d22e404e6}} 
+void \hyperlink{classMainWindow_a96ce66930f135a8788b1b77d22e404e6}{on\+\_\+push\+Button\+\_\+\+Unselect\+All\+\_\+\+Tab2\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Unselects all list\+Widget items on tab 2. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a886cb1ed2510a7fc3de35874eab50a19}\label{classMainWindow_a886cb1ed2510a7fc3de35874eab50a19}} 
+void \hyperlink{classMainWindow_a886cb1ed2510a7fc3de35874eab50a19}{on\+\_\+push\+Button\+\_\+\+Refresh\+\_\+\+Tab3\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Refreshes the list\+Widget items on tab 3. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a5799237eb83637aa8aca620f2043da5a}\label{classMainWindow_a5799237eb83637aa8aca620f2043da5a}} 
+void \hyperlink{classMainWindow_a5799237eb83637aa8aca620f2043da5a}{on\+\_\+push\+Button\+\_\+\+Select\+All\+\_\+\+Tab3\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Selects all list\+Widget items on tab 3. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_ae9a30c4c371e2c2ce6f7354875368351}\label{classMainWindow_ae9a30c4c371e2c2ce6f7354875368351}} 
+void \hyperlink{classMainWindow_ae9a30c4c371e2c2ce6f7354875368351}{on\+\_\+push\+Button\+\_\+\+Unselect\+All\+\_\+\+Tab3\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Unselects all list\+Widget items on tab 3. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_ae63340fe5e458e1160709c81a1ca3956}\label{classMainWindow_ae63340fe5e458e1160709c81a1ca3956}} 
+void \hyperlink{classMainWindow_ae63340fe5e458e1160709c81a1ca3956}{on\+\_\+push\+Button\+\_\+\+Send\+Temp\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Configure temperature thresholds. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a54f3e0176f218037a3901e3c24a93338}\label{classMainWindow_a54f3e0176f218037a3901e3c24a93338}} 
+void \hyperlink{classMainWindow_a54f3e0176f218037a3901e3c24a93338}{on\+\_\+push\+Button\+\_\+\+Send\+Hum\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Configure humidity thresholds. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a083c03ea7e282b677e5d2d9108ccd5e5}\label{classMainWindow_a083c03ea7e282b677e5d2d9108ccd5e5}} 
+void \hyperlink{classMainWindow_a083c03ea7e282b677e5d2d9108ccd5e5}{on\+\_\+push\+Button\+\_\+\+Send\+Light\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Configure light thresholds. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_abb4b4fb07a781d7e69e97be136406895}\label{classMainWindow_abb4b4fb07a781d7e69e97be136406895}} 
+void \hyperlink{classMainWindow_abb4b4fb07a781d7e69e97be136406895}{on\+\_\+push\+Button\+\_\+\+Send\+All\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Configure all thresholds. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a286fcb906abc360a3b51626bdc549122}\label{classMainWindow_a286fcb906abc360a3b51626bdc549122}} 
+void \hyperlink{classMainWindow_a286fcb906abc360a3b51626bdc549122}{on\+\_\+push\+Button\+\_\+\+Get\+All\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Fetch all thresholds. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_aeceef6b26d35f48752f5c95f529b4166}\label{classMainWindow_aeceef6b26d35f48752f5c95f529b4166}} 
+void \hyperlink{classMainWindow_aeceef6b26d35f48752f5c95f529b4166}{on\+\_\+push\+Button\+\_\+\+Center\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Center and rescale the network topology graph with a small border for improved aesthetics. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_ab753cd6f5aa04ec2716b23da14a17c3a}\label{classMainWindow_ab753cd6f5aa04ec2716b23da14a17c3a}} 
+void \hyperlink{classMainWindow_ab753cd6f5aa04ec2716b23da14a17c3a}{on\+\_\+push\+Button\+\_\+\+Clear\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Clear console. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a19288f19ebf126204a575b7a71f73ef0}\label{classMainWindow_a19288f19ebf126204a575b7a71f73ef0}} 
+void \hyperlink{classMainWindow_a19288f19ebf126204a575b7a71f73ef0}{on\+\_\+push\+Button\+\_\+\+Get\+Sensor\+Data\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Function for initializing the sensor plots and requesting the sensor data from the selection. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a4c69446fb6a0d787f8901333eec2ce3a}\label{classMainWindow_a4c69446fb6a0d787f8901333eec2ce3a}} 
+void \hyperlink{classMainWindow_a4c69446fb6a0d787f8901333eec2ce3a}{on\+\_\+push\+Button\+\_\+\+Get\+Routing\+Table\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Get routing tables. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a30ae116f22bf182d4aec0fe7776e6144}\label{classMainWindow_a30ae116f22bf182d4aec0fe7776e6144}} 
+void \hyperlink{classMainWindow_a30ae116f22bf182d4aec0fe7776e6144}{on\+\_\+push\+Button\+\_\+\+L\+E\+D\+\_\+clicked} ()
+\begin{DoxyCompactList}\small\item\em Set L\+ED colors. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classMainWindow_af4ca5d0d3d18ddcb7d54b6596bbf4797}{change\+Event} (Q\+Event $\ast$e)
+\begin{DoxyCompactList}\small\item\em change\+Event \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMainWindow_a3148593d5ab6ac6007967a4c43e28c16}\label{classMainWindow_a3148593d5ab6ac6007967a4c43e28c16}} 
+void \hyperlink{classMainWindow_a3148593d5ab6ac6007967a4c43e28c16}{reset\+\_\+graph} ()
+\begin{DoxyCompactList}\small\item\em Reset all arrays associated with the topology visualization graph. \end{DoxyCompactList}\item 
+void \hyperlink{classMainWindow_aa74278d87740ad86c6db91f071f7fd19}{create\+\_\+graph} (Q\+String\+List list)
+\begin{DoxyCompactList}\small\item\em Function for creating visualization of the sensor network topology. Every time a route is received this function is called to plot the route. \end{DoxyCompactList}\item 
+void \hyperlink{classMainWindow_af2cff5831eb2f2d562a070183b0f24af}{send2port} (Q\+String msg)
+\begin{DoxyCompactList}\small\item\em Send serial commands to the connected mote. \end{DoxyCompactList}\item 
+void \hyperlink{classMainWindow_ad87cfafc21d51c74902c8eb99b7fd90f}{print} (Q\+String msg)
+\begin{DoxyCompactList}\small\item\em Helper function for outputting messages to the console. \end{DoxyCompactList}\item 
+void \hyperlink{classMainWindow_aef3981280b4d81ab4b880e435a992ebd}{plot} (int type, Q\+String\+List data, Q\+String id)
+\begin{DoxyCompactList}\small\item\em Function for plotting received sensor data. \end{DoxyCompactList}\item 
+void \hyperlink{classMainWindow_ab053f15eaeb520f97732c5745a11bc9e}{send2selection} (Q\+List\+Widget $\ast$list\+Widget, Q\+String request\+Type)
+\begin{DoxyCompactList}\small\item\em Function for sending a certain serial request to all selected motes from the corresponding list\+Widget. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMainWindow_a35466a70ed47252a0191168126a352a5}\label{classMainWindow_a35466a70ed47252a0191168126a352a5}} 
+Ui\+::\+Main\+Window $\ast$ {\bfseries ui}
+\item 
+\mbox{\Hypertarget{classMainWindow_a7ecc506a570874a14ec96b4a5a542a80}\label{classMainWindow_a7ecc506a570874a14ec96b4a5a542a80}} 
+Qext\+Serial\+Port {\bfseries port}
+\item 
+\mbox{\Hypertarget{classMainWindow_ad44cc683935445cf008ca045ad90b322}\label{classMainWindow_ad44cc683935445cf008ca045ad90b322}} 
+Q\+Message\+Box {\bfseries error}
+\item 
+\mbox{\Hypertarget{classMainWindow_a0b0049181ace3b8e132cb1ca1c93c871}\label{classMainWindow_a0b0049181ace3b8e132cb1ca1c93c871}} 
+Q\+Graphics\+Scene $\ast$ {\bfseries m\+Scene}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classMainWindow}{Main\+Window} class. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classMainWindow_af4ca5d0d3d18ddcb7d54b6596bbf4797}\label{classMainWindow_af4ca5d0d3d18ddcb7d54b6596bbf4797}} 
+\index{Main\+Window@{Main\+Window}!change\+Event@{change\+Event}}
+\index{change\+Event@{change\+Event}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{change\+Event()}{changeEvent()}}
+{\footnotesize\ttfamily void Main\+Window\+::change\+Event (\begin{DoxyParamCaption}\item[{Q\+Event $\ast$}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+change\+Event 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMainWindow_aa74278d87740ad86c6db91f071f7fd19}\label{classMainWindow_aa74278d87740ad86c6db91f071f7fd19}} 
+\index{Main\+Window@{Main\+Window}!create\+\_\+graph@{create\+\_\+graph}}
+\index{create\+\_\+graph@{create\+\_\+graph}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{create\+\_\+graph()}{create\_graph()}}
+{\footnotesize\ttfamily void Main\+Window\+::create\+\_\+graph (\begin{DoxyParamCaption}\item[{Q\+String\+List}]{list }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Function for creating visualization of the sensor network topology. Every time a route is received this function is called to plot the route. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Input\+List} & The optimal route from the respective mote to the gui \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMainWindow_aef3981280b4d81ab4b880e435a992ebd}\label{classMainWindow_aef3981280b4d81ab4b880e435a992ebd}} 
+\index{Main\+Window@{Main\+Window}!plot@{plot}}
+\index{plot@{plot}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{plot()}{plot()}}
+{\footnotesize\ttfamily void Main\+Window\+::plot (\begin{DoxyParamCaption}\item[{int}]{type,  }\item[{Q\+String\+List}]{data,  }\item[{Q\+String}]{id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Function for plotting received sensor data. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & Type of sensor data\+: 1 = Temperature, 2 = Humidity, 3 = Light \\
+\hline
+{\em data} & Sensor data to be plotted \\
+\hline
+{\em id} & Associated mote id \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMainWindow_ad87cfafc21d51c74902c8eb99b7fd90f}\label{classMainWindow_ad87cfafc21d51c74902c8eb99b7fd90f}} 
+\index{Main\+Window@{Main\+Window}!print@{print}}
+\index{print@{print}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{print()}{print()}}
+{\footnotesize\ttfamily void Main\+Window\+::print (\begin{DoxyParamCaption}\item[{Q\+String}]{msg }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Helper function for outputting messages to the console. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & Message to be printed. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMainWindow_af2cff5831eb2f2d562a070183b0f24af}\label{classMainWindow_af2cff5831eb2f2d562a070183b0f24af}} 
+\index{Main\+Window@{Main\+Window}!send2port@{send2port}}
+\index{send2port@{send2port}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{send2port()}{send2port()}}
+{\footnotesize\ttfamily void Main\+Window\+::send2port (\begin{DoxyParamCaption}\item[{Q\+String}]{msg }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Send serial commands to the connected mote. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & The command that should be sent over serial communication. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMainWindow_ab053f15eaeb520f97732c5745a11bc9e}\label{classMainWindow_ab053f15eaeb520f97732c5745a11bc9e}} 
+\index{Main\+Window@{Main\+Window}!send2selection@{send2selection}}
+\index{send2selection@{send2selection}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{send2selection()}{send2selection()}}
+{\footnotesize\ttfamily void Main\+Window\+::send2selection (\begin{DoxyParamCaption}\item[{Q\+List\+Widget $\ast$}]{list\+Widget,  }\item[{Q\+String}]{request\+Type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Function for sending a certain serial request to all selected motes from the corresponding list\+Widget. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list\+Widget} & The list\+Widget where the id selection is extracted from \\
+\hline
+{\em request\+Type} & The type of serial communication request that should be sent to all selected motes \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+gui/\hyperlink{mainwindow_8h}{mainwindow.\+h}\item 
+gui/\hyperlink{mainwindow_8cpp}{mainwindow.\+cpp}\end{DoxyCompactItemize}

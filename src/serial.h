@@ -44,6 +44,10 @@
 
 #include "plantio.h"
 
+/**
+ * @brief Process for handling serial input.
+ * 
+ */
 struct process p_serial;
 
 /**

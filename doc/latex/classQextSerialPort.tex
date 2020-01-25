@@ -1,0 +1,500 @@
+\hypertarget{classQextSerialPort}{}\section{Qext\+Serial\+Port Class Reference}
+\label{classQextSerialPort}\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+
+
+The \hyperlink{classQextSerialPort}{Qext\+Serial\+Port} class encapsulates a serial port on both P\+O\+S\+IX and Windows systems.  
+
+
+
+
+Inheritance diagram for Qext\+Serial\+Port\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=160pt]{classQextSerialPort__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Qext\+Serial\+Port\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=160pt]{classQextSerialPort__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Query\+Mode} \{ {\bfseries Polling}, 
+{\bfseries Event\+Driven}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Slots}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classQextSerialPort_a9be0f083d807d93bcf30554a2a272d93}{set\+Port\+Name} (const Q\+String \&name)
+\item 
+void \hyperlink{classQextSerialPort_add89288d28c60a20cbd087576e17b05d}{set\+Query\+Mode} (\hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Query\+Mode} mode)
+\item 
+void \hyperlink{classQextSerialPort_a034505ee74b7e53492adfe08cdc4ce6c}{set\+Baud\+Rate} (Baud\+Rate\+Type)
+\item 
+void \hyperlink{classQextSerialPort_aec2dde714ac2e085d264caba18cc4eb6}{set\+Data\+Bits} (Data\+Bits\+Type)
+\item 
+void \hyperlink{classQextSerialPort_aae887a42778a47b36b417278a64cdcf2}{set\+Parity} (Parity\+Type)
+\item 
+void \hyperlink{classQextSerialPort_a2ad017cb814115af9d63a9cfa2a4e171}{set\+Stop\+Bits} (Stop\+Bits\+Type)
+\item 
+void \hyperlink{classQextSerialPort_af00d9366ac48869d37dab8874f5e8e44}{set\+Flow\+Control} (Flow\+Type)
+\item 
+void \hyperlink{classQextSerialPort_a7a0f74ee86b1b38fc2a42243a7aea87d}{set\+Timeout} (long)
+\item 
+void \hyperlink{classQextSerialPort_a0de93c64cb2e2d663ddd396294e25356}{set\+Dtr} (bool set=true)
+\item 
+void \hyperlink{classQextSerialPort_a699ca97dbee732d19ff224de5c91befe}{set\+Rts} (bool set=true)
+\end{DoxyCompactItemize}
+\subsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classQextSerialPort_a4cf10f07eff887097a9cd6509ca2abc6}{dsr\+Changed} (bool status)
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classQextSerialPort_af36bd1a07fc25c3874cbba5a4a1d6b02}{Qext\+Serial\+Port} (\hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Query\+Mode} mode=Event\+Driven, Q\+Object $\ast$parent=0)
+\item 
+\hyperlink{classQextSerialPort_ab8e7dd61c9b064b55d4c609ae1f2afcb}{Qext\+Serial\+Port} (const Q\+String \&name, \hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Query\+Mode} mode=Event\+Driven, Q\+Object $\ast$parent=0)
+\item 
+\hyperlink{classQextSerialPort_a7ddaffdbbb507477fd4f4224dcbe21a4}{Qext\+Serial\+Port} (const \hyperlink{structPortSettings}{Port\+Settings} \&s, \hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Query\+Mode} mode=Event\+Driven, Q\+Object $\ast$parent=0)
+\item 
+\hyperlink{classQextSerialPort_aff4f0246637293ba6751a5993a645b20}{Qext\+Serial\+Port} (const Q\+String \&name, const \hyperlink{structPortSettings}{Port\+Settings} \&s, \hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Query\+Mode} mode=Event\+Driven, Q\+Object $\ast$parent=0)
+\item 
+\hyperlink{classQextSerialPort_a0712978a092762f69f308df7372e3f7a}{$\sim$\+Qext\+Serial\+Port} ()
+\item 
+\mbox{\Hypertarget{classQextSerialPort_aec8816b3ee7863891dd3542282d78b70}\label{classQextSerialPort_aec8816b3ee7863891dd3542282d78b70}} 
+Q\+String {\bfseries port\+Name} () const
+\item 
+\mbox{\Hypertarget{classQextSerialPort_a397b0f5b630292f7609acd7a2b787bee}\label{classQextSerialPort_a397b0f5b630292f7609acd7a2b787bee}} 
+\hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Query\+Mode} {\bfseries query\+Mode} () const
+\item 
+Baud\+Rate\+Type \hyperlink{classQextSerialPort_a6ff8552e67d0de8036c8827bee8298c5}{baud\+Rate} () const
+\item 
+Data\+Bits\+Type \hyperlink{classQextSerialPort_a55dc431a89ac054c1a0e4269a8fcc62e}{data\+Bits} () const
+\item 
+Parity\+Type \hyperlink{classQextSerialPort_a76f94dbf2ebb40bcd2b784c38974075f}{parity} () const
+\item 
+Stop\+Bits\+Type \hyperlink{classQextSerialPort_a9a135f5caefdad23e1a2dbd7ce7b8731}{stop\+Bits} () const
+\item 
+Flow\+Type \hyperlink{classQextSerialPort_ae4c4bf79d59ed28be336e020b7459b93}{flow\+Control} () const
+\item 
+bool \hyperlink{classQextSerialPort_a86720bd25b34082c1270b7e42c2216a0}{open} (Open\+Mode mode)
+\item 
+bool \hyperlink{classQextSerialPort_ac4b945aa423d599af3b16839247cb711}{is\+Sequential} () const
+\item 
+void \hyperlink{classQextSerialPort_a11eb2a959708db24cdb0de62e10fb1c0}{close} ()
+\item 
+void \hyperlink{classQextSerialPort_ac7448603fb4601540c4b6fc999c953e7}{flush} ()
+\item 
+qint64 \hyperlink{classQextSerialPort_a7a3d641c3cd4810f9f70c4c86c2fc5e7}{bytes\+Available} () const
+\item 
+bool \hyperlink{classQextSerialPort_adafee990c20d75276a9c94ad221cd851}{can\+Read\+Line} () const
+\item 
+Q\+Byte\+Array \hyperlink{classQextSerialPort_a5ea5a8f38a40490e655231bd083ca51d}{read\+All} ()
+\item 
+ulong \hyperlink{classQextSerialPort_a1061dbec6478575545cd94ed88ba17ca}{last\+Error} () const
+\item 
+ulong \hyperlink{classQextSerialPort_a6d12bc6daa415f347e4929f6726fbe5d}{line\+Status} ()
+\item 
+Q\+String \hyperlink{classQextSerialPort_aaafe63e85bf7e47ed8442be686e3d262}{error\+String} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+qint64 \hyperlink{classQextSerialPort_a7bcf7ba45f4c02607ceca83d00f9def4}{read\+Data} (char $\ast$data, qint64 max\+Size)
+\item 
+qint64 \hyperlink{classQextSerialPort_a23b32aebe729afd58d7ba6e409d29d1f}{write\+Data} (const char $\ast$data, qint64 max\+Size)
+\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+Q\+String \hyperlink{classQextSerialPort_a989fbac088b18152af0b736a71b9155b}{port\+Name}
+\item 
+\hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Query\+Mode} \hyperlink{classQextSerialPort_a22867092a82eb015ad6f84fd4ade1073}{query\+Mode}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classQextSerialPort}{Qext\+Serial\+Port} class encapsulates a serial port on both P\+O\+S\+IX and Windows systems. 
+
+
+
+\subsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}\label{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!Query\+Mode@{Query\+Mode}}
+\index{Query\+Mode@{Query\+Mode}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{Query\+Mode}{QueryMode}}
+{\footnotesize\ttfamily enum \hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Qext\+Serial\+Port\+::\+Query\+Mode}}
+
+This enum type specifies query mode used in a serial port\+:
+
+Polling asynchronously read and write  Event\+Driven synchronously read and write 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classQextSerialPort_af36bd1a07fc25c3874cbba5a4a1d6b02}\label{classQextSerialPort_af36bd1a07fc25c3874cbba5a4a1d6b02}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{Qext\+Serial\+Port()}{QextSerialPort()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily Qext\+Serial\+Port\+::\+Qext\+Serial\+Port (\begin{DoxyParamCaption}\item[{\hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Qext\+Serial\+Port\+::\+Query\+Mode}}]{mode = {\ttfamily EventDriven},  }\item[{Q\+Object $\ast$}]{parent = {\ttfamily 0} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+Default constructor. Note that the name of the device used by a \hyperlink{classQextSerialPort}{Qext\+Serial\+Port} is dependent on your OS. Possible naming conventions and their associated OS are\+:
+
+
+\begin{DoxyCode}
+OS Constant       Used By         Naming Convention
+-------------     -------------   ------------------------
+Q\_OS\_WIN          Windows         COM1, COM2
+Q\_OS\_IRIX         SGI/IRIX        /dev/ttyf1, /dev/ttyf2
+Q\_OS\_HPUX         HP-UX           /dev/tty1p0, /dev/tty2p0
+Q\_OS\_SOLARIS      SunOS/Slaris    /dev/ttya, /dev/ttyb
+Q\_OS\_OSF          Digital UNIX    /dev/tty01, /dev/tty02
+Q\_OS\_FREEBSD      FreeBSD         /dev/ttyd0, /dev/ttyd1
+Q\_OS\_OPENBSD      OpenBSD         /dev/tty00, /dev/tty01
+Q\_OS\_LINUX        Linux           /dev/ttyS0, /dev/ttyS1
+<none>                            /dev/ttyS0, /dev/ttyS1
+\end{DoxyCode}
+
+
+This constructor assigns the device name to the name of the first port on the specified system. See the other constructors if you need to open a different port. Default {\itshape mode} is Event\+Driven. As a subclass of Q\+Object, {\itshape parent} can be specified. \mbox{\Hypertarget{classQextSerialPort_ab8e7dd61c9b064b55d4c609ae1f2afcb}\label{classQextSerialPort_ab8e7dd61c9b064b55d4c609ae1f2afcb}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{Qext\+Serial\+Port()}{QextSerialPort()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily Qext\+Serial\+Port\+::\+Qext\+Serial\+Port (\begin{DoxyParamCaption}\item[{const Q\+String \&}]{name,  }\item[{\hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Qext\+Serial\+Port\+::\+Query\+Mode}}]{mode = {\ttfamily EventDriven},  }\item[{Q\+Object $\ast$}]{parent = {\ttfamily 0} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+Constructs a serial port attached to the port specified by name. {\itshape name} is the name of the device, which is windowsystem-\/specific, e.\+g.\char`\"{}\+C\+O\+M1\char`\"{} or \char`\"{}/dev/tty\+S0\char`\"{}. {\itshape mode} \mbox{\Hypertarget{classQextSerialPort_a7ddaffdbbb507477fd4f4224dcbe21a4}\label{classQextSerialPort_a7ddaffdbbb507477fd4f4224dcbe21a4}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{Qext\+Serial\+Port()}{QextSerialPort()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily Qext\+Serial\+Port\+::\+Qext\+Serial\+Port (\begin{DoxyParamCaption}\item[{const \hyperlink{structPortSettings}{Port\+Settings} \&}]{settings,  }\item[{\hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Qext\+Serial\+Port\+::\+Query\+Mode}}]{mode = {\ttfamily EventDriven},  }\item[{Q\+Object $\ast$}]{parent = {\ttfamily 0} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+Constructs a port with default name and specified {\itshape settings}. \mbox{\Hypertarget{classQextSerialPort_aff4f0246637293ba6751a5993a645b20}\label{classQextSerialPort_aff4f0246637293ba6751a5993a645b20}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{Qext\+Serial\+Port()}{QextSerialPort()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily Qext\+Serial\+Port\+::\+Qext\+Serial\+Port (\begin{DoxyParamCaption}\item[{const Q\+String \&}]{name,  }\item[{const \hyperlink{structPortSettings}{Port\+Settings} \&}]{settings,  }\item[{\hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Qext\+Serial\+Port\+::\+Query\+Mode}}]{mode = {\ttfamily EventDriven},  }\item[{Q\+Object $\ast$}]{parent = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+Constructs a port with specified {\itshape name} , {\itshape mode} and {\itshape settings}. \mbox{\Hypertarget{classQextSerialPort_a0712978a092762f69f308df7372e3f7a}\label{classQextSerialPort_a0712978a092762f69f308df7372e3f7a}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!````~Qext\+Serial\+Port@{$\sim$\+Qext\+Serial\+Port}}
+\index{````~Qext\+Serial\+Port@{$\sim$\+Qext\+Serial\+Port}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{$\sim$\+Qext\+Serial\+Port()}{~QextSerialPort()}}
+{\footnotesize\ttfamily Qext\+Serial\+Port\+::$\sim$\+Qext\+Serial\+Port (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Destructs the \hyperlink{classQextSerialPort}{Qext\+Serial\+Port} object. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classQextSerialPort_a6ff8552e67d0de8036c8827bee8298c5}\label{classQextSerialPort_a6ff8552e67d0de8036c8827bee8298c5}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!baud\+Rate@{baud\+Rate}}
+\index{baud\+Rate@{baud\+Rate}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{baud\+Rate()}{baudRate()}}
+{\footnotesize\ttfamily Baud\+Rate\+Type Qext\+Serial\+Port\+::baud\+Rate (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+Returns the baud rate of the serial port. For a list of possible return values see the definition of the enum Baud\+Rate\+Type. \mbox{\Hypertarget{classQextSerialPort_a7a3d641c3cd4810f9f70c4c86c2fc5e7}\label{classQextSerialPort_a7a3d641c3cd4810f9f70c4c86c2fc5e7}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!bytes\+Available@{bytes\+Available}}
+\index{bytes\+Available@{bytes\+Available}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{bytes\+Available()}{bytesAvailable()}}
+{\footnotesize\ttfamily qint64 Qext\+Serial\+Port\+::bytes\+Available (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+Returns the number of bytes waiting in the port\textquotesingle{}s receive queue. This function will return 0 if the port is not currently open, or -\/1 on error. \mbox{\Hypertarget{classQextSerialPort_adafee990c20d75276a9c94ad221cd851}\label{classQextSerialPort_adafee990c20d75276a9c94ad221cd851}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!can\+Read\+Line@{can\+Read\+Line}}
+\index{can\+Read\+Line@{can\+Read\+Line}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{can\+Read\+Line()}{canReadLine()}}
+{\footnotesize\ttfamily bool Qext\+Serial\+Port\+::can\+Read\+Line (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classQextSerialPort_a11eb2a959708db24cdb0de62e10fb1c0}\label{classQextSerialPort_a11eb2a959708db24cdb0de62e10fb1c0}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!close@{close}}
+\index{close@{close}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{close()}{close()}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::close (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Closes a serial port. This function has no effect if the serial port associated with the class is not currently open. \mbox{\Hypertarget{classQextSerialPort_a55dc431a89ac054c1a0e4269a8fcc62e}\label{classQextSerialPort_a55dc431a89ac054c1a0e4269a8fcc62e}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!data\+Bits@{data\+Bits}}
+\index{data\+Bits@{data\+Bits}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{data\+Bits()}{dataBits()}}
+{\footnotesize\ttfamily Data\+Bits\+Type Qext\+Serial\+Port\+::data\+Bits (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+Returns the number of data bits used by the port. For a list of possible values returned by this function, see the definition of the enum Data\+Bits\+Type. \mbox{\Hypertarget{classQextSerialPort_a4cf10f07eff887097a9cd6509ca2abc6}\label{classQextSerialPort_a4cf10f07eff887097a9cd6509ca2abc6}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!dsr\+Changed@{dsr\+Changed}}
+\index{dsr\+Changed@{dsr\+Changed}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{dsr\+Changed}{dsrChanged}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::dsr\+Changed (\begin{DoxyParamCaption}\item[{bool}]{status }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [signal]}}
+
+This signal is emitted whenever dsr line has changed its state. You may use this signal to check if device is connected.
+
+{\itshape status} true when D\+SR signal is on, false otherwise. \mbox{\Hypertarget{classQextSerialPort_aaafe63e85bf7e47ed8442be686e3d262}\label{classQextSerialPort_aaafe63e85bf7e47ed8442be686e3d262}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!error\+String@{error\+String}}
+\index{error\+String@{error\+String}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{error\+String()}{errorString()}}
+{\footnotesize\ttfamily Q\+String Qext\+Serial\+Port\+::error\+String (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Returns a human-\/readable description of the last device error that occurred. \mbox{\Hypertarget{classQextSerialPort_ae4c4bf79d59ed28be336e020b7459b93}\label{classQextSerialPort_ae4c4bf79d59ed28be336e020b7459b93}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!flow\+Control@{flow\+Control}}
+\index{flow\+Control@{flow\+Control}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{flow\+Control()}{flowControl()}}
+{\footnotesize\ttfamily Flow\+Type Qext\+Serial\+Port\+::flow\+Control (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+Returns the type of flow control used by the port. For a list of possible values returned by this function, see the definition of the enum Flow\+Type. \mbox{\Hypertarget{classQextSerialPort_ac7448603fb4601540c4b6fc999c953e7}\label{classQextSerialPort_ac7448603fb4601540c4b6fc999c953e7}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!flush@{flush}}
+\index{flush@{flush}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{flush()}{flush()}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::flush (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Flushes all pending I/O to the serial port. This function has no effect if the serial port associated with the class is not currently open. \mbox{\Hypertarget{classQextSerialPort_ac4b945aa423d599af3b16839247cb711}\label{classQextSerialPort_ac4b945aa423d599af3b16839247cb711}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!is\+Sequential@{is\+Sequential}}
+\index{is\+Sequential@{is\+Sequential}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{is\+Sequential()}{isSequential()}}
+{\footnotesize\ttfamily bool Qext\+Serial\+Port\+::is\+Sequential (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+Returns true if device is sequential, otherwise returns false. Serial port is sequential device so this function always returns true. Check Q\+I\+O\+Device\+::is\+Sequential() documentation for more information. \mbox{\Hypertarget{classQextSerialPort_a1061dbec6478575545cd94ed88ba17ca}\label{classQextSerialPort_a1061dbec6478575545cd94ed88ba17ca}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!last\+Error@{last\+Error}}
+\index{last\+Error@{last\+Error}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{last\+Error()}{lastError()}}
+{\footnotesize\ttfamily ulong Qext\+Serial\+Port\+::last\+Error (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+Return the error number, or 0 if no error occurred. \mbox{\Hypertarget{classQextSerialPort_a6d12bc6daa415f347e4929f6726fbe5d}\label{classQextSerialPort_a6d12bc6daa415f347e4929f6726fbe5d}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!line\+Status@{line\+Status}}
+\index{line\+Status@{line\+Status}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{line\+Status()}{lineStatus()}}
+{\footnotesize\ttfamily unsigned long Qext\+Serial\+Port\+::line\+Status (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Returns the line status as stored by the port function. This function will retrieve the states of the following lines\+: D\+CD, C\+TS, D\+SR, and RI. On P\+O\+S\+IX systems, the following additional lines can be monitored\+: D\+TR, R\+TS, Secondary T\+XD, and Secondary R\+XD. The value returned is an unsigned long with specific bits indicating which lines are high. The following constants should be used to examine the states of individual lines\+:
+
+
+\begin{DoxyCode}
+Mask        Line
+------      ----
+LS\_CTS      CTS
+LS\_DSR      DSR
+LS\_DCD      DCD
+LS\_RI       RI
+LS\_RTS      RTS (POSIX only)
+LS\_DTR      DTR (POSIX only)
+LS\_ST       Secondary TXD (POSIX only)
+LS\_SR       Secondary RXD (POSIX only)
+\end{DoxyCode}
+
+
+This function will return 0 if the port associated with the class is not currently open. \mbox{\Hypertarget{classQextSerialPort_a86720bd25b34082c1270b7e42c2216a0}\label{classQextSerialPort_a86720bd25b34082c1270b7e42c2216a0}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!open@{open}}
+\index{open@{open}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{open()}{open()}}
+{\footnotesize\ttfamily bool Qext\+Serial\+Port\+::open (\begin{DoxyParamCaption}\item[{Open\+Mode}]{mode }\end{DoxyParamCaption})}
+
+Opens a serial port and sets its Open\+Mode to {\itshape mode}. Note that this function does not specify which device to open. Returns true if successful; otherwise returns false.\+This function has no effect if the port associated with the class is already open. The port is also configured to the current settings, as stored in the settings structure. \mbox{\Hypertarget{classQextSerialPort_a76f94dbf2ebb40bcd2b784c38974075f}\label{classQextSerialPort_a76f94dbf2ebb40bcd2b784c38974075f}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!parity@{parity}}
+\index{parity@{parity}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{parity()}{parity()}}
+{\footnotesize\ttfamily Parity\+Type Qext\+Serial\+Port\+::parity (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+Returns the type of parity used by the port. For a list of possible values returned by this function, see the definition of the enum Parity\+Type. \mbox{\Hypertarget{classQextSerialPort_a5ea5a8f38a40490e655231bd083ca51d}\label{classQextSerialPort_a5ea5a8f38a40490e655231bd083ca51d}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!read\+All@{read\+All}}
+\index{read\+All@{read\+All}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{read\+All()}{readAll()}}
+{\footnotesize\ttfamily Q\+Byte\+Array Qext\+Serial\+Port\+::read\+All (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Reads all available data from the device, and returns it as a Q\+Byte\+Array. This function has no way of reporting errors; returning an empty Q\+Byte\+Array() can mean either that no data was currently available for reading, or that an error occurred. \mbox{\Hypertarget{classQextSerialPort_a7bcf7ba45f4c02607ceca83d00f9def4}\label{classQextSerialPort_a7bcf7ba45f4c02607ceca83d00f9def4}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!read\+Data@{read\+Data}}
+\index{read\+Data@{read\+Data}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{read\+Data()}{readData()}}
+{\footnotesize\ttfamily qint64 Qext\+Serial\+Port\+::read\+Data (\begin{DoxyParamCaption}\item[{char $\ast$}]{data,  }\item[{qint64}]{max\+Size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+Reads a block of data from the serial port. This function will read at most maxlen bytes from the serial port and place them in the buffer pointed to by data. Return value is the number of bytes actually read, or -\/1 on error.
+
+\begin{DoxyWarning}{Warning}
+before calling this function ensure that serial port associated with this class is currently open (use is\+Open() function to check if port is open). 
+\end{DoxyWarning}
+\mbox{\Hypertarget{classQextSerialPort_a034505ee74b7e53492adfe08cdc4ce6c}\label{classQextSerialPort_a034505ee74b7e53492adfe08cdc4ce6c}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!set\+Baud\+Rate@{set\+Baud\+Rate}}
+\index{set\+Baud\+Rate@{set\+Baud\+Rate}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{set\+Baud\+Rate}{setBaudRate}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::set\+Baud\+Rate (\begin{DoxyParamCaption}\item[{Baud\+Rate\+Type}]{baud\+Rate }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Sets the baud rate of the serial port to {\itshape baud\+Rate}. Note that not all rates are applicable on all platforms. The following table shows translations of the various baud rate constants on Windows(including N\+T/2000) and P\+O\+S\+IX platforms. Speeds marked with an $\ast$ are speeds that are usable on both Windows and P\+O\+S\+IX. 
+\begin{DoxyCode}
+RATE          Windows Speed   POSIX Speed
+-----------   -------------   -----------
+ BAUD50                   X          50
+ BAUD75                   X          75
+*BAUD110                110         110
+ BAUD134                  X         134.5
+ BAUD150                  X         150
+ BAUD200                  X         200
+*BAUD300                300         300
+*BAUD600                600         600
+*BAUD1200              1200        1200
+ BAUD1800                 X        1800
+*BAUD2400              2400        2400
+*BAUD4800              4800        4800
+*BAUD9600              9600        9600
+ BAUD14400            14400           X
+*BAUD19200            19200       19200
+*BAUD38400            38400       38400
+ BAUD56000            56000           X
+*BAUD57600            57600       57600
+ BAUD76800                X       76800
+*BAUD115200          115200      115200
+ BAUD128000          128000           X
+ BAUD230400               X      230400
+ BAUD256000          256000           X
+ BAUD460800               X      460800
+ BAUD500000               X      500000
+ BAUD576000               X      576000
+ BAUD921600               X      921600
+ BAUD1000000              X     1000000
+ BAUD1152000              X     1152000
+ BAUD1500000              X     1500000
+ BAUD2000000              X     2000000
+ BAUD2500000              X     2500000
+ BAUD3000000              X     3000000
+ BAUD3500000              X     3500000
+ BAUD4000000              X     4000000
+\end{DoxyCode}
+ \mbox{\Hypertarget{classQextSerialPort_aec2dde714ac2e085d264caba18cc4eb6}\label{classQextSerialPort_aec2dde714ac2e085d264caba18cc4eb6}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!set\+Data\+Bits@{set\+Data\+Bits}}
+\index{set\+Data\+Bits@{set\+Data\+Bits}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{set\+Data\+Bits}{setDataBits}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::set\+Data\+Bits (\begin{DoxyParamCaption}\item[{Data\+Bits\+Type}]{data\+Bits }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Sets the number of data bits used by the serial port to {\itshape data\+Bits}. Possible values of data\+Bits are\+: 
+\begin{DoxyCode}
+DATA\_5      5 data bits
+DATA\_6      6 data bits
+DATA\_7      7 data bits
+DATA\_8      8 data bits
+\end{DoxyCode}
+
+
+note\+: This function is subject to the following restrictions\+:   5 data bits cannot be used with 2 stop bits.  1.\+5 stop bits can only be used with 5 data bits.  8 data bits cannot be used with space parity on P\+O\+S\+IX systems.  \mbox{\Hypertarget{classQextSerialPort_a0de93c64cb2e2d663ddd396294e25356}\label{classQextSerialPort_a0de93c64cb2e2d663ddd396294e25356}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!set\+Dtr@{set\+Dtr}}
+\index{set\+Dtr@{set\+Dtr}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{set\+Dtr}{setDtr}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::set\+Dtr (\begin{DoxyParamCaption}\item[{bool}]{set = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Sets D\+TR line to the requested state ({\itshape set} default to high). This function will have no effect if the port associated with the class is not currently open. \mbox{\Hypertarget{classQextSerialPort_af00d9366ac48869d37dab8874f5e8e44}\label{classQextSerialPort_af00d9366ac48869d37dab8874f5e8e44}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!set\+Flow\+Control@{set\+Flow\+Control}}
+\index{set\+Flow\+Control@{set\+Flow\+Control}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{set\+Flow\+Control}{setFlowControl}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::set\+Flow\+Control (\begin{DoxyParamCaption}\item[{Flow\+Type}]{flow }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Sets the flow control used by the port to {\itshape flow}. Possible values of flow are\+: 
+\begin{DoxyCode}
+FLOW\_OFF            No flow control
+FLOW\_HARDWARE       Hardware (RTS/CTS) flow control
+FLOW\_XONXOFF        Software (XON/XOFF) flow control
+\end{DoxyCode}
+ \mbox{\Hypertarget{classQextSerialPort_aae887a42778a47b36b417278a64cdcf2}\label{classQextSerialPort_aae887a42778a47b36b417278a64cdcf2}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!set\+Parity@{set\+Parity}}
+\index{set\+Parity@{set\+Parity}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{set\+Parity}{setParity}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::set\+Parity (\begin{DoxyParamCaption}\item[{Parity\+Type}]{parity }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Sets the parity associated with the serial port to {\itshape parity}. The possible values of parity are\+: 
+\begin{DoxyCode}
+PAR\_SPACE       Space Parity
+PAR\_MARK        Mark Parity
+PAR\_NONE        No Parity
+PAR\_EVEN        Even Parity
+PAR\_ODD         Odd Parity
+\end{DoxyCode}
+ \mbox{\Hypertarget{classQextSerialPort_a9be0f083d807d93bcf30554a2a272d93}\label{classQextSerialPort_a9be0f083d807d93bcf30554a2a272d93}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!set\+Port\+Name@{set\+Port\+Name}}
+\index{set\+Port\+Name@{set\+Port\+Name}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{set\+Port\+Name}{setPortName}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::set\+Port\+Name (\begin{DoxyParamCaption}\item[{const Q\+String \&}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Sets the {\itshape name} of the device associated with the object, e.\+g. \char`\"{}\+C\+O\+M1\char`\"{}, or \char`\"{}/dev/tty\+S0\char`\"{}. \mbox{\Hypertarget{classQextSerialPort_add89288d28c60a20cbd087576e17b05d}\label{classQextSerialPort_add89288d28c60a20cbd087576e17b05d}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!set\+Query\+Mode@{set\+Query\+Mode}}
+\index{set\+Query\+Mode@{set\+Query\+Mode}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{set\+Query\+Mode}{setQueryMode}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::set\+Query\+Mode (\begin{DoxyParamCaption}\item[{\hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Query\+Mode}}]{mode }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Set desired serial communication handling style. You may choose from polling or event driven approach. This function does nothing when port is open; to apply changes port must be reopened.
+
+In event driven approach read() and write() functions are acting asynchronously. They return immediately and the operation is performed in the background, so they doesn\textquotesingle{}t freeze the calling thread. To determine when operation is finished, \hyperlink{classQextSerialPort}{Qext\+Serial\+Port} runs separate thread and monitors serial port events. Whenever the event occurs, adequate signal is emitted.
+
+When polling is set, read() and write() are acting synchronously. Signals are not working in this mode and some functions may not be available. The advantage of polling is that it generates less overhead due to lack of signals emissions and it doesn\textquotesingle{}t start separate thread to monitor events.
+
+Generally event driven approach is more capable and friendly, although some applications may need as low overhead as possible and then polling comes.
+
+{\itshape mode} query mode. \mbox{\Hypertarget{classQextSerialPort_a699ca97dbee732d19ff224de5c91befe}\label{classQextSerialPort_a699ca97dbee732d19ff224de5c91befe}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!set\+Rts@{set\+Rts}}
+\index{set\+Rts@{set\+Rts}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{set\+Rts}{setRts}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::set\+Rts (\begin{DoxyParamCaption}\item[{bool}]{set = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Sets R\+TS line to the requested state {\itshape set} (high by default). This function will have no effect if the port associated with the class is not currently open. \mbox{\Hypertarget{classQextSerialPort_a2ad017cb814115af9d63a9cfa2a4e171}\label{classQextSerialPort_a2ad017cb814115af9d63a9cfa2a4e171}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!set\+Stop\+Bits@{set\+Stop\+Bits}}
+\index{set\+Stop\+Bits@{set\+Stop\+Bits}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{set\+Stop\+Bits}{setStopBits}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::set\+Stop\+Bits (\begin{DoxyParamCaption}\item[{Stop\+Bits\+Type}]{stop\+Bits }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Sets the number of stop bits used by the serial port to {\itshape stop\+Bits}. Possible values of stop\+Bits are\+: 
+\begin{DoxyCode}
+STOP\_1      1 stop bit
+STOP\_1\_5    1.5 stop bits
+STOP\_2      2 stop bits
+\end{DoxyCode}
+
+
+note\+: This function is subject to the following restrictions\+:   2 stop bits cannot be used with 5 data bits.  1.\+5 stop bits cannot be used with 6 or more data bits.  P\+O\+S\+IX does not support 1.\+5 stop bits.  \mbox{\Hypertarget{classQextSerialPort_a7a0f74ee86b1b38fc2a42243a7aea87d}\label{classQextSerialPort_a7a0f74ee86b1b38fc2a42243a7aea87d}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!set\+Timeout@{set\+Timeout}}
+\index{set\+Timeout@{set\+Timeout}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{set\+Timeout}{setTimeout}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+::set\+Timeout (\begin{DoxyParamCaption}\item[{long}]{millisec }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+For Unix\+:
+
+Sets the read and write timeouts for the port to {\itshape millisec} milliseconds. Note that this is a per-\/character timeout, i.\+e. the port will wait this long for each individual character, not for the whole read operation. This timeout also applies to the bytes\+Waiting() function.
+
+note\+: P\+O\+S\+IX does not support millisecond-\/level control for I/O timeout values. Any timeout set using this function will be set to the next lowest tenth of a second for the purposes of detecting read or write timeouts. For example a timeout of 550 milliseconds will be seen by the class as a timeout of 500 milliseconds for the purposes of reading and writing the port. However millisecond-\/level control is allowed by the select() system call, so for example a 550-\/millisecond timeout will be seen as 550 milliseconds on P\+O\+S\+IX systems for the purpose of detecting available bytes in the read buffer.
+
+For Windows\+:
+
+Sets the read and write timeouts for the port to {\itshape millisec} milliseconds. Setting 0 indicates that timeouts are not used for read nor write operations; however read() and write() functions will still block. Set -\/1 to provide non-\/blocking behaviour (read() and write() will return immediately).
+
+note\+: this function does nothing in event driven mode. \mbox{\Hypertarget{classQextSerialPort_a9a135f5caefdad23e1a2dbd7ce7b8731}\label{classQextSerialPort_a9a135f5caefdad23e1a2dbd7ce7b8731}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!stop\+Bits@{stop\+Bits}}
+\index{stop\+Bits@{stop\+Bits}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{stop\+Bits()}{stopBits()}}
+{\footnotesize\ttfamily Stop\+Bits\+Type Qext\+Serial\+Port\+::stop\+Bits (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+Returns the number of stop bits used by the port. For a list of possible return values, see the definition of the enum Stop\+Bits\+Type. \mbox{\Hypertarget{classQextSerialPort_a23b32aebe729afd58d7ba6e409d29d1f}\label{classQextSerialPort_a23b32aebe729afd58d7ba6e409d29d1f}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!write\+Data@{write\+Data}}
+\index{write\+Data@{write\+Data}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{write\+Data()}{writeData()}}
+{\footnotesize\ttfamily qint64 Qext\+Serial\+Port\+::write\+Data (\begin{DoxyParamCaption}\item[{const char $\ast$}]{data,  }\item[{qint64}]{max\+Size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+Writes a block of data to the serial port. This function will write len bytes from the buffer pointed to by data to the serial port. Return value is the number of bytes actually written, or -\/1 on error.
+
+\begin{DoxyWarning}{Warning}
+before calling this function ensure that serial port associated with this class is currently open (use is\+Open() function to check if port is open). 
+\end{DoxyWarning}
+
+
+\subsection{Property Documentation}
+\mbox{\Hypertarget{classQextSerialPort_a989fbac088b18152af0b736a71b9155b}\label{classQextSerialPort_a989fbac088b18152af0b736a71b9155b}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!port\+Name@{port\+Name}}
+\index{port\+Name@{port\+Name}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{port\+Name}{portName}}
+{\footnotesize\ttfamily Q\+String Qext\+Serial\+Port\+::port\+Name\hspace{0.3cm}{\ttfamily [read]}, {\ttfamily [write]}}
+
+Returns the name set by \hyperlink{classQextSerialPort_a9be0f083d807d93bcf30554a2a272d93}{set\+Port\+Name()}. \mbox{\Hypertarget{classQextSerialPort_a22867092a82eb015ad6f84fd4ade1073}\label{classQextSerialPort_a22867092a82eb015ad6f84fd4ade1073}} 
+\index{Qext\+Serial\+Port@{Qext\+Serial\+Port}!query\+Mode@{query\+Mode}}
+\index{query\+Mode@{query\+Mode}!Qext\+Serial\+Port@{Qext\+Serial\+Port}}
+\subsubsection{\texorpdfstring{query\+Mode}{queryMode}}
+{\footnotesize\ttfamily \hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Qext\+Serial\+Port\+::\+Query\+Mode} Qext\+Serial\+Port\+::query\+Mode\hspace{0.3cm}{\ttfamily [read]}, {\ttfamily [write]}}
+
+Get query mode. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+gui/qextserialport/src/qextserialport.\+h\item 
+gui/qextserialport/src/qextserialport.\+cpp\end{DoxyCompactItemize}

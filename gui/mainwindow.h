@@ -42,9 +42,12 @@ public:
     ~MainWindow();
 
 protected:
+    /**
+     * @brief changeEvent
+     * @param e
+     */
     void changeEvent(QEvent *e);
 
-private:
     Ui::MainWindow *ui;
     QextSerialPort port;
     QMessageBox error;
@@ -89,7 +92,7 @@ private:
      */
     void send2selection(QListWidget* listWidget, QString requestType);
 
-private slots:
+protected slots:
     /**
      * @brief Function for handling the retransmissions of unacknowledged requests.
      * After three tries this function recognizes that one or more routes have become invalid and thus

@@ -1,0 +1,164 @@
+\hypertarget{classQextSerialPortPrivate}{}\section{Qext\+Serial\+Port\+Private Class Reference}
+\label{classQextSerialPortPrivate}\index{Qext\+Serial\+Port\+Private@{Qext\+Serial\+Port\+Private}}
+
+
+Collaboration diagram for Qext\+Serial\+Port\+Private\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classQextSerialPortPrivate__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_aa01dd651b5e00ba94515383b08a8bbd5}\label{classQextSerialPortPrivate_aa01dd651b5e00ba94515383b08a8bbd5}} 
+enum {\bfseries Dirty\+Flag\+Enum} \{ \newline
+{\bfseries D\+F\+E\+\_\+\+Baud\+Rate} = 0x0001, 
+{\bfseries D\+F\+E\+\_\+\+Parity} = 0x0002, 
+{\bfseries D\+F\+E\+\_\+\+Stop\+Bits} = 0x0004, 
+{\bfseries D\+F\+E\+\_\+\+Data\+Bits} = 0x0008, 
+\newline
+{\bfseries D\+F\+E\+\_\+\+Flow} = 0x0010, 
+{\bfseries D\+F\+E\+\_\+\+Time\+Out} = 0x0100, 
+{\bfseries D\+F\+E\+\_\+\+A\+LL} = 0x0fff, 
+{\bfseries D\+F\+E\+\_\+\+Settings\+\_\+\+Mask} = 0x00ff
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_ae40028def454b3b7ceda96590c843561}\label{classQextSerialPortPrivate_ae40028def454b3b7ceda96590c843561}} 
+{\bfseries Qext\+Serial\+Port\+Private} (\hyperlink{classQextSerialPort}{Qext\+Serial\+Port} $\ast$q)
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_ab4cf4d3b42758d9805208ddce26215eb}\label{classQextSerialPortPrivate_ab4cf4d3b42758d9805208ddce26215eb}} 
+void {\bfseries set\+Baud\+Rate} (Baud\+Rate\+Type baud\+Rate, bool update=true)
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a33d235600c54568b1cde952e0293df44}\label{classQextSerialPortPrivate_a33d235600c54568b1cde952e0293df44}} 
+void {\bfseries set\+Data\+Bits} (Data\+Bits\+Type data\+Bits, bool update=true)
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_ad1a380156394923938c41128ddde2a10}\label{classQextSerialPortPrivate_ad1a380156394923938c41128ddde2a10}} 
+void {\bfseries set\+Parity} (Parity\+Type parity, bool update=true)
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_ab3ae113721dcd77de506ce47742ebd58}\label{classQextSerialPortPrivate_ab3ae113721dcd77de506ce47742ebd58}} 
+void {\bfseries set\+Stop\+Bits} (Stop\+Bits\+Type stopbits, bool update=true)
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a2150c2071a220bfc57b97a3438d5c4ab}\label{classQextSerialPortPrivate_a2150c2071a220bfc57b97a3438d5c4ab}} 
+void {\bfseries set\+Flow\+Control} (Flow\+Type flow, bool update=true)
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_ab33a38a569ed9922101756be47069e21}\label{classQextSerialPortPrivate_ab33a38a569ed9922101756be47069e21}} 
+void {\bfseries set\+Timeout} (long millisec, bool update=true)
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_aa95fcee325e1c3bb464be7f62a2cbf4d}\label{classQextSerialPortPrivate_aa95fcee325e1c3bb464be7f62a2cbf4d}} 
+void {\bfseries set\+Port\+Settings} (const \hyperlink{structPortSettings}{Port\+Settings} \&settings, bool update=true)
+\item 
+void \hyperlink{classQextSerialPortPrivate_a43f36344c4f79f1851860118975495f6}{platform\+Specific\+Destruct} ()
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a073ce50d9be23dfc9dee51bde7f41e0b}\label{classQextSerialPortPrivate_a073ce50d9be23dfc9dee51bde7f41e0b}} 
+void {\bfseries platform\+Specific\+Init} ()
+\item 
+void \hyperlink{classQextSerialPortPrivate_af504151e61016c5e8a6d93378b834602}{translate\+Error} (ulong error)
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a93dbaf89172345288b00e936bc3ea87c}\label{classQextSerialPortPrivate_a93dbaf89172345288b00e936bc3ea87c}} 
+void {\bfseries update\+Port\+Settings} ()
+\item 
+qint64 \hyperlink{classQextSerialPortPrivate_ab4a75579c479ccebb5f325af737a7045}{read\+Data\+\_\+sys} (char $\ast$data, qint64 max\+Size)
+\item 
+qint64 \hyperlink{classQextSerialPortPrivate_a54ad0646018e3a519582c81fd3631cc2}{write\+Data\+\_\+sys} (const char $\ast$data, qint64 max\+Size)
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_af275a7dcc4a593d01b78e7997c4fb075}\label{classQextSerialPortPrivate_af275a7dcc4a593d01b78e7997c4fb075}} 
+void {\bfseries set\+Dtr\+\_\+sys} (bool set=true)
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_aafb561e6173cd73470a8369af029dd36}\label{classQextSerialPortPrivate_aafb561e6173cd73470a8369af029dd36}} 
+void {\bfseries set\+Rts\+\_\+sys} (bool set=true)
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_aa0f8791cf7196d6544c6ab5fa7227c9e}\label{classQextSerialPortPrivate_aa0f8791cf7196d6544c6ab5fa7227c9e}} 
+bool {\bfseries open\+\_\+sys} (Q\+I\+O\+Device\+::\+Open\+Mode mode)
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a7838ce80fb6a77d1e978b9839d97e9c0}\label{classQextSerialPortPrivate_a7838ce80fb6a77d1e978b9839d97e9c0}} 
+bool {\bfseries close\+\_\+sys} ()
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a237f7f6b7d1dbf43d83f4f747e2f577b}\label{classQextSerialPortPrivate_a237f7f6b7d1dbf43d83f4f747e2f577b}} 
+bool {\bfseries flush\+\_\+sys} ()
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a62a36776b0d0ac6047f7f2ab911511e6}\label{classQextSerialPortPrivate_a62a36776b0d0ac6047f7f2ab911511e6}} 
+ulong {\bfseries line\+Status\+\_\+sys} ()
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a74d7814b8a4226f832bc58a586aa51c4}\label{classQextSerialPortPrivate_a74d7814b8a4226f832bc58a586aa51c4}} 
+qint64 {\bfseries bytes\+Available\+\_\+sys} () const
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a55836e767da039d663fbdb70557f4b73}\label{classQextSerialPortPrivate_a55836e767da039d663fbdb70557f4b73}} 
+void {\bfseries \+\_\+q\+\_\+can\+Read} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a5b461024ffc2ced2aab35f9ea2479678}\label{classQextSerialPortPrivate_a5b461024ffc2ced2aab35f9ea2479678}} 
+Q\+Read\+Write\+Lock {\bfseries lock}
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_ad71bd4158f2a126e9bc4d81945e44f49}\label{classQextSerialPortPrivate_ad71bd4158f2a126e9bc4d81945e44f49}} 
+Q\+String {\bfseries port}
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a3e5003cc8b0fe0d8ac2384473073b112}\label{classQextSerialPortPrivate_a3e5003cc8b0fe0d8ac2384473073b112}} 
+\hyperlink{structPortSettings}{Port\+Settings} {\bfseries settings}
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a70b82e3f7cd919b5f6cece84d97f8c69}\label{classQextSerialPortPrivate_a70b82e3f7cd919b5f6cece84d97f8c69}} 
+\hyperlink{classQextReadBuffer}{Qext\+Read\+Buffer} {\bfseries read\+Buffer}
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a34e162f9f23ec8628ba91b96c3195c08}\label{classQextSerialPortPrivate_a34e162f9f23ec8628ba91b96c3195c08}} 
+int {\bfseries settings\+Dirty\+Flags}
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a20d35bc9b81de6f67bc935cb1095dab9}\label{classQextSerialPortPrivate_a20d35bc9b81de6f67bc935cb1095dab9}} 
+ulong {\bfseries last\+Err}
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_a96c0bd1305fc54c331692b4cb9af1724}\label{classQextSerialPortPrivate_a96c0bd1305fc54c331692b4cb9af1724}} 
+\hyperlink{classQextSerialPort_a6002128d7351ea9a958d6a6d1fc6b9bd}{Qext\+Serial\+Port\+::\+Query\+Mode} {\bfseries query\+Mode}
+\item 
+\mbox{\Hypertarget{classQextSerialPortPrivate_ac1a6c45f7c3621d5f926d5250cdac194}\label{classQextSerialPortPrivate_ac1a6c45f7c3621d5f926d5250cdac194}} 
+\hyperlink{classQextSerialPort}{Qext\+Serial\+Port} $\ast$ {\bfseries q\+\_\+ptr}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classQextSerialPortPrivate_a43f36344c4f79f1851860118975495f6}\label{classQextSerialPortPrivate_a43f36344c4f79f1851860118975495f6}} 
+\index{Qext\+Serial\+Port\+Private@{Qext\+Serial\+Port\+Private}!platform\+Specific\+Destruct@{platform\+Specific\+Destruct}}
+\index{platform\+Specific\+Destruct@{platform\+Specific\+Destruct}!Qext\+Serial\+Port\+Private@{Qext\+Serial\+Port\+Private}}
+\subsubsection{\texorpdfstring{platform\+Specific\+Destruct()}{platformSpecificDestruct()}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+Private\+::platform\+Specific\+Destruct (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Standard destructor. \mbox{\Hypertarget{classQextSerialPortPrivate_ab4a75579c479ccebb5f325af737a7045}\label{classQextSerialPortPrivate_ab4a75579c479ccebb5f325af737a7045}} 
+\index{Qext\+Serial\+Port\+Private@{Qext\+Serial\+Port\+Private}!read\+Data\+\_\+sys@{read\+Data\+\_\+sys}}
+\index{read\+Data\+\_\+sys@{read\+Data\+\_\+sys}!Qext\+Serial\+Port\+Private@{Qext\+Serial\+Port\+Private}}
+\subsubsection{\texorpdfstring{read\+Data\+\_\+sys()}{readData\_sys()}}
+{\footnotesize\ttfamily qint64 Qext\+Serial\+Port\+Private\+::read\+Data\+\_\+sys (\begin{DoxyParamCaption}\item[{char $\ast$}]{data,  }\item[{qint64}]{max\+Size }\end{DoxyParamCaption})}
+
+Reads a block of data from the serial port. This function will read at most max\+Size bytes from the serial port and place them in the buffer pointed to by data. Return value is the number of bytes actually read, or -\/1 on error.
+
+\begin{DoxyWarning}{Warning}
+before calling this function ensure that serial port associated with this class is currently open (use is\+Open() function to check if port is open). 
+\end{DoxyWarning}
+\mbox{\Hypertarget{classQextSerialPortPrivate_af504151e61016c5e8a6d93378b834602}\label{classQextSerialPortPrivate_af504151e61016c5e8a6d93378b834602}} 
+\index{Qext\+Serial\+Port\+Private@{Qext\+Serial\+Port\+Private}!translate\+Error@{translate\+Error}}
+\index{translate\+Error@{translate\+Error}!Qext\+Serial\+Port\+Private@{Qext\+Serial\+Port\+Private}}
+\subsubsection{\texorpdfstring{translate\+Error()}{translateError()}}
+{\footnotesize\ttfamily void Qext\+Serial\+Port\+Private\+::translate\+Error (\begin{DoxyParamCaption}\item[{ulong}]{error }\end{DoxyParamCaption})}
+
+Translates a system-\/specific error code to a \hyperlink{classQextSerialPort}{Qext\+Serial\+Port} error code. Used internally. \mbox{\Hypertarget{classQextSerialPortPrivate_a54ad0646018e3a519582c81fd3631cc2}\label{classQextSerialPortPrivate_a54ad0646018e3a519582c81fd3631cc2}} 
+\index{Qext\+Serial\+Port\+Private@{Qext\+Serial\+Port\+Private}!write\+Data\+\_\+sys@{write\+Data\+\_\+sys}}
+\index{write\+Data\+\_\+sys@{write\+Data\+\_\+sys}!Qext\+Serial\+Port\+Private@{Qext\+Serial\+Port\+Private}}
+\subsubsection{\texorpdfstring{write\+Data\+\_\+sys()}{writeData\_sys()}}
+{\footnotesize\ttfamily qint64 Qext\+Serial\+Port\+Private\+::write\+Data\+\_\+sys (\begin{DoxyParamCaption}\item[{const char $\ast$}]{data,  }\item[{qint64}]{max\+Size }\end{DoxyParamCaption})}
+
+Writes a block of data to the serial port. This function will write max\+Size bytes from the buffer pointed to by data to the serial port. Return value is the number of bytes actually written, or -\/1 on error.
+
+\begin{DoxyWarning}{Warning}
+before calling this function ensure that serial port associated with this class is currently open (use is\+Open() function to check if port is open). 
+\end{DoxyWarning}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+gui/qextserialport/src/qextserialport\+\_\+p.\+h\item 
+gui/qextserialport/src/qextserialport.\+cpp\item 
+gui/qextserialport/src/qextserialport\+\_\+unix.\+cpp\item 
+gui/qextserialport/src/qextserialport\+\_\+win.\+cpp\end{DoxyCompactItemize}

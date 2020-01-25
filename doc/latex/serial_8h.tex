@@ -1,0 +1,120 @@
+\hypertarget{serial_8h}{}\section{src/serial.h File Reference}
+\label{serial_8h}\index{src/serial.\+h@{src/serial.\+h}}
+
+
+Defines the serial communication between a node and the G\+UI.  
+
+
+{\ttfamily \#include \char`\"{}plantio.\+h\char`\"{}}\newline
+Include dependency graph for serial.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{serial_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=234pt]{serial_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{serial_8h_a48f67010ee11dabaea0feb51f2a6ecd3}{parse\+\_\+serial\+\_\+input} (char $\ast$input)
+\begin{DoxyCompactList}\small\item\em Parse serial input events, received from the G\+UI. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{serial_8h_a93743c0ec4d5fa28a2c26aa266e6f136}\label{serial_8h_a93743c0ec4d5fa28a2c26aa266e6f136}} 
+struct process \hyperlink{serial_8h_a93743c0ec4d5fa28a2c26aa266e6f136}{p\+\_\+serial}
+\begin{DoxyCompactList}\small\item\em Process for handling serial input. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Defines the serial communication between a node and the G\+UI. 
+
+\begin{DoxyAuthor}{Author}
+Patrick Willner (\href{mailto:patrick.willner@tum.de}{\tt patrick.\+willner@tum.\+de}), Andreas Koliopoulos (\href{mailto:ga96leh@mytum.de}{\tt ga96leh@mytum.\+de}), Alexander Schmaus (\href{mailto:ga96fin@mytum.de}{\tt ga96fin@mytum.\+de}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2019-\/12-\/14
+\end{DoxyDate}
+The following Node to G\+UI strings are defined\+:
+
+Output String (from mote) Description
+
+$<$\$src\+\_\+id\+:route\+:\$r\+\_\+1\+:\$\+\_\+2\+:...$>$ get optimal path to node with id \$src\+\_\+id
+
+$<$\$src\+\_\+id\+:th\+:\$temp\+\_\+low\+:\$temp\+\_\+high\+:\$hum\+\_\+low\+:\$hum\+\_\+high\+:\$light\+\_\+low\+:\$light\+\_\+high$>$ get thresholds of node with id \$src\+\_\+id
+
+$<$\$src\+\_\+id\+:sensor\+\_\+data\+:\$temp\+\_\+1\+:...\+:\$temp\+\_\+2\+:\$hum\+\_\+1\+:...\+:\$hum\+\_\+max\+:\$light\+\_\+1\+:...\+:\$light\+\_\+max$>$get sensors data (temp, hum, light) of node with id \$src\+\_\+id with datapoints 1 to max
+
+$<$\begin{DoxyParagraph}{src\+\_\+id}
+t\+:
+\end{DoxyParagraph}
+data$>$ get routing table of node with id \$src\+\_\+id with \$data formatted equivalent to file structure
+
+$<$\begin{DoxyParagraph}{src\+\_\+id}
+ck$>$ acknowledgement for received datapacket from node with id 
+\end{DoxyParagraph}
+src\+\_\+id
+
+The following G\+UI to Node strings are defined\+:
+
+Input String (from G\+UI) Description
+
+0\+:init Start network discovery from current node
+
+\begin{DoxyParagraph}{dest\+\_\+id}
+ed\+:
+\end{DoxyParagraph}
+args Set L\+ED of node \$dest\+\_\+id, where \$args = \{4\+: blue, 2\+: green, 1\+: red, 7\+: all, ...R\+GB Addition\}
+
+\begin{DoxyParagraph}{dest\+\_\+id}
+t Fetch routing table of node 
+\end{DoxyParagraph}
+dest\+\_\+id
+
+\begin{DoxyParagraph}{dest\+\_\+id}
+et\+\_\+th Fetch thresholds of node 
+\end{DoxyParagraph}
+dest\+\_\+id
+
+\$dest\+\_\+id\+:set\+\_\+th\+:\$temp\+\_\+low\+:\$temp\+\_\+high\+:\$hum\+\_\+low\+:\$hum\+\_\+high\+:\$light\+\_\+low\+:\$light\+\_\+high Set thresholds of node \$dest\+\_\+id
+
+\$dest\+\_\+id\+:get\+\_\+data Get M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+V\+A\+L\+U\+ES values of sensor data (temp, hum, light)
+
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2019 
+\end{DoxyCopyright}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{serial_8h_a48f67010ee11dabaea0feb51f2a6ecd3}\label{serial_8h_a48f67010ee11dabaea0feb51f2a6ecd3}} 
+\index{serial.\+h@{serial.\+h}!parse\+\_\+serial\+\_\+input@{parse\+\_\+serial\+\_\+input}}
+\index{parse\+\_\+serial\+\_\+input@{parse\+\_\+serial\+\_\+input}!serial.\+h@{serial.\+h}}
+\subsubsection{\texorpdfstring{parse\+\_\+serial\+\_\+input()}{parse\_serial\_input()}}
+{\footnotesize\ttfamily void parse\+\_\+serial\+\_\+input (\begin{DoxyParamCaption}\item[{char $\ast$}]{input }\end{DoxyParamCaption})}
+
+
+
+Parse serial input events, received from the G\+UI. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & \\
+\hline
+\end{DoxyParams}
+Parse serial input events, received from the G\+UI.
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & \\
+\hline
+\end{DoxyParams}
