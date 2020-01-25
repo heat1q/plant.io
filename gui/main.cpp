@@ -1,3 +1,13 @@
+/**
+ * @file main.cpp
+ * @author Patrick Willner (patrick.willner@tum.de), Andreas Koliopoulos (ga96leh@mytum.de), Alexander Schmaus (ga96fin@mytum.de)
+ * @brief
+ * @version 1.0
+ * @date 2019-12-12
+ *
+ * @copyright Copyright (c) 2019
+ *
+ */
 #include <QApplication>
 #include "mainwindow.h"
 

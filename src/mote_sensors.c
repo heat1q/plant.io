@@ -1,3 +1,13 @@
+/**
+ * @file mote_sensors.c
+ * @author Patrick Willner (patrick.willner@tum.de), Andreas Koliopoulos (ga96leh@mytum.de), Alexander Schmaus (ga96fin@mytum.de)
+ * @brief 
+ * @version 0.1
+ * @date 2019-12-12
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
 #include "mote_sensors.h"
 #include "routing.h"
 
