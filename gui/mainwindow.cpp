@@ -177,6 +177,10 @@ void MainWindow::reset_graph() // Reset the graph
 
     // clear ack_queue
     ack_queue.clear();
+
+    // clear / refresh listViews
+    on_pushButton_Refresh_Tab2_clicked();
+    on_pushButton_Refresh_Tab3_clicked();
 }
 
 void MainWindow::send2port(QString input) // Send message to port
@@ -266,6 +270,8 @@ void MainWindow::receive() // QObject::connect(&port, SIGNAL(readyRead()), this,
                 data.removeFirst();
                 data.removeFirst();
                 create_graph(data); // create visualization of route which also registers the ID's as valid targets
+                on_pushButton_Refresh_Tab2_clicked();
+                on_pushButton_Refresh_Tab3_clicked();
             }
             else if (data[1] == "sensor_data"){ // ID : SENSOR_DATA : TYPE : DATA
                 data.removeAt(0);
